@@ -32,32 +32,35 @@ export class LanguageService {
     // Set default language
     this.translate.setDefaultLang('en');
     
-    // Load translations from JSON files
-    this.loadTranslations();
-    
-    // Try to use browser language if available
-    const browserLang = this.translate.getBrowserLang();
-    const savedLang = localStorage.getItem('preferredLanguage');
-    
-    const langToUse = savedLang || (browserLang && langCodes.includes(browserLang) ? browserLang : 'en');
-    this.setLanguage(langToUse);
+    // Load translations from JSON files and then set language
+    this.loadTranslations().then(() => {
+      // Try to use browser language if available
+      const browserLang = this.translate.getBrowserLang();
+      const savedLang = localStorage.getItem('preferredLanguage');
+      
+      const langToUse = savedLang || (browserLang && langCodes.includes(browserLang) ? browserLang : 'en');
+      this.setLanguage(langToUse);
+    });
   }
 
-  private loadTranslations(): void {
+  private async loadTranslations(): Promise<void> {
     // Load translation files from assets/i18n/
     const languages = ['en', 'de', 'fr', 'es', 'it'];
     
-    languages.forEach(lang => {
-      this.http.get(`/assets/i18n/${lang}.json`).subscribe({
-        next: (translations) => {
-          this.translate.setTranslation(lang, translations, true);
-          console.log(`[Language] Loaded ${lang} translations`);
-        },
-        error: (err) => {
-          console.error(`[Language] Failed to load ${lang} translations:`, err);
-        }
-      });
+    const loadPromises = languages.map(async (lang) => {
+      try {
+        const translations = await this.http.get(`/assets/i18n/${lang}.json`).toPromise();
+        this.translate.setTranslation(lang, translations, true);
+        console.log(`[Language] ✓ Loaded ${lang} translations - auditLog exists:`, !!(translations as any).auditLog);
+        return true;
+      } catch (err) {
+        console.error(`[Language] ✗ Failed to load ${lang} translations:`, err);
+        return false;
+      }
     });
+    
+    await Promise.all(loadPromises);
+    console.log('[Language] All translations loaded successfully');
   }
 
   setLanguage(langCode: string): void {
