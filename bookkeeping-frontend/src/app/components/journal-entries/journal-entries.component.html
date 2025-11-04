@@ -23,7 +23,7 @@
       <input 
         type="text" 
         class="search-input" 
-        placeholder="Search by account number, description, reference..." 
+        placeholder="Search by account, description, policy, claim..." 
         [(ngModel)]="searchQuery"
         (ngModelChange)="onSearchChange()">
     </div>
@@ -115,106 +115,108 @@
     <button class="btn-secondary" (click)="clearFilters()">Clear Filters</button>
   </div>
 
-  <div *ngIf="!loading && !error && displayedEntries.length > 0" class="entries-list">
-    <div *ngFor="let entry of displayedEntries" class="entry-card">
-      <div class="entry-header">
-        <div class="entry-info">
-          <div class="entry-number">{{ entry.entryNumber }}</div>
-          <div class="entry-date">{{ entry.entryDate | date:'mediumDate' }}</div>
-        </div>
-        <div class="entry-status">
-          <div class="status-tooltip-wrapper">
-            <span class="status-badge" [class]="'badge-' + getStatusColor(entry.status)">
-              {{ entry.status }}
-            </span>
-            <div class="status-tooltip">
-              <div class="status-tooltip-title">Journal Entry Statuses</div>
-              
-              <div class="status-explanation">
-                <div class="status-label">
-                  <span class="status-icon green"></span>
-                  <span>POSTED</span>
+  <!-- Entries Table -->
+  <div *ngIf="!loading && !error && displayedEntries.length > 0" class="table-container">
+    <table class="entries-table">
+      <thead>
+        <tr>
+          <th>Status</th>
+          <th>Entry #</th>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Debit Account</th>
+          <th>Credit Account</th>
+          <th class="text-right">Amount</th>
+          <th>Policy #</th>
+          <th>Claim #</th>
+          <th>Ref</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let entry of displayedEntries" class="entry-row">
+          <td>
+            <div class="status-tooltip-wrapper">
+              <span class="status-badge" [class]="'badge-' + getStatusColor(entry.status)">
+                {{ entry.status }}
+              </span>
+              <div class="status-tooltip">
+                <div class="status-tooltip-title">Journal Entry Statuses</div>
+                
+                <div class="status-explanation">
+                  <div class="status-label">
+                    <span class="status-icon green"></span>
+                    <span>POSTED</span>
+                  </div>
+                  <div class="status-description">
+                    Entry is finalized and recorded in the books. Amounts are included in all reports and account balances.
+                  </div>
+                  <div class="status-effect">
+                    Cannot be edited or deleted - must be reversed with a new entry
+                  </div>
                 </div>
-                <div class="status-description">
-                  Entry is finalized and recorded in the books. Amounts are included in all reports and account balances.
-                </div>
-                <div class="status-effect">
-                  Cannot be edited or deleted - must be reversed with a new entry
-                </div>
-              </div>
 
-              <div class="status-explanation">
-                <div class="status-label">
-                  <span class="status-icon gray"></span>
-                  <span>DRAFT</span>
+                <div class="status-explanation">
+                  <div class="status-label">
+                    <span class="status-icon gray"></span>
+                    <span>DRAFT</span>
+                  </div>
+                  <div class="status-description">
+                    Entry is not yet finalized. Can be edited or deleted before posting.
+                  </div>
+                  <div class="status-effect">
+                    Not included in reports or account balances
+                  </div>
                 </div>
-                <div class="status-description">
-                  Entry is not yet finalized. Can be edited or deleted before posting.
-                </div>
-                <div class="status-effect">
-                  Not included in reports or account balances
-                </div>
-              </div>
 
-              <div class="status-explanation">
-                <div class="status-label">
-                  <span class="status-icon red"></span>
-                  <span>VOID</span>
-                </div>
-                <div class="status-description">
-                  Entry has been cancelled. A reversing entry was created to maintain audit trail.
-                </div>
-                <div class="status-effect">
-                  Reversed transactions - amounts nullified
+                <div class="status-explanation">
+                  <div class="status-label">
+                    <span class="status-icon red"></span>
+                    <span>VOID</span>
+                  </div>
+                  <div class="status-description">
+                    Entry has been cancelled. A reversing entry was created to maintain audit trail.
+                  </div>
+                  <div class="status-effect">
+                    Reversed transactions - amounts nullified
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="entry-body">
-        <div class="entry-description">{{ entry.description }}</div>
-        <div class="entry-reference" *ngIf="entry.referenceNumber">
-          Ref: {{ entry.referenceNumber }}
-        </div>
-      </div>
-      
-      <div class="entry-lines" *ngIf="entry.lines && entry.lines.length > 0">
-        <table class="lines-table">
-          <thead>
-            <tr>
-              <th>Account</th>
-              <th class="text-right">Debit</th>
-              <th class="text-right">Credit</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let line of entry.lines">
-              <td>
-                <span class="account-code">{{ line.account?.accountNumber || 'N/A' }}</span>
-                {{ line.account?.accountName || getAccountName(line.accountId) }}
-              </td>
-              <td class="text-right">
-                {{ line.debitAmount > 0 ? formatCurrency(line.debitAmount) : '-' }}
-              </td>
-              <td class="text-right">
-                {{ line.creditAmount > 0 ? formatCurrency(line.creditAmount) : '-' }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      
-      <div class="entry-actions" *ngIf="entry.status === 'DRAFT'">
-        <button class="btn-small btn-success" (click)="postEntry(entry)">
-          Post Entry
-        </button>
-        <button class="btn-small btn-danger" (click)="voidEntry(entry)">
-          Void
-        </button>
-      </div>
-    </div>
+          </td>
+          <td class="entry-number">{{ entry.entryNumber }}</td>
+          <td class="entry-date">{{ entry.entryDate | date:'dd/MM/yyyy' }}</td>
+          <td class="description-cell">{{ entry.description }}</td>
+          <td class="account-cell">
+            <span class="account-number">{{ getDebitAccount(entry)?.accountNumber || 'N/A' }}</span>
+            <span class="account-name">{{ getDebitAccount(entry)?.accountName || '' }}</span>
+          </td>
+          <td class="account-cell">
+            <span class="account-number">{{ getCreditAccount(entry)?.accountNumber || 'N/A' }}</span>
+            <span class="account-name">{{ getCreditAccount(entry)?.accountName || '' }}</span>
+          </td>
+          <td class="text-right amount-cell">{{ formatCurrency(getEntryAmount(entry)) }}</td>
+          <td class="custom-field-cell">{{ getCustomFieldValue(entry, 'policy_number') }}</td>
+          <td class="custom-field-cell">{{ getCustomFieldValue(entry, 'claim_number') }}</td>
+          <td class="ref-cell">{{ entry.referenceNumber || '-' }}</td>
+          <td class="actions-cell">
+            <div class="action-buttons" *ngIf="entry.status === 'DRAFT'">
+              <button class="btn-table btn-success" (click)="postEntry(entry)" title="Post Entry">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </button>
+              <button class="btn-table btn-danger" (click)="voidEntry(entry)" title="Void Entry">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
   <!-- Create Entry Modal -->
@@ -250,6 +252,8 @@
                 <option value="INVOICE">Invoice</option>
                 <option value="PAYMENT">Payment</option>
                 <option value="RECEIPT">Receipt</option>
+                <option value="PREMIUM">Premium</option>
+                <option value="CLAIM">Claim</option>
               </select>
             </div>
           </div>

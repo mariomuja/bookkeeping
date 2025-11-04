@@ -111,46 +111,149 @@
   color: #dc2626;
 }
 
-.entries-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.entry-card {
+/* Table Container */
+.table-container {
   background: white;
-  border: 1px solid #e5e7eb;
   border-radius: 0.75rem;
-  padding: 1.5rem;
-  transition: all 0.2s;
+  overflow-x: auto;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.entry-card:hover {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+.entries-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
 }
 
-.entry-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
+.entries-table thead {
+  background: #f9fafb;
+  border-bottom: 2px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
-.entry-info {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+.entries-table th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  white-space: nowrap;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.entries-table tbody tr {
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.15s;
+}
+
+.entries-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.entries-table td {
+  padding: 0.75rem 1rem;
+  vertical-align: middle;
 }
 
 .entry-number {
-  font-size: 1.125rem;
-  font-weight: 700;
+  font-weight: 600;
   color: #1f2937;
+  white-space: nowrap;
 }
 
 .entry-date {
   color: #6b7280;
-  font-size: 0.875rem;
+  white-space: nowrap;
+  font-size: 0.8125rem;
+}
+
+.description-cell {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #1f2937;
+}
+
+.account-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.account-number {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: #3b82f6;
+  font-size: 0.8125rem;
+}
+
+.account-name {
+  color: #6b7280;
+  font-size: 0.75rem;
+}
+
+.amount-cell {
+  font-weight: 600;
+  color: #1f2937;
+  white-space: nowrap;
+  font-family: 'Courier New', monospace;
+}
+
+.custom-field-cell {
+  color: #6b7280;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+.ref-cell {
+  color: #9ca3af;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.actions-cell {
+  width: 100px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.btn-table {
+  padding: 0.375rem;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-table.btn-success {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.btn-table.btn-success:hover {
+  background: #10b981;
+  color: white;
+}
+
+.btn-table.btn-danger {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.btn-table.btn-danger:hover {
+  background: #ef4444;
+  color: white;
 }
 
 .status-badge {
@@ -255,64 +358,8 @@
   margin-top: 0.125rem;
 }
 
-.entry-body {
-  margin-bottom: 1rem;
-}
-
-.entry-description {
-  color: #1f2937;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-}
-
-.entry-reference {
-  color: #6b7280;
-  font-size: 0.875rem;
-}
-
-.entry-lines {
-  margin-bottom: 1rem;
-}
-
-.lines-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.875rem;
-}
-
-.lines-table thead {
-  background: #f9fafb;
-  border-top: 1px solid #e5e7eb;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.lines-table th {
-  padding: 0.75rem;
-  text-align: left;
-  font-weight: 600;
-  color: #6b7280;
-}
-
-.lines-table td {
-  padding: 0.75rem;
-  border-bottom: 1px solid #f3f4f6;
-  color: #1f2937;
-}
-
-.account-code {
-  font-family: 'Courier New', monospace;
-  font-weight: 600;
-  color: #3b82f6;
-  margin-right: 0.5rem;
-}
-
 .text-right {
   text-align: right;
-}
-
-.entry-actions {
-  display: flex;
-  gap: 0.5rem;
 }
 
 /* Modal Styles */

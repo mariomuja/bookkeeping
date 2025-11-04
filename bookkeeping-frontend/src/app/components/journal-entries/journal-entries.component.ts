@@ -384,4 +384,36 @@ export class JournalEntriesComponent implements OnInit {
     const end = Math.min(start + this.displayedEntries.length - 1, this.getTotalFilteredCount());
     return `${start}-${end}`;
   }
+
+  // Table display helpers
+  getDebitAccount(entry: JournalEntry): Account | undefined {
+    if (!entry.lines || entry.lines.length === 0) return undefined;
+    const debitLine = entry.lines.find(l => l.debitAmount > 0);
+    if (!debitLine) return undefined;
+    return debitLine.account || this.accountsMap.get(debitLine.accountId);
+  }
+
+  getCreditAccount(entry: JournalEntry): Account | undefined {
+    if (!entry.lines || entry.lines.length === 0) return undefined;
+    const creditLine = entry.lines.find(l => l.creditAmount > 0);
+    if (!creditLine) return undefined;
+    return creditLine.account || this.accountsMap.get(creditLine.accountId);
+  }
+
+  getEntryAmount(entry: JournalEntry): number {
+    if (!entry.lines || entry.lines.length === 0) return 0;
+    const debitLine = entry.lines.find(l => l.debitAmount > 0);
+    return debitLine ? debitLine.debitAmount : 0;
+  }
+
+  getCustomFieldValue(entry: JournalEntry, fieldName: string): string {
+    if (!entry.customFields || entry.customFields.length === 0) return '-';
+    
+    const field = entry.customFields.find(cf => 
+      cf.definition?.fieldName === fieldName || 
+      cf.fieldDefinitionId === fieldName
+    );
+    
+    return field ? field.fieldValue : '-';
+  }
 }
