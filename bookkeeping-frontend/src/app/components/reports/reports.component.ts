@@ -149,6 +149,30 @@ export class ReportsComponent implements OnInit {
     return grouped;
   }
 
+  getCurrentDate(): Date {
+    return new Date();
+  }
+
+  getAssets(): BalanceSheetItem[] {
+    return this.balanceSheetData.filter(i => i.category === 'ASSET');
+  }
+
+  getLiabilities(): BalanceSheetItem[] {
+    return this.balanceSheetData.filter(i => i.category === 'LIABILITY');
+  }
+
+  getEquity(): BalanceSheetItem[] {
+    return this.balanceSheetData.filter(i => i.category === 'EQUITY');
+  }
+
+  getRevenue(): ProfitLossItem[] {
+    return this.profitLossData.filter(i => i.category === 'REVENUE');
+  }
+
+  getExpenses(): ProfitLossItem[] {
+    return this.profitLossData.filter(i => i.category === 'EXPENSE');
+  }
+
   exportReport(format: 'csv' | 'excel' | 'pdf'): void {
     const org = this.organizationService.getCurrentOrganization();
     if (!org) return;

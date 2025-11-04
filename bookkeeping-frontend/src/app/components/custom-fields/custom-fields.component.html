@@ -1,0 +1,225 @@
+<div class="custom-fields-page">
+  <div class="page-header">
+    <div>
+      <h1>Custom Fields Manager</h1>
+      <p class="subtitle">Define custom fields for your journal entries</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-secondary" (click)="createInsuranceDefaults()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        </svg>
+        Create Insurance Fields
+      </button>
+      <button class="btn-secondary" (click)="generateSampleData()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+        </svg>
+        Generate Sample Data
+      </button>
+      <button class="btn-primary" (click)="openCreateModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Add Custom Field
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading custom fields...</p>
+  </div>
+
+  <div *ngIf="error" class="error-message">{{ error }}</div>
+
+  <div *ngIf="!loading && !error" class="fields-content">
+    <div *ngIf="customFields.length === 0" class="empty-state">
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+        <line x1="12" y1="18" x2="12" y2="12"></line>
+        <line x1="9" y1="15" x2="15" y2="15"></line>
+      </svg>
+      <h3>No Custom Fields</h3>
+      <p>Create custom fields to extend your journal entries with additional data</p>
+      <button class="btn-primary" (click)="openCreateModal()">Create First Field</button>
+    </div>
+
+    <div *ngIf="customFields.length > 0" class="fields-list">
+      <div *ngFor="let field of customFields; let i = index" class="field-card" [class.inactive]="!field.isActive">
+        <div class="field-header">
+          <div class="field-type-icon">{{ getTypeIcon(field.fieldType) }}</div>
+          <div class="field-info">
+            <h3>{{ field.displayName }}</h3>
+            <p class="field-name-code">{{ field.fieldName }}</p>
+          </div>
+          <div class="field-badges">
+            <span class="badge badge-type">{{ field.fieldType }}</span>
+            <span class="badge badge-required" *ngIf="field.isRequired">Required</span>
+            <span class="badge badge-searchable" *ngIf="field.isSearchable">Searchable</span>
+            <span class="badge badge-inactive" *ngIf="!field.isActive">Inactive</span>
+          </div>
+        </div>
+
+        <div class="field-body" *ngIf="field.description">
+          <p class="field-description">{{ field.description }}</p>
+        </div>
+
+        <div class="field-details">
+          <div class="detail-item" *ngIf="field.formattingTemplate">
+            <span class="detail-label">Format:</span>
+            <span class="detail-value">{{ field.formattingTemplate }}</span>
+          </div>
+          <div class="detail-item" *ngIf="field.selectOptions && field.selectOptions.length > 0">
+            <span class="detail-label">Options:</span>
+            <span class="detail-value">{{ field.selectOptions.join(', ') }}</span>
+          </div>
+          <div class="detail-item" *ngIf="field.validationRules">
+            <span class="detail-label">Validation:</span>
+            <span class="detail-value">{{ field.validationRules | json }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Order:</span>
+            <span class="detail-value">{{ i + 1 }}</span>
+          </div>
+        </div>
+
+        <div class="field-actions">
+          <button class="btn-icon" (click)="moveUp(i)" [disabled]="i === 0" title="Move up">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+          </button>
+          <button class="btn-icon" (click)="moveDown(i)" [disabled]="i === customFields.length - 1" title="Move down">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <button class="btn-icon" (click)="openEditModal(field)" title="Edit">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+          </button>
+          <button class="btn-icon danger" (click)="deleteField(field)" title="Delete">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal modal-large" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ isEditMode ? 'Edit Custom Field' : 'Create Custom Field' }}</h2>
+        <button class="btn-close" (click)="closeModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Field Name (Internal) *</label>
+              <input type="text" [(ngModel)]="currentField.fieldName" name="fieldName" 
+                     placeholder="e.g., policy_number" required>
+              <small>Use lowercase with underscores. This is the internal identifier.</small>
+            </div>
+
+            <div class="form-group">
+              <label>Display Name *</label>
+              <input type="text" [(ngModel)]="currentField.displayName" name="displayName" 
+                     placeholder="e.g., Policy Number" required>
+              <small>This is what users will see in the interface.</small>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Field Type *</label>
+            <select [(ngModel)]="currentField.fieldType" name="fieldType" required>
+              <option *ngFor="let type of fieldTypes" [value]="type.value">
+                {{ type.label }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Description</label>
+            <textarea [(ngModel)]="currentField.description" name="description" rows="2"
+                      placeholder="Describe what this field is used for"></textarea>
+          </div>
+
+          <div class="form-group" *ngIf="currentField.fieldType === 'TEXT'">
+            <label>Formatting Template</label>
+            <input type="text" [(ngModel)]="currentField.formattingTemplate" name="formattingTemplate"
+                   placeholder="e.g., POL-########">
+            <small>Use # for numbers. Example: POL-######## becomes POL-12345678</small>
+          </div>
+
+          <div class="form-group" *ngIf="currentField.fieldType === 'SELECT'">
+            <label>Dropdown Options (one per line) *</label>
+            <textarea [(ngModel)]="selectOptionsText" name="selectOptions" rows="5"
+                      placeholder="Option 1&#10;Option 2&#10;Option 3"></textarea>
+          </div>
+
+          <div class="form-group" *ngIf="currentField.fieldType === 'NUMBER' || currentField.fieldType === 'DECIMAL'">
+            <label>Validation Rules (JSON)</label>
+            <textarea [(ngModel)]="validationRulesText" name="validationRules" rows="4"
+                      placeholder='{"min": 0, "max": 1000000, "decimals": 2}'></textarea>
+            <small>Example: {"{"}"min": 0, "max": 100000, "decimals": 2{"}"}}</small>
+          </div>
+
+          <div class="form-row checkboxes">
+            <div class="form-group checkbox">
+              <label>
+                <input type="checkbox" [(ngModel)]="currentField.isRequired" name="isRequired">
+                Required Field
+              </label>
+            </div>
+
+            <div class="form-group checkbox">
+              <label>
+                <input type="checkbox" [(ngModel)]="currentField.isSearchable" name="isSearchable">
+                Searchable
+              </label>
+            </div>
+
+            <div class="form-group checkbox">
+              <label>
+                <input type="checkbox" [(ngModel)]="currentField.isFilterable" name="isFilterable">
+                Filterable
+              </label>
+            </div>
+
+            <div class="form-group checkbox">
+              <label>
+                <input type="checkbox" [(ngModel)]="currentField.isActive" name="isActive">
+                Active
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="closeModal()">Cancel</button>
+        <button class="btn-primary" (click)="saveField()">
+          {{ isEditMode ? 'Update Field' : 'Create Field' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -196,7 +196,7 @@
               </div>
               <div class="balance-row balance-difference">
                 <span>Difference:</span>
-                <span class="amount">{{ formatCurrency(Math.abs(getTotalDebits() - getTotalCredits())) }}</span>
+                <span class="amount">{{ formatCurrency(getAbsoluteDifference()) }}</span>
               </div>
               <div class="balance-status">
                 <span *ngIf="isBalanced()" class="status-balanced">✓ Balanced</span>

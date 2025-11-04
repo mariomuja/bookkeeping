@@ -192,6 +192,10 @@ export class JournalEntriesComponent implements OnInit {
     }).format(value);
   }
 
+  getAbsoluteDifference(): number {
+    return Math.abs(this.getTotalDebits() - this.getTotalCredits());
+  }
+
   getStatusColor(status: string): string {
     const colors: { [key: string]: string } = {
       'DRAFT': 'gray',

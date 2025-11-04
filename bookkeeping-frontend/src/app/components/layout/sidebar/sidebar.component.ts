@@ -23,6 +23,7 @@ export class SidebarComponent {
     { icon: 'journal', label: 'Journal Entries', route: '/journal-entries' },
     { icon: 'reports', label: 'Reports', route: '/reports' },
     { icon: 'import', label: 'Import Data', route: '/import' },
+    { icon: 'custom-fields', label: 'Custom Fields', route: '/custom-fields' },
     { icon: 'settings', label: 'Settings', route: '/settings' }
   ];
 

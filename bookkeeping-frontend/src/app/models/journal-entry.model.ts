@@ -1,3 +1,5 @@
+import { JournalEntryCustomField } from './custom-field.model';
+
 export interface JournalEntry {
   id: string;
   organizationId: string;
@@ -22,6 +24,7 @@ export interface JournalEntry {
   createdAt: Date;
   updatedAt: Date;
   lines?: JournalEntryLine[];
+  customFields?: JournalEntryCustomField[];
 }
 
 export interface JournalEntryLine {
