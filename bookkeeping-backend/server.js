@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const config = require('./config');
 const mockData = require('./mock-data');
+const auth = require('./auth');
 
 const app = express();
 
@@ -15,6 +16,112 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
   next();
+});
+
+// Initialize demo user
+auth.initializeDemoUser();
+
+// ============================================================================
+// AUTHENTICATION
+// ============================================================================
+
+// Register new user
+app.post('/api/auth/register', async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+    
+    if (!username || !email || !password) {
+      return res.status(400).json({ error: 'Username, email, and password are required' });
+    }
+    
+    const user = await auth.registerUser(username, email, password);
+    res.status(201).json(user);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Login (step 1)
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username and password are required' });
+    }
+    
+    const result = await auth.loginUser(username, password);
+    res.json(result);
+  } catch (error) {
+    res.status(401).json({ error: error.message });
+  }
+});
+
+// Verify 2FA (step 2)
+app.post('/api/auth/verify-2fa', async (req, res) => {
+  try {
+    const { tempToken, code } = req.body;
+    
+    if (!tempToken || !code) {
+      return res.status(400).json({ error: 'Temp token and 2FA code are required' });
+    }
+    
+    const result = await auth.verify2FA(tempToken, code);
+    res.json(result);
+  } catch (error) {
+    res.status(401).json({ error: error.message });
+  }
+});
+
+// Setup 2FA
+app.post('/api/auth/setup-2fa', auth.authenticateToken, async (req, res) => {
+  try {
+    const result = await auth.setup2FA(req.user.userId);
+    res.json(result);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Enable 2FA
+app.post('/api/auth/enable-2fa', auth.authenticateToken, async (req, res) => {
+  try {
+    const { code } = req.body;
+    
+    if (!code) {
+      return res.status(400).json({ error: '2FA code is required' });
+    }
+    
+    const result = await auth.enable2FA(req.user.userId, code);
+    res.json(result);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Disable 2FA
+app.post('/api/auth/disable-2fa', auth.authenticateToken, async (req, res) => {
+  try {
+    const { code } = req.body;
+    
+    if (!code) {
+      return res.status(400).json({ error: '2FA code is required' });
+    }
+    
+    const result = await auth.disable2FA(req.user.userId, code);
+    res.json(result);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Get current user
+app.get('/api/auth/me', auth.authenticateToken, (req, res) => {
+  const user = auth.getUserById(req.user.userId);
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+  res.json(user);
 });
 
 // ============================================================================
