@@ -5,11 +5,22 @@
   background: #f3f4f6;
 }
 
+.app-container.report-view {
+  background: #ffffff;
+}
+
 .main-content {
   margin-left: 260px;
   margin-top: 64px;
   min-height: calc(100vh - 64px);
   background: #f3f4f6;
+}
+
+.main-content.full-width {
+  margin-left: 0;
+  margin-top: 0;
+  min-height: 100vh;
+  background: #ffffff;
 }
 
 @media (max-width: 768px) {

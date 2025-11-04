@@ -1,7 +1,7 @@
-<div class="app-container">
-  <app-header></app-header>
-  <app-sidebar></app-sidebar>
-  <main class="main-content">
+<div class="app-container" [class.report-view]="!showMainLayout">
+  <app-header *ngIf="showMainLayout"></app-header>
+  <app-sidebar *ngIf="showMainLayout"></app-sidebar>
+  <main class="main-content" [class.full-width]="!showMainLayout">
     <router-outlet></router-outlet>
   </main>
 </div>

@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './components/layout/header/header.component';
 import { SidebarComponent } from './components/layout/sidebar/sidebar.component';
 import { OrganizationService } from './services/organization.service';
 import { LanguageService } from './services/language.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -15,11 +16,21 @@ import { LanguageService } from './services/language.service';
 })
 export class AppComponent implements OnInit {
   title = 'BookKeeper Pro';
+  showMainLayout = true;
 
   constructor(
     private organizationService: OrganizationService,
-    private languageService: LanguageService
-  ) {}
+    private languageService: LanguageService,
+    private router: Router
+  ) {
+    // Listen to route changes to determine if we should show the main layout
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      // Hide layout for report viewer routes
+      this.showMainLayout = !event.url.startsWith('/report/');
+    });
+  }
 
   ngOnInit(): void {
     // Initialize with a demo organization if none exists
@@ -39,5 +50,8 @@ export class AppComponent implements OnInit {
       };
       this.organizationService.setCurrentOrganization(demoOrg);
     }
+
+    // Check initial route
+    this.showMainLayout = !this.router.url.startsWith('/report/');
   }
 }
