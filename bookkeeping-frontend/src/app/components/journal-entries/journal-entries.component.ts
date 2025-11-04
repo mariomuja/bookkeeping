@@ -33,6 +33,10 @@ export class JournalEntriesComponent implements OnInit {
   filterAmount = '';
   filterOperator: '>' | '<' | '=' | '>=' | '<=' = '>';
   
+  // Sorting
+  sortColumn: string = 'entryNumber';
+  sortDirection: 'asc' | 'desc' = 'desc';
+  
   showModal = false;
   
   newEntry = {
@@ -162,6 +166,9 @@ export class JournalEntriesComponent implements OnInit {
       }
     }
     
+    // Apply sorting
+    filtered = this.sortEntries(filtered);
+    
     // Calculate pagination
     this.totalPages = Math.ceil(filtered.length / this.pageSize);
     if (this.currentPage > this.totalPages) {
@@ -174,6 +181,82 @@ export class JournalEntriesComponent implements OnInit {
     this.displayedEntries = filtered.slice(startIndex, endIndex);
     
     console.log(`[JournalEntries] Filtered: ${filtered.length}, Displaying: ${this.displayedEntries.length}, Page ${this.currentPage}/${this.totalPages}`);
+  }
+
+  sortEntries(entries: JournalEntry[]): JournalEntry[] {
+    return entries.sort((a, b) => {
+      let compareResult = 0;
+      
+      switch (this.sortColumn) {
+        case 'status':
+          compareResult = (a.status || '').localeCompare(b.status || '');
+          break;
+          
+        case 'entryNumber':
+          compareResult = (a.entryNumber || '').localeCompare(b.entryNumber || '');
+          break;
+          
+        case 'date':
+          compareResult = new Date(a.entryDate).getTime() - new Date(b.entryDate).getTime();
+          break;
+          
+        case 'description':
+          compareResult = (a.description || '').localeCompare(b.description || '');
+          break;
+          
+        case 'debitAccount':
+          const debitA = this.getDebitAccount(a);
+          const debitB = this.getDebitAccount(b);
+          compareResult = (debitA?.accountNumber || '').localeCompare(debitB?.accountNumber || '');
+          break;
+          
+        case 'creditAccount':
+          const creditA = this.getCreditAccount(a);
+          const creditB = this.getCreditAccount(b);
+          compareResult = (creditA?.accountNumber || '').localeCompare(creditB?.accountNumber || '');
+          break;
+          
+        case 'amount':
+          compareResult = this.getEntryAmount(a) - this.getEntryAmount(b);
+          break;
+          
+        case 'policyNumber':
+          compareResult = this.getCustomFieldValue(a, 'policy_number').localeCompare(
+            this.getCustomFieldValue(b, 'policy_number')
+          );
+          break;
+          
+        case 'claimNumber':
+          compareResult = this.getCustomFieldValue(a, 'claim_number').localeCompare(
+            this.getCustomFieldValue(b, 'claim_number')
+          );
+          break;
+          
+        case 'reference':
+          compareResult = (a.referenceNumber || '').localeCompare(b.referenceNumber || '');
+          break;
+      }
+      
+      return this.sortDirection === 'asc' ? compareResult : -compareResult;
+    });
+  }
+
+  sortBy(column: string): void {
+    if (this.sortColumn === column) {
+      // Toggle direction if same column
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      // New column, default to ascending
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+    
+    this.applyFilters();
+  }
+
+  getSortIcon(column: string): string {
+    if (this.sortColumn !== column) return '';
+    return this.sortDirection === 'asc' ? '↑' : '↓';
   }
 
   onSearchChange(): void {

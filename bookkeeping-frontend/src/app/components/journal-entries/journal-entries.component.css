@@ -142,6 +142,28 @@
   font-size: 0.8125rem;
   text-transform: uppercase;
   letter-spacing: 0.025em;
+  user-select: none;
+}
+
+.entries-table th.sortable {
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.entries-table th.sortable:hover {
+  background: #f3f4f6;
+  color: #3b82f6;
+}
+
+.sort-indicator {
+  display: inline-block;
+  margin-left: 0.25rem;
+  color: #3b82f6;
+  font-weight: bold;
+  font-size: 0.875rem;
+  min-width: 12px;
+  text-align: center;
 }
 
 .entries-table tbody tr {
