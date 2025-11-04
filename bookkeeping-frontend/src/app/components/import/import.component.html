@@ -1,0 +1,170 @@
+<div class="import-page">
+  <div class="page-header">
+    <div>
+      <h1>Import Data</h1>
+      <p class="subtitle">Import accounts and journal entries from CSV or Excel files</p>
+    </div>
+  </div>
+
+  <div class="import-content">
+    <!-- Upload Section -->
+    <div class="upload-card">
+      <div class="card-header">
+        <h2>Upload File</h2>
+        <p>Import your bookkeeping data from CSV or Excel files</p>
+      </div>
+
+      <div class="import-type-selector">
+        <label class="radio-option">
+          <input type="radio" name="importType" value="journal-entries" [(ngModel)]="importType">
+          <div class="radio-content">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+            <div>
+              <strong>Journal Entries</strong>
+              <span>Import transactions with debits and credits</span>
+            </div>
+          </div>
+        </label>
+
+        <label class="radio-option">
+          <input type="radio" name="importType" value="accounts" [(ngModel)]="importType">
+          <div class="radio-content">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            <div>
+              <strong>Chart of Accounts</strong>
+              <span>Import account numbers and details</span>
+            </div>
+          </div>
+        </label>
+      </div>
+
+      <div class="upload-area">
+        <div *ngIf="!selectedFile" class="dropzone" (click)="fileInput.click()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <p class="dropzone-text">Click to upload or drag and drop</p>
+          <p class="dropzone-hint">CSV or Excel files (Max 10MB)</p>
+          <input 
+            #fileInput 
+            type="file" 
+            accept=".csv,.xlsx,.xls" 
+            (change)="onFileSelected($event)"
+            style="display: none">
+        </div>
+
+        <div *ngIf="selectedFile && !uploadComplete" class="file-selected">
+          <div class="file-info">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+            <div class="file-details">
+              <strong>{{ selectedFile.name }}</strong>
+              <span>{{ formatFileSize(selectedFile.size) }}</span>
+            </div>
+          </div>
+          <button class="btn-icon" (click)="removeFile()" *ngIf="!isUploading">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <div *ngIf="isUploading" class="upload-progress">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="uploadProgress"></div>
+          </div>
+          <p class="progress-text">Uploading... {{ uploadProgress }}%</p>
+        </div>
+
+        <div *ngIf="uploadComplete" class="upload-success">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <p class="success-text">File uploaded successfully!</p>
+          <button class="btn-secondary" (click)="removeFile()">Upload Another File</button>
+        </div>
+
+        <div *ngIf="uploadError" class="upload-error">
+          <p>{{ uploadError }}</p>
+        </div>
+      </div>
+
+      <div class="upload-actions" *ngIf="selectedFile && !isUploading && !uploadComplete">
+        <button class="btn-secondary" (click)="downloadTemplate()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Download Template
+        </button>
+        <button class="btn-primary" (click)="uploadFile()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          Upload File
+        </button>
+      </div>
+    </div>
+
+    <!-- Import History -->
+    <div class="history-card">
+      <div class="card-header">
+        <h2>Import History</h2>
+        <p>Recent file imports and their status</p>
+      </div>
+
+      <div class="history-list">
+        <div *ngFor="let item of importHistory" class="history-item">
+          <div class="history-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+          </div>
+          
+          <div class="history-details">
+            <div class="history-name">{{ item.fileName }}</div>
+            <div class="history-meta">
+              <span>{{ item.type }}</span>
+              <span>•</span>
+              <span>{{ item.date | date:'short' }}</span>
+            </div>
+          </div>
+          
+          <div class="history-stats">
+            <div class="stat">
+              <span class="stat-label">Records</span>
+              <span class="stat-value">{{ item.records }}</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Errors</span>
+              <span class="stat-value" [class.error]="item.errors > 0">{{ item.errors }}</span>
+            </div>
+          </div>
+          
+          <div class="history-status">
+            <span class="status-badge" [class]="'badge-' + getStatusColor(item.status)">
+              {{ item.status }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

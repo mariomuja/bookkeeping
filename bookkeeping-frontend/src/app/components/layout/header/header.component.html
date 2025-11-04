@@ -1,0 +1,42 @@
+<header class="header">
+  <div class="header-content">
+    <div class="header-left">
+      <div class="logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+        </svg>
+        <span class="logo-text">BookKeeper Pro</span>
+      </div>
+    </div>
+
+    <div class="header-center">
+      <div class="organization-info" *ngIf="currentOrganization">
+        <span class="org-name">{{ currentOrganization.name }}</span>
+        <span class="org-currency">{{ currentOrganization.defaultCurrency }}</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="user-menu">
+        <button class="user-button" (click)="toggleUserMenu()">
+          <div class="user-avatar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <span>Admin</span>
+        </button>
+        
+        <div class="dropdown-menu" *ngIf="userMenuOpen">
+          <a href="#" class="dropdown-item">Profile</a>
+          <a href="#" class="dropdown-item">Settings</a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+

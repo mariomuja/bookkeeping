@@ -1,0 +1,235 @@
+<div class="reports-page">
+  <div class="page-header">
+    <div>
+      <h1>Financial Reports</h1>
+      <p class="subtitle">View comprehensive financial statements</p>
+    </div>
+    <div class="export-buttons">
+      <button class="btn-export" (click)="exportReport('csv')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Export CSV
+      </button>
+      <button class="btn-export" (click)="exportReport('excel')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Export Excel
+      </button>
+    </div>
+  </div>
+
+  <!-- Report Tabs -->
+  <div class="report-tabs">
+    <button 
+      class="tab-button" 
+      [class.active]="activeReport === 'trial-balance'"
+      (click)="setActiveReport('trial-balance')">
+      Trial Balance
+    </button>
+    <button 
+      class="tab-button" 
+      [class.active]="activeReport === 'balance-sheet'"
+      (click)="setActiveReport('balance-sheet')">
+      Balance Sheet
+    </button>
+    <button 
+      class="tab-button" 
+      [class.active]="activeReport === 'profit-loss'"
+      (click)="setActiveReport('profit-loss')">
+      Profit & Loss
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading report...</p>
+  </div>
+
+  <div *ngIf="error" class="error-message">{{ error }}</div>
+
+  <!-- Trial Balance Report -->
+  <div *ngIf="!loading && !error && activeReport === 'trial-balance'" class="report-content">
+    <div class="report-card">
+      <div class="report-title">
+        <h2>Trial Balance</h2>
+        <p class="report-date">As of {{ Date.now() | date:'mediumDate' }}</p>
+      </div>
+      
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>Account Number</th>
+            <th>Account Name</th>
+            <th>Category</th>
+            <th class="text-right">Debits</th>
+            <th class="text-right">Credits</th>
+            <th class="text-right">Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of trialBalanceData">
+            <td class="account-number">{{ item.accountNumber }}</td>
+            <td>{{ item.accountName }}</td>
+            <td><span class="category-badge">{{ item.accountCategory }}</span></td>
+            <td class="text-right">{{ formatCurrency(item.totalDebits) }}</td>
+            <td class="text-right">{{ formatCurrency(item.totalCredits) }}</td>
+            <td class="text-right font-bold">{{ formatCurrency(item.balance) }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="total-row">
+            <td colspan="3"><strong>Total</strong></td>
+            <td class="text-right"><strong>{{ formatCurrency(getTotalDebits()) }}</strong></td>
+            <td class="text-right"><strong>{{ formatCurrency(getTotalCredits()) }}</strong></td>
+            <td class="text-right"><strong>{{ formatCurrency(getTotalDebits() - getTotalCredits()) }}</strong></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- Balance Sheet Report -->
+  <div *ngIf="!loading && !error && activeReport === 'balance-sheet'" class="report-content">
+    <div class="report-card">
+      <div class="report-title">
+        <h2>Balance Sheet</h2>
+        <p class="report-date">As of {{ Date.now() | date:'mediumDate' }}</p>
+      </div>
+      
+      <div class="balance-sheet-grid">
+        <!-- Assets -->
+        <div class="balance-sheet-section">
+          <h3 class="section-title">Assets</h3>
+          <table class="report-table compact">
+            <tbody>
+              <tr *ngFor="let item of balanceSheetData.filter(i => i.category === 'ASSET')">
+                <td class="account-number">{{ item.accountNumber }}</td>
+                <td>{{ item.accountName }}</td>
+                <td class="text-right">{{ formatCurrency(item.balance) }}</td>
+              </tr>
+              <tr class="subtotal-row">
+                <td colspan="2"><strong>Total Assets</strong></td>
+                <td class="text-right"><strong>{{ formatCurrency(getBalanceSheetTotal('ASSET')) }}</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Liabilities -->
+        <div class="balance-sheet-section">
+          <h3 class="section-title">Liabilities</h3>
+          <table class="report-table compact">
+            <tbody>
+              <tr *ngFor="let item of balanceSheetData.filter(i => i.category === 'LIABILITY')">
+                <td class="account-number">{{ item.accountNumber }}</td>
+                <td>{{ item.accountName }}</td>
+                <td class="text-right">{{ formatCurrency(item.balance) }}</td>
+              </tr>
+              <tr class="subtotal-row">
+                <td colspan="2"><strong>Total Liabilities</strong></td>
+                <td class="text-right"><strong>{{ formatCurrency(getBalanceSheetTotal('LIABILITY')) }}</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Equity -->
+        <div class="balance-sheet-section">
+          <h3 class="section-title">Equity</h3>
+          <table class="report-table compact">
+            <tbody>
+              <tr *ngFor="let item of balanceSheetData.filter(i => i.category === 'EQUITY')">
+                <td class="account-number">{{ item.accountNumber }}</td>
+                <td>{{ item.accountName }}</td>
+                <td class="text-right">{{ formatCurrency(item.balance) }}</td>
+              </tr>
+              <tr class="subtotal-row">
+                <td colspan="2"><strong>Total Equity</strong></td>
+                <td class="text-right"><strong>{{ formatCurrency(getBalanceSheetTotal('EQUITY')) }}</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Total -->
+        <div class="balance-sheet-section">
+          <table class="report-table compact">
+            <tbody>
+              <tr class="total-row">
+                <td colspan="2"><strong>Total Liabilities & Equity</strong></td>
+                <td class="text-right"><strong>{{ formatCurrency(getBalanceSheetTotal('LIABILITY') + getBalanceSheetTotal('EQUITY')) }}</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profit & Loss Report -->
+  <div *ngIf="!loading && !error && activeReport === 'profit-loss'" class="report-content">
+    <div class="report-card">
+      <div class="report-title">
+        <h2>Profit & Loss Statement</h2>
+        <p class="report-date">For the period ending {{ Date.now() | date:'mediumDate' }}</p>
+      </div>
+      
+      <div class="profit-loss-sections">
+        <!-- Revenue -->
+        <div class="pl-section">
+          <h3 class="section-title">Revenue</h3>
+          <table class="report-table compact">
+            <tbody>
+              <tr *ngFor="let item of profitLossData.filter(i => i.category === 'REVENUE')">
+                <td class="account-number">{{ item.accountNumber }}</td>
+                <td>{{ item.accountName }}</td>
+                <td class="text-right">{{ formatCurrency(item.amount) }}</td>
+              </tr>
+              <tr class="subtotal-row">
+                <td colspan="2"><strong>Total Revenue</strong></td>
+                <td class="text-right"><strong>{{ formatCurrency(getTotalRevenue()) }}</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Expenses -->
+        <div class="pl-section">
+          <h3 class="section-title">Expenses</h3>
+          <table class="report-table compact">
+            <tbody>
+              <tr *ngFor="let item of profitLossData.filter(i => i.category === 'EXPENSE')">
+                <td class="account-number">{{ item.accountNumber }}</td>
+                <td>{{ item.accountName }}</td>
+                <td class="text-right">{{ formatCurrency(item.amount) }}</td>
+              </tr>
+              <tr class="subtotal-row">
+                <td colspan="2"><strong>Total Expenses</strong></td>
+                <td class="text-right"><strong>{{ formatCurrency(getTotalExpenses()) }}</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Net Income -->
+        <div class="pl-section">
+          <table class="report-table compact">
+            <tbody>
+              <tr class="total-row" [class.positive]="getNetIncome() >= 0" [class.negative]="getNetIncome() < 0">
+                <td colspan="2"><strong>Net Income</strong></td>
+                <td class="text-right"><strong>{{ formatCurrency(getNetIncome()) }}</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

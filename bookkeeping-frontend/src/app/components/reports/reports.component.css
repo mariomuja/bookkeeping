@@ -1,0 +1,295 @@
+.reports-page {
+  padding: 2rem;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+.export-buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-export {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  color: #1f2937;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-export:hover {
+  background: #f9fafb;
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.report-tabs {
+  display: flex;
+  gap: 0.5rem;
+  background: white;
+  padding: 0.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 2rem;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: none;
+  border-radius: 0.5rem;
+  color: #6b7280;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-button:hover {
+  background: #f9fafb;
+  color: #1f2937;
+}
+
+.tab-button.active {
+  background: #3b82f6;
+  color: white;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4rem;
+  gap: 1rem;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #e5e7eb;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-message {
+  padding: 1rem;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 0.5rem;
+  color: #dc2626;
+}
+
+.report-content {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.report-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 2rem;
+}
+
+.report-title {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.report-title h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.report-date {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.report-table thead {
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.report-table th {
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.report-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #f3f4f6;
+  color: #1f2937;
+}
+
+.report-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.account-number {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: #3b82f6;
+}
+
+.category-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: #e0e7ff;
+  color: #3730a3;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.font-bold {
+  font-weight: 600;
+}
+
+.subtotal-row {
+  background: #f9fafb;
+  border-top: 1px solid #d1d5db;
+}
+
+.subtotal-row td {
+  padding: 1rem 0.75rem;
+  font-weight: 600;
+}
+
+.total-row {
+  background: #eff6ff;
+  border-top: 2px solid #3b82f6;
+}
+
+.total-row td {
+  padding: 1rem 0.75rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.total-row.positive {
+  background: #f0fdf4;
+  border-top-color: #10b981;
+}
+
+.total-row.positive td {
+  color: #065f46;
+}
+
+.total-row.negative {
+  background: #fef2f2;
+  border-top-color: #ef4444;
+}
+
+.total-row.negative td {
+  color: #991b1b;
+}
+
+/* Balance Sheet Specific */
+.balance-sheet-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.balance-sheet-section {
+  border-radius: 0.5rem;
+}
+
+.section-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.report-table.compact td {
+  padding: 0.5rem 0.75rem;
+}
+
+.report-table.compact .subtotal-row td,
+.report-table.compact .total-row td {
+  padding: 0.75rem;
+}
+
+/* Profit & Loss Specific */
+.profit-loss-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.pl-section {
+  border-radius: 0.5rem;
+}
+
+@media print {
+  .page-header,
+  .export-buttons,
+  .report-tabs {
+    display: none;
+  }
+  
+  .report-card {
+    border: none;
+    box-shadow: none;
+  }
+  
+  .report-table tbody tr:hover {
+    background: transparent;
+  }
+}
+
