@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { JournalEntryService } from '../../services/journal-entry.service';
@@ -72,7 +72,8 @@ export class JournalEntriesComponent implements OnInit, OnDestroy {
   constructor(
     private journalEntryService: JournalEntryService,
     private accountService: AccountService,
-    private organizationService: OrganizationService
+    private organizationService: OrganizationService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -546,38 +547,69 @@ export class JournalEntriesComponent implements OnInit, OnDestroy {
 
   // Column resizing methods
   onResizeStart(event: MouseEvent, column: string): void {
+    console.log('[Resize] Starting resize for column:', column);
     event.preventDefault();
     event.stopPropagation();
+    
     this.resizing = true;
     this.resizeColumn = column;
     this.resizeStartX = event.pageX;
     this.resizeStartWidth = this.columnWidths[column] || 100;
     
-    document.addEventListener('mousemove', this.onResizeMove);
-    document.addEventListener('mouseup', this.onResizeEnd);
+    // Bind the methods to this context
+    const boundMove = this.onResizeMove.bind(this);
+    const boundEnd = this.onResizeEnd.bind(this);
+    
+    document.addEventListener('mousemove', boundMove);
+    document.addEventListener('mouseup', boundEnd);
+    
+    // Store bound functions for cleanup
+    (this as any)._boundMove = boundMove;
+    (this as any)._boundEnd = boundEnd;
+    
     document.body.style.cursor = 'col-resize';
     document.body.style.userSelect = 'none';
+    document.body.classList.add('resizing');
   }
 
-  onResizeMove = (event: MouseEvent): void => {
+  onResizeMove(event: MouseEvent): void {
     if (!this.resizing) return;
     
+    event.preventDefault();
     const diff = event.pageX - this.resizeStartX;
     const newWidth = Math.max(50, this.resizeStartWidth + diff);
+    
+    console.log('[Resize] Moving:', this.resizeColumn, 'New width:', newWidth);
     this.columnWidths[this.resizeColumn] = newWidth;
-  };
+    
+    // Trigger change detection to update the view
+    this.cdr.detectChanges();
+  }
 
-  onResizeEnd = (): void => {
+  onResizeEnd(): void {
+    console.log('[Resize] End resize');
     this.resizing = false;
+    const column = this.resizeColumn;
     this.resizeColumn = '';
-    document.removeEventListener('mousemove', this.onResizeMove);
-    document.removeEventListener('mouseup', this.onResizeEnd);
+    
+    // Remove event listeners using stored bound functions
+    if ((this as any)._boundMove) {
+      document.removeEventListener('mousemove', (this as any)._boundMove);
+      document.removeEventListener('mouseup', (this as any)._boundEnd);
+      delete (this as any)._boundMove;
+      delete (this as any)._boundEnd;
+    }
+    
     document.body.style.cursor = '';
     document.body.style.userSelect = '';
+    document.body.classList.remove('resizing');
     
     // Save to localStorage
-    localStorage.setItem('journalEntryColumnWidths', JSON.stringify(this.columnWidths));
-  };
+    if (column) {
+      localStorage.setItem('journalEntryColumnWidths', JSON.stringify(this.columnWidths));
+      console.log('[Resize] Saved column widths to localStorage');
+    }
+  }
 
   getColumnWidth(column: string): string {
     return `${this.columnWidths[column] || 100}px`;

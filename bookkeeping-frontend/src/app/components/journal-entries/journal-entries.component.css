@@ -123,6 +123,7 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 0.875rem;
+  table-layout: fixed;
 }
 
 .entries-table thead {
@@ -184,7 +185,7 @@
 .resize-handle {
   position: absolute;
   top: 0;
-  right: 0;
+  right: -4px;
   width: 8px;
   height: 100%;
   cursor: col-resize;
@@ -193,12 +194,33 @@
   transition: background 0.2s;
 }
 
+.resize-handle::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 3px;
+  height: 60%;
+  background: transparent;
+  transition: background 0.2s;
+}
+
 .resize-handle:hover {
-  background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.2), transparent);
+}
+
+.resize-handle:hover::before {
+  background: #3b82f6;
 }
 
 .resize-handle:active {
-  background: #3b82f6;
+  background: rgba(59, 130, 246, 0.3);
+}
+
+.resize-handle:active::before {
+  background: #2563eb;
+  width: 4px;
 }
 
 /* Prevent text selection during resize */
