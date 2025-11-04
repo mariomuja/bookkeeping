@@ -1,0 +1,228 @@
+<div class="audit-log-page">
+  <div class="page-header">
+    <div>
+      <h1>🔍 Audit Log</h1>
+      <p class="subtitle">Track all system changes and user activities</p>
+    </div>
+    <button class="btn-export" (click)="exportLogs()" *ngIf="logs.length > 0">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+      Export CSV
+    </button>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="stats-grid" *ngIf="stats">
+    <div class="stat-card">
+      <div class="stat-icon blue">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ stats.totalLogs }}</div>
+        <div class="stat-label">Total Events</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon green">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ stats.last24Hours }}</div>
+        <div class="stat-label">Last 24 Hours</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon purple">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ stats.last7Days }}</div>
+        <div class="stat-label">Last 7 Days</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon orange">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ Object.keys(stats.byUser).length }}</div>
+        <div class="stat-label">Active Users</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <div class="filter-group">
+      <label>Action</label>
+      <select [(ngModel)]="filterAction" (ngModelChange)="onFilterChange()">
+        <option value="">All Actions</option>
+        <option *ngFor="let action of actions" [value]="action">{{ action }}</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>Entity Type</label>
+      <select [(ngModel)]="filterEntityType" (ngModelChange)="onFilterChange()">
+        <option value="">All Entities</option>
+        <option *ngFor="let type of entityTypes" [value]="type">{{ type }}</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>Username</label>
+      <input 
+        type="text" 
+        [(ngModel)]="filterUsername" 
+        (ngModelChange)="onFilterChange()"
+        placeholder="Filter by user...">
+    </div>
+
+    <div class="filter-group">
+      <label>Start Date</label>
+      <input 
+        type="date" 
+        [(ngModel)]="filterStartDate" 
+        (ngModelChange)="onFilterChange()">
+    </div>
+
+    <div class="filter-group">
+      <label>End Date</label>
+      <input 
+        type="date" 
+        [(ngModel)]="filterEndDate" 
+        (ngModelChange)="onFilterChange()">
+    </div>
+
+    <button class="btn-clear" (click)="clearFilters()" *ngIf="filterAction || filterEntityType || filterUsername || filterStartDate || filterEndDate">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+      Clear
+    </button>
+  </div>
+
+  <!-- Results Summary -->
+  <div class="results-summary" *ngIf="!loading && !error">
+    <span class="results-info">
+      Showing {{ getDisplayRange() }} of {{ totalCount }} log entries
+      <span *ngIf="filterAction || filterEntityType || filterUsername || filterStartDate || filterEndDate" class="filtered-indicator">(filtered)</span>
+    </span>
+    <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
+  </div>
+
+  <!-- Pagination (Top) -->
+  <div class="pagination" *ngIf="!loading && !error && logs.length > 0">
+    <button 
+      class="pagination-btn" 
+      (click)="previousPage()" 
+      [disabled]="currentPage === 1">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      Previous
+    </button>
+
+    <div class="pagination-numbers">
+      <button 
+        *ngFor="let page of getPageNumbers()" 
+        class="pagination-number" 
+        [class.active]="page === currentPage"
+        [class.ellipsis]="page === -1"
+        (click)="page > 0 ? goToPage(page) : null"
+        [disabled]="page === -1">
+        {{ page === -1 ? '...' : page }}
+      </button>
+    </div>
+
+    <button 
+      class="pagination-btn" 
+      (click)="nextPage()" 
+      [disabled]="currentPage === totalPages">
+      Next
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading audit logs...</p>
+  </div>
+
+  <div *ngIf="error" class="error-message">{{ error }}</div>
+
+  <div *ngIf="!loading && !error && logs.length === 0" class="no-results">
+    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="16" x2="12" y2="12"></line>
+      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+    </svg>
+    <h3>No audit logs found</h3>
+    <p>Try adjusting your filters</p>
+  </div>
+
+  <!-- Audit Logs Table -->
+  <div *ngIf="!loading && !error && logs.length > 0" class="table-container">
+    <table class="audit-table">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>User</th>
+          <th>Action</th>
+          <th>Entity</th>
+          <th>Description</th>
+          <th>IP Address</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let log of logs" class="log-row">
+          <td class="timestamp-cell">
+            <div class="timestamp">{{ log.timestamp | date:'dd/MM/yyyy HH:mm:ss' }}</div>
+          </td>
+          <td class="user-cell">
+            <span class="username">{{ log.username }}</span>
+          </td>
+          <td class="action-cell">
+            <span class="action-badge" [class]="'badge-' + getActionColor(log.action)">
+              {{ log.action }}
+            </span>
+          </td>
+          <td class="entity-cell">
+            <span class="entity-type">{{ log.entityType }}</span>
+          </td>
+          <td class="description-cell">
+            {{ log.description }}
+          </td>
+          <td class="ip-cell">
+            <span class="ip-address">{{ log.ipAddress || '-' }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+

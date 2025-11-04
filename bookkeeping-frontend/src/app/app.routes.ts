@@ -9,6 +9,7 @@ import { LossTriangleComponent } from './components/loss-triangle/loss-triangle.
 import { TrialBalanceViewerComponent } from './components/report-viewers/trial-balance-viewer.component';
 import { LoginComponent } from './components/auth/login.component';
 import { SettingsComponent } from './components/settings/settings.component';
+import { AuditLogComponent } from './components/audit-log/audit-log.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -24,6 +25,7 @@ export const routes: Routes = [
   { path: 'report/loss-triangle', component: LossTriangleComponent, canActivate: [authGuard] },
   { path: 'import', component: ImportComponent, canActivate: [authGuard] },
   { path: 'custom-fields', component: CustomFieldsComponent, canActivate: [authGuard] },
+  { path: 'audit-log', component: AuditLogComponent, canActivate: [authGuard] },
   { path: 'settings', component: SettingsComponent, canActivate: [authGuard] },
   { path: '**', redirectTo: '/dashboard' }
 ];

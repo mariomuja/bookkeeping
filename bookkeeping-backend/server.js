@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const config = require('./config');
 const mockData = require('./mock-data');
 const auth = require('./auth');
+const auditLog = require('./audit-log');
 
 const app = express();
 
@@ -51,8 +52,35 @@ app.post('/api/auth/login', async (req, res) => {
     }
     
     const result = await auth.loginUser(username, password);
+    
+    // Log successful login
+    if (result.user || result.requiresTwoFactor) {
+      auditLog.createAuditLog({
+        userId: result.user?.id || 'pending',
+        username: username,
+        action: auditLog.LOG_TYPES.LOGIN,
+        entityType: auditLog.ENTITY_TYPES.USER,
+        entityId: result.user?.id || 'pending',
+        description: result.requiresTwoFactor ? 'Login successful (pending 2FA)' : 'Login successful',
+        ipAddress: req.ip,
+        userAgent: req.headers['user-agent']
+      });
+    }
+    
     res.json(result);
   } catch (error) {
+    // Log failed login attempt
+    auditLog.createAuditLog({
+      userId: 'unknown',
+      username: req.body.username || 'unknown',
+      action: auditLog.LOG_TYPES.LOGIN,
+      entityType: auditLog.ENTITY_TYPES.USER,
+      entityId: 'unknown',
+      description: 'Login failed - invalid credentials',
+      ipAddress: req.ip,
+      userAgent: req.headers['user-agent']
+    });
+    
     res.status(401).json({ error: error.message });
   }
 });
@@ -596,6 +624,7 @@ app.get('/api/organizations/:orgId/actuarial/reserves', (req, res) => {
 app.post('/api/organizations/:orgId/sample-data/insurance', (req, res) => {
   const { count } = req.body;
   const orgId = req.params.orgId;
+  const user = req.user || { userId: 'system', username: 'System' };
   
   console.log(`Generating ${count} sample insurance bookings...`);
   
@@ -607,10 +636,55 @@ app.post('/api/organizations/:orgId/sample-data/insurance', (req, res) => {
   mockData.journalEntryLines.push(...result.lines);
   mockData.customFieldValues.push(...result.customFields);
   
+  // Log data generation
+  auditLog.createAuditLog({
+    userId: user.userId,
+    username: user.username,
+    action: auditLog.LOG_TYPES.GENERATE,
+    entityType: auditLog.ENTITY_TYPES.SAMPLE_DATA,
+    entityId: orgId,
+    description: `Generated ${result.entries.length} insurance sample bookings`,
+    metadata: {
+      entriesGenerated: result.entries.length,
+      linesGenerated: result.lines.length,
+      customFieldsGenerated: result.customFields.length
+    },
+    ipAddress: req.ip,
+    userAgent: req.headers['user-agent']
+  });
+  
   res.json({
     message: `Successfully generated ${result.entries.length} insurance bookings`,
     generated: result.entries.length
   });
+});
+
+// ============================================================================
+// AUDIT LOGS
+// ============================================================================
+
+// Get audit logs (admin only)
+app.get('/api/audit-logs', (req, res) => {
+  const filters = {
+    userId: req.query.userId,
+    action: req.query.action,
+    entityType: req.query.entityType,
+    startDate: req.query.startDate,
+    endDate: req.query.endDate,
+    limit: parseInt(req.query.limit) || 1000,
+    offset: parseInt(req.query.offset) || 0,
+    sortBy: req.query.sortBy || 'timestamp',
+    sortOrder: req.query.sortOrder || 'desc'
+  };
+
+  const result = auditLog.getAuditLogs(filters);
+  res.json(result);
+});
+
+// Get audit log statistics
+app.get('/api/audit-logs/stats', (req, res) => {
+  const stats = auditLog.getAuditStats();
+  res.json(stats);
 });
 
 // ============================================================================
