@@ -1,8 +1,8 @@
 <div class="settings-page">
   <div class="page-header">
     <div>
-      <h1>Settings</h1>
-      <p class="subtitle">Manage your account and security settings</p>
+      <h1>{{ 'settings.title' | translate }}</h1>
+      <p class="subtitle">{{ 'settings.subtitle' | translate }}</p>
     </div>
   </div>
 
@@ -17,7 +17,7 @@
 
   <!-- Account Information -->
   <div class="settings-section">
-    <h2>Account Information</h2>
+    <h2>{{ 'settings.accountInfo' | translate }}</h2>
     <div class="info-grid">
       <div class="info-item">
         <label>Username</label>
@@ -38,9 +38,9 @@
 
   <!-- Two-Factor Authentication -->
   <div class="settings-section">
-    <h2>Two-Factor Authentication (2FA)</h2>
+    <h2>{{ 'settings.twoFactorAuth' | translate }}</h2>
     <p class="section-description">
-      Add an extra layer of security to your account using Google Authenticator
+      {{ 'settings.twoFactorDesc' | translate }}
     </p>
 
     <!-- 2FA Status -->
@@ -56,17 +56,17 @@
           <line x1="9" y1="9" x2="15" y2="15"></line>
         </svg>
         <div>
-          <strong>{{ currentUser?.twoFactorEnabled ? '2FA Enabled' : '2FA Disabled' }}</strong>
-          <p>{{ currentUser?.twoFactorEnabled ? 'Your account is protected with 2FA' : 'Enable 2FA for enhanced security' }}</p>
+          <strong>{{ (currentUser?.twoFactorEnabled ? 'settings.twoFactorEnabled' : 'settings.twoFactorDisabled') | translate }}</strong>
+          <p>{{ (currentUser?.twoFactorEnabled ? 'settings.twoFactorProtected' : 'settings.enableForSecurity') | translate }}</p>
         </div>
       </div>
 
       <button *ngIf="!currentUser?.twoFactorEnabled" class="btn-primary" (click)="initiate2FASetup()" [disabled]="loading">
-        Enable 2FA
+        {{ 'settings.enable2FA' | translate }}
       </button>
 
       <button *ngIf="currentUser?.twoFactorEnabled" class="btn-danger" (click)="openDisable2FA()" [disabled]="loading">
-        Disable 2FA
+        {{ 'settings.disable2FA' | translate }}
       </button>
     </div>
 

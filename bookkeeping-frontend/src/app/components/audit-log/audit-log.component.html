@@ -1,8 +1,8 @@
 <div class="audit-log-page">
   <div class="page-header">
     <div>
-      <h1>🔍 Audit Log</h1>
-      <p class="subtitle">Track all system changes and user activities</p>
+      <h1>🔍 {{ 'auditLog.title' | translate }}</h1>
+      <p class="subtitle">{{ 'auditLog.subtitle' | translate }}</p>
     </div>
     <button class="btn-export" (click)="exportLogs()" *ngIf="logs.length > 0">
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -10,7 +10,7 @@
         <polyline points="7 10 12 15 17 10"></polyline>
         <line x1="12" y1="15" x2="12" y2="3"></line>
       </svg>
-      Export CSV
+      {{ 'auditLog.exportCSV' | translate }}
     </button>
   </div>
 
@@ -24,7 +24,7 @@
       </div>
       <div class="stat-content">
         <div class="stat-value">{{ stats.totalLogs }}</div>
-        <div class="stat-label">Total Events</div>
+        <div class="stat-label">{{ 'auditLog.totalEvents' | translate }}</div>
       </div>
     </div>
 
@@ -37,7 +37,7 @@
       </div>
       <div class="stat-content">
         <div class="stat-value">{{ stats.last24Hours }}</div>
-        <div class="stat-label">Last 24 Hours</div>
+        <div class="stat-label">{{ 'auditLog.last24Hours' | translate }}</div>
       </div>
     </div>
 
@@ -52,7 +52,7 @@
       </div>
       <div class="stat-content">
         <div class="stat-value">{{ stats.last7Days }}</div>
-        <div class="stat-label">Last 7 Days</div>
+        <div class="stat-label">{{ 'auditLog.last7Days' | translate }}</div>
       </div>
     </div>
 
@@ -67,7 +67,7 @@
       </div>
       <div class="stat-content">
         <div class="stat-value">{{ getActiveUsersCount() }}</div>
-        <div class="stat-label">Active Users</div>
+        <div class="stat-label">{{ 'auditLog.activeUsers' | translate }}</div>
       </div>
     </div>
   </div>
@@ -75,32 +75,32 @@
   <!-- Filter Bar -->
   <div class="filter-bar">
     <div class="filter-group">
-      <label>Action</label>
+      <label>{{ 'auditLog.action' | translate }}</label>
       <select [(ngModel)]="filterAction" (ngModelChange)="onFilterChange()">
-        <option value="">All Actions</option>
+        <option value="">{{ 'auditLog.allActions' | translate }}</option>
         <option *ngFor="let action of actions" [value]="action">{{ action }}</option>
       </select>
     </div>
 
     <div class="filter-group">
-      <label>Entity Type</label>
+      <label>{{ 'auditLog.entityType' | translate }}</label>
       <select [(ngModel)]="filterEntityType" (ngModelChange)="onFilterChange()">
-        <option value="">All Entities</option>
+        <option value="">{{ 'auditLog.allEntities' | translate }}</option>
         <option *ngFor="let type of entityTypes" [value]="type">{{ type }}</option>
       </select>
     </div>
 
     <div class="filter-group">
-      <label>Username</label>
+      <label>{{ 'auditLog.username' | translate }}</label>
       <input 
         type="text" 
         [(ngModel)]="filterUsername" 
         (ngModelChange)="onFilterChange()"
-        placeholder="Filter by user...">
+        [placeholder]="'auditLog.username' | translate">
     </div>
 
     <div class="filter-group">
-      <label>Start Date</label>
+      <label>{{ 'auditLog.startDate' | translate }}</label>
       <input 
         type="date" 
         [(ngModel)]="filterStartDate" 
@@ -108,7 +108,7 @@
     </div>
 
     <div class="filter-group">
-      <label>End Date</label>
+      <label>{{ 'auditLog.endDate' | translate }}</label>
       <input 
         type="date" 
         [(ngModel)]="filterEndDate" 
@@ -120,7 +120,7 @@
         <line x1="18" y1="6" x2="6" y2="18"></line>
         <line x1="6" y1="6" x2="18" y2="18"></line>
       </svg>
-      Clear
+      {{ 'auditLog.clear' | translate }}
     </button>
   </div>
 
