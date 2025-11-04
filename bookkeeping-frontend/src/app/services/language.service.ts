@@ -31,12 +31,30 @@ export class LanguageService {
     // Set default language
     this.translate.setDefaultLang('en');
     
+    // Load translations manually (since HTTP loader has version issues)
+    this.loadTranslations();
+    
     // Try to use browser language if available
     const browserLang = this.translate.getBrowserLang();
     const savedLang = localStorage.getItem('preferredLanguage');
     
     const langToUse = savedLang || (browserLang && langCodes.includes(browserLang) ? browserLang : 'en');
     this.setLanguage(langToUse);
+  }
+
+  private loadTranslations(): void {
+    // Basic translations - full translations would be loaded from assets/i18n/*.json files
+    const translations: any = {
+      en: { nav: { dashboard: 'Dashboard', accounts: 'Chart of Accounts', journalEntries: 'Journal Entries', reports: 'Reports', lossTriangle: 'Loss Triangle', import: 'Import Data', customFields: 'Custom Fields', settings: 'Settings' }},
+      de: { nav: { dashboard: 'Dashboard', accounts: 'Kontenplan', journalEntries: 'Buchungen', reports: 'Berichte', lossTriangle: 'Schadendreieck', import: 'Daten importieren', customFields: 'Benutzerdefinierte Felder', settings: 'Einstellungen' }},
+      fr: { nav: { dashboard: 'Tableau de bord', accounts: 'Plan comptable', journalEntries: 'Écritures', reports: 'Rapports', lossTriangle: 'Triangle de Sinistres', import: 'Importer', customFields: 'Champs personnalisés', settings: 'Paramètres' }},
+      es: { nav: { dashboard: 'Panel', accounts: 'Plan de cuentas', journalEntries: 'Asientos', reports: 'Informes', lossTriangle: 'Triángulo', import: 'Importar', customFields: 'Campos', settings: 'Configuración' }},
+      it: { nav: { dashboard: 'Dashboard', accounts: 'Piano conti', journalEntries: 'Registrazioni', reports: 'Report', lossTriangle: 'Triangolo', import: 'Importa', customFields: 'Campi', settings: 'Impostazioni' }}
+    };
+    
+    Object.keys(translations).forEach(lang => {
+      this.translate.setTranslation(lang, translations[lang], false);
+    });
   }
 
   setLanguage(langCode: string): void {

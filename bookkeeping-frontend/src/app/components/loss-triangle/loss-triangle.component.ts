@@ -326,6 +326,21 @@ export class LossTriangleComponent implements OnInit {
     }, 0);
   }
 
+  getFirstYearPeriods(): number[] {
+    if (!this.lossTriangle || !this.lossTriangle.data || this.lossTriangle.data.length === 0) {
+      return [];
+    }
+    const periods = this.lossTriangle.data[0].developmentPeriods;
+    return periods.slice(0, -1);
+  }
+
+  getYearPeriods(yearData: any): number[] {
+    if (!yearData || !yearData.developmentPeriods) {
+      return [];
+    }
+    return yearData.developmentPeriods.slice(0, -1);
+  }
+
   async exportToPDF(): Promise<void> {
     const content = this.triangleContentRef?.nativeElement;
     if (!content) return;

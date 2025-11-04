@@ -171,7 +171,7 @@
           <thead>
             <tr>
               <th>Accident Year</th>
-              <th *ngFor="let period of lossTriangle.data[0]?.developmentPeriods.slice(0, -1); let i = index">
+              <th *ngFor="let period of getFirstYearPeriods(); let i = index">
                 {{ period }} → {{ period + 1 }}
               </th>
             </tr>
@@ -179,7 +179,7 @@
           <tbody>
             <tr *ngFor="let yearData of lossTriangle.data; let yearIdx = index">
               <td class="year-cell">{{ yearData.accidentYear }}</td>
-              <td *ngFor="let period of yearData.developmentPeriods.slice(0, -1); let periodIdx = index" class="factor-cell">
+              <td *ngFor="let period of getYearPeriods(yearData); let periodIdx = index" class="factor-cell">
                 <span *ngIf="getDevelopmentFactor(yearIdx, periodIdx) !== null">
                   {{ getDevelopmentFactor(yearIdx, periodIdx)?.toFixed(3) }}
                 </span>
@@ -188,7 +188,7 @@
             </tr>
             <tr class="average-row">
               <td><strong>Weighted Avg</strong></td>
-              <td *ngFor="let period of lossTriangle.data[0]?.developmentPeriods.slice(0, -1); let periodIdx = index" class="avg-factor-cell">
+              <td *ngFor="let period of getFirstYearPeriods(); let periodIdx = index" class="avg-factor-cell">
                 <strong>{{ getAverageFactor(periodIdx).toFixed(3) }}</strong>
               </td>
             </tr>

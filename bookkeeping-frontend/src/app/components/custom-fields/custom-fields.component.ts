@@ -143,7 +143,8 @@ export class CustomFieldsComponent implements OnInit {
         }
       });
     } else {
-      this.customFieldService.createCustomFieldDefinition(org.id, this.currentField).subscribe({
+      const fieldData: any = this.currentField;
+      this.customFieldService.createCustomFieldDefinition(org.id, fieldData).subscribe({
         next: () => {
           this.loadCustomFields();
           this.closeModal();
