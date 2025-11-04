@@ -44,6 +44,12 @@
       (click)="setActiveReport('profit-loss')">
       Profit & Loss
     </button>
+    <button 
+      class="tab-button" 
+      [class.active]="activeReport === 'loss-triangle'"
+      (click)="setActiveReport('loss-triangle')">
+      Loss Triangle
+    </button>
   </div>
 
   <div *ngIf="loading" class="loading">
@@ -230,6 +236,11 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Loss Triangle Report -->
+  <div *ngIf="!loading && !error && activeReport === 'loss-triangle'">
+    <app-loss-triangle></app-loss-triangle>
   </div>
 </div>
 

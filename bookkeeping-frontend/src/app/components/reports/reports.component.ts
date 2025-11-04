@@ -3,16 +3,17 @@ import { CommonModule } from '@angular/common';
 import { ReportService } from '../../services/report.service';
 import { OrganizationService } from '../../services/organization.service';
 import { TrialBalanceItem, BalanceSheetItem, ProfitLossItem } from '../../models/report.model';
+import { LossTriangleComponent } from '../loss-triangle/loss-triangle.component';
 
 @Component({
   selector: 'app-reports',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LossTriangleComponent],
   templateUrl: './reports.component.html',
   styleUrls: ['./reports.component.css']
 })
 export class ReportsComponent implements OnInit {
-  activeReport: 'trial-balance' | 'balance-sheet' | 'profit-loss' = 'trial-balance';
+  activeReport: 'trial-balance' | 'balance-sheet' | 'profit-loss' | 'loss-triangle' = 'trial-balance';
   
   trialBalanceData: TrialBalanceItem[] = [];
   balanceSheetData: BalanceSheetItem[] = [];
@@ -30,9 +31,11 @@ export class ReportsComponent implements OnInit {
     this.loadReport();
   }
 
-  setActiveReport(report: 'trial-balance' | 'balance-sheet' | 'profit-loss'): void {
+  setActiveReport(report: 'trial-balance' | 'balance-sheet' | 'profit-loss' | 'loss-triangle'): void {
     this.activeReport = report;
-    this.loadReport();
+    if (report !== 'loss-triangle') {
+      this.loadReport();
+    }
   }
 
   loadReport(): void {

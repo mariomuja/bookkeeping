@@ -13,7 +13,7 @@ export const routes: Routes = [
   { path: 'accounts', component: AccountsComponent },
   { path: 'journal-entries', component: JournalEntriesComponent },
   { path: 'reports', component: ReportsComponent },
-  { path: 'loss-triangle', component: LossTriangleComponent },
+  { path: 'loss-triangle', redirectTo: '/reports', pathMatch: 'full' },
   { path: 'import', component: ImportComponent },
   { path: 'custom-fields', component: CustomFieldsComponent },
   { path: '**', redirectTo: '/dashboard' }

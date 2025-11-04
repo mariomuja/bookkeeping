@@ -24,7 +24,6 @@ export class SidebarComponent {
     { icon: 'accounts', label: 'Chart of Accounts', translationKey: 'nav.accounts', route: '/accounts' },
     { icon: 'journal', label: 'Journal Entries', translationKey: 'nav.journalEntries', route: '/journal-entries' },
     { icon: 'reports', label: 'Reports', translationKey: 'nav.reports', route: '/reports' },
-    { icon: 'triangle', label: 'Loss Triangle', translationKey: 'nav.lossTriangle', route: '/loss-triangle' },
     { icon: 'import', label: 'Import Data', translationKey: 'nav.import', route: '/import' },
     { icon: 'custom-fields', label: 'Custom Fields', translationKey: 'nav.customFields', route: '/custom-fields' },
     { icon: 'settings', label: 'Settings', translationKey: 'nav.settings', route: '/settings' }
