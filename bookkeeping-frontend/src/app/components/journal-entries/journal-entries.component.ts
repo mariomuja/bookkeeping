@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { JournalEntryService } from '../../services/journal-entry.service';
@@ -14,7 +14,7 @@ import { Account } from '../../models/account.model';
   templateUrl: './journal-entries.component.html',
   styleUrls: ['./journal-entries.component.css']
 })
-export class JournalEntriesComponent implements OnInit {
+export class JournalEntriesComponent implements OnInit, OnDestroy {
   allEntries: JournalEntry[] = [];
   displayedEntries: JournalEntry[] = [];
   accounts: Account[] = [];
@@ -37,6 +37,26 @@ export class JournalEntriesComponent implements OnInit {
   sortColumn: string = 'entryNumber';
   sortDirection: 'asc' | 'desc' = 'desc';
   
+  // Column resizing
+  columnWidths: { [key: string]: number } = {
+    'status': 100,
+    'entryNumber': 130,
+    'date': 110,
+    'description': 250,
+    'debitAccount': 180,
+    'creditAccount': 180,
+    'amount': 120,
+    'policyNumber': 130,
+    'claimNumber': 130,
+    'reference': 100,
+    'actions': 100
+  };
+  
+  resizing = false;
+  resizeColumn = '';
+  resizeStartX = 0;
+  resizeStartWidth = 0;
+  
   showModal = false;
   
   newEntry = {
@@ -56,6 +76,16 @@ export class JournalEntriesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Load saved column widths from localStorage
+    const savedWidths = localStorage.getItem('journalEntryColumnWidths');
+    if (savedWidths) {
+      try {
+        this.columnWidths = JSON.parse(savedWidths);
+      } catch (e) {
+        console.error('Failed to parse saved column widths');
+      }
+    }
+    
     this.loadAccounts();
     this.loadEntries();
   }
@@ -512,5 +542,50 @@ export class JournalEntriesComponent implements OnInit {
     );
     
     return field ? field.fieldValue : '-';
+  }
+
+  // Column resizing methods
+  onResizeStart(event: MouseEvent, column: string): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.resizing = true;
+    this.resizeColumn = column;
+    this.resizeStartX = event.pageX;
+    this.resizeStartWidth = this.columnWidths[column] || 100;
+    
+    document.addEventListener('mousemove', this.onResizeMove);
+    document.addEventListener('mouseup', this.onResizeEnd);
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+  }
+
+  onResizeMove = (event: MouseEvent): void => {
+    if (!this.resizing) return;
+    
+    const diff = event.pageX - this.resizeStartX;
+    const newWidth = Math.max(50, this.resizeStartWidth + diff);
+    this.columnWidths[this.resizeColumn] = newWidth;
+  };
+
+  onResizeEnd = (): void => {
+    this.resizing = false;
+    this.resizeColumn = '';
+    document.removeEventListener('mousemove', this.onResizeMove);
+    document.removeEventListener('mouseup', this.onResizeEnd);
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+    
+    // Save to localStorage
+    localStorage.setItem('journalEntryColumnWidths', JSON.stringify(this.columnWidths));
+  };
+
+  getColumnWidth(column: string): string {
+    return `${this.columnWidths[column] || 100}px`;
+  }
+
+  ngOnDestroy(): void {
+    // Clean up event listeners
+    document.removeEventListener('mousemove', this.onResizeMove);
+    document.removeEventListener('mouseup', this.onResizeEnd);
   }
 }

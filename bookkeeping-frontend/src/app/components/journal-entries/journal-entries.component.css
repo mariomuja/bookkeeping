@@ -143,17 +143,27 @@
   text-transform: uppercase;
   letter-spacing: 0.025em;
   user-select: none;
+  position: relative;
 }
 
 .entries-table th.sortable {
   cursor: pointer;
   transition: all 0.2s;
-  position: relative;
+}
+
+.entries-table th.sortable:hover .th-content {
+  color: #3b82f6;
 }
 
 .entries-table th.sortable:hover {
   background: #f3f4f6;
-  color: #3b82f6;
+}
+
+.th-content {
+  display: inline-block;
+  width: calc(100% - 8px);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sort-indicator {
@@ -164,6 +174,37 @@
   font-size: 0.875rem;
   min-width: 12px;
   text-align: center;
+}
+
+/* Column Resize Handles */
+.entries-table th.resizable {
+  position: relative;
+}
+
+.resize-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 100;
+  background: transparent;
+  transition: background 0.2s;
+}
+
+.resize-handle:hover {
+  background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+}
+
+.resize-handle:active {
+  background: #3b82f6;
+}
+
+/* Prevent text selection during resize */
+body.resizing {
+  user-select: none;
+  cursor: col-resize !important;
 }
 
 .entries-table tbody tr {

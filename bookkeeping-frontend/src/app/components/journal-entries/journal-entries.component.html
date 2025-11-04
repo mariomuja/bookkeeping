@@ -120,37 +120,47 @@
     <table class="entries-table">
       <thead>
         <tr>
-          <th class="sortable" (click)="sortBy('status')">
-            Status <span class="sort-indicator">{{ getSortIcon('status') }}</span>
+          <th class="sortable resizable" [style.width]="getColumnWidth('status')" (click)="sortBy('status')">
+            <span class="th-content">Status <span class="sort-indicator">{{ getSortIcon('status') }}</span></span>
+            <span class="resize-handle" (mousedown)="onResizeStart($event, 'status')"></span>
           </th>
-          <th class="sortable" (click)="sortBy('entryNumber')">
-            Entry # <span class="sort-indicator">{{ getSortIcon('entryNumber') }}</span>
+          <th class="sortable resizable" [style.width]="getColumnWidth('entryNumber')" (click)="sortBy('entryNumber')">
+            <span class="th-content">Entry # <span class="sort-indicator">{{ getSortIcon('entryNumber') }}</span></span>
+            <span class="resize-handle" (mousedown)="onResizeStart($event, 'entryNumber')"></span>
           </th>
-          <th class="sortable" (click)="sortBy('date')">
-            Date <span class="sort-indicator">{{ getSortIcon('date') }}</span>
+          <th class="sortable resizable" [style.width]="getColumnWidth('date')" (click)="sortBy('date')">
+            <span class="th-content">Date <span class="sort-indicator">{{ getSortIcon('date') }}</span></span>
+            <span class="resize-handle" (mousedown)="onResizeStart($event, 'date')"></span>
           </th>
-          <th class="sortable" (click)="sortBy('description')">
-            Description <span class="sort-indicator">{{ getSortIcon('description') }}</span>
+          <th class="sortable resizable" [style.width]="getColumnWidth('description')" (click)="sortBy('description')">
+            <span class="th-content">Description <span class="sort-indicator">{{ getSortIcon('description') }}</span></span>
+            <span class="resize-handle" (mousedown)="onResizeStart($event, 'description')"></span>
           </th>
-          <th class="sortable" (click)="sortBy('debitAccount')">
-            Debit Account <span class="sort-indicator">{{ getSortIcon('debitAccount') }}</span>
+          <th class="sortable resizable" [style.width]="getColumnWidth('debitAccount')" (click)="sortBy('debitAccount')">
+            <span class="th-content">Debit Account <span class="sort-indicator">{{ getSortIcon('debitAccount') }}</span></span>
+            <span class="resize-handle" (mousedown)="onResizeStart($event, 'debitAccount')"></span>
           </th>
-          <th class="sortable" (click)="sortBy('creditAccount')">
-            Credit Account <span class="sort-indicator">{{ getSortIcon('creditAccount') }}</span>
+          <th class="sortable resizable" [style.width]="getColumnWidth('creditAccount')" (click)="sortBy('creditAccount')">
+            <span class="th-content">Credit Account <span class="sort-indicator">{{ getSortIcon('creditAccount') }}</span></span>
+            <span class="resize-handle" (mousedown)="onResizeStart($event, 'creditAccount')"></span>
           </th>
-          <th class="sortable text-right" (click)="sortBy('amount')">
-            Amount <span class="sort-indicator">{{ getSortIcon('amount') }}</span>
+          <th class="sortable resizable text-right" [style.width]="getColumnWidth('amount')" (click)="sortBy('amount')">
+            <span class="th-content">Amount <span class="sort-indicator">{{ getSortIcon('amount') }}</span></span>
+            <span class="resize-handle" (mousedown)="onResizeStart($event, 'amount')"></span>
           </th>
-          <th class="sortable" (click)="sortBy('policyNumber')">
-            Policy # <span class="sort-indicator">{{ getSortIcon('policyNumber') }}</span>
+          <th class="sortable resizable" [style.width]="getColumnWidth('policyNumber')" (click)="sortBy('policyNumber')">
+            <span class="th-content">Policy # <span class="sort-indicator">{{ getSortIcon('policyNumber') }}</span></span>
+            <span class="resize-handle" (mousedown)="onResizeStart($event, 'policyNumber')"></span>
           </th>
-          <th class="sortable" (click)="sortBy('claimNumber')">
-            Claim # <span class="sort-indicator">{{ getSortIcon('claimNumber') }}</span>
+          <th class="sortable resizable" [style.width]="getColumnWidth('claimNumber')" (click)="sortBy('claimNumber')">
+            <span class="th-content">Claim # <span class="sort-indicator">{{ getSortIcon('claimNumber') }}</span></span>
+            <span class="resize-handle" (mousedown)="onResizeStart($event, 'claimNumber')"></span>
           </th>
-          <th class="sortable" (click)="sortBy('reference')">
-            Ref <span class="sort-indicator">{{ getSortIcon('reference') }}</span>
+          <th class="sortable resizable" [style.width]="getColumnWidth('reference')" (click)="sortBy('reference')">
+            <span class="th-content">Ref <span class="sort-indicator">{{ getSortIcon('reference') }}</span></span>
+            <span class="resize-handle" (mousedown)="onResizeStart($event, 'reference')"></span>
           </th>
-          <th>Actions</th>
+          <th [style.width]="getColumnWidth('actions')">Actions</th>
         </tr>
       </thead>
       <tbody>
