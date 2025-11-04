@@ -18,6 +18,31 @@
     </div>
 
     <div class="header-right">
+      <!-- Language Selector -->
+      <div class="language-menu">
+        <button class="language-button" (click)="toggleLanguageMenu()">
+          <span class="language-flag">{{ currentLanguage?.flag }}</span>
+          <span class="language-name">{{ currentLanguage?.name }}</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        
+        <div class="dropdown-menu language-dropdown" *ngIf="languageMenuOpen">
+          <button *ngFor="let lang of availableLanguages" 
+                  class="dropdown-item language-item"
+                  [class.active]="lang.code === currentLanguage?.code"
+                  (click)="changeLanguage(lang.code)">
+            <span class="language-flag">{{ lang.flag }}</span>
+            <span>{{ lang.name }}</span>
+            <svg *ngIf="lang.code === currentLanguage?.code" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- User Menu -->
       <div class="user-menu">
         <button class="user-button" (click)="toggleUserMenu()">
           <div class="user-avatar">

@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './components/layout/header/header.component';
 import { SidebarComponent } from './components/layout/sidebar/sidebar.component';
 import { OrganizationService } from './services/organization.service';
+import { LanguageService } from './services/language.service';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +16,10 @@ import { OrganizationService } from './services/organization.service';
 export class AppComponent implements OnInit {
   title = 'BookKeeper Pro';
 
-  constructor(private organizationService: OrganizationService) {}
+  constructor(
+    private organizationService: OrganizationService,
+    private languageService: LanguageService
+  ) {}
 
   ngOnInit(): void {
     // Initialize with a demo organization if none exists

@@ -1,0 +1,281 @@
+<div class="loss-triangle-page">
+  <div class="page-header">
+    <div>
+      <h1>📊 Loss Development Triangle</h1>
+      <p class="subtitle">Claims development analysis using Chain Ladder method</p>
+    </div>
+    <button class="btn-primary" (click)="exportToPDF()" [disabled]="loading || !lossTriangle">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+      Export PDF
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-card">
+    <div class="filter-group">
+      <label>Triangle Type</label>
+      <select [(ngModel)]="triangleType" (ngModelChange)="onFilterChange()">
+        <option value="PAID">Paid Claims</option>
+        <option value="INCURRED">Incurred Claims</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>Policy Type</label>
+      <select [(ngModel)]="selectedPolicyType" (ngModelChange)="onFilterChange()">
+        <option value="">All Types</option>
+        <option *ngFor="let type of policyTypes" [value]="type">{{ type }}</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>View Mode</label>
+      <select [(ngModel)]="viewMode">
+        <option value="cumulative">Cumulative</option>
+        <option value="incremental">Incremental</option>
+      </select>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Calculating loss triangle...</p>
+  </div>
+
+  <div *ngIf="error" class="error-message">{{ error }}</div>
+
+  <div #triangleContent *ngIf="!loading && !error && lossTriangle" class="triangle-content">
+    
+    <!-- Summary Cards -->
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="summary-icon blue">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="1" x2="12" y2="23"></line>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+        </div>
+        <div class="summary-content">
+          <span class="summary-label">Total Paid to Date</span>
+          <span class="summary-value">{{ formatCurrency(getTotalPaidToDate()) }}</span>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-icon purple">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+            <polyline points="17 6 23 6 23 12"></polyline>
+          </svg>
+        </div>
+        <div class="summary-content">
+          <span class="summary-label">IBNR Reserves</span>
+          <span class="summary-value">{{ formatCurrency(getTotalReserves()) }}</span>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-icon orange">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+          </svg>
+        </div>
+        <div class="summary-content">
+          <span class="summary-label">Ultimate Loss</span>
+          <span class="summary-value">{{ formatCurrency(getTotalUltimateLoss()) }}</span>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-icon green">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="9" y1="9" x2="15" y2="15"></line>
+            <line x1="15" y1="9" x2="9" y2="15"></line>
+          </svg>
+        </div>
+        <div class="summary-content">
+          <span class="summary-label">Accident Years</span>
+          <span class="summary-value">{{ lossTriangle.data.length }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loss Triangle Table -->
+    <div class="triangle-section">
+      <div class="section-header">
+        <h2>{{ viewMode === 'cumulative' ? 'Cumulative' : 'Incremental' }} Loss Triangle</h2>
+        <span class="triangle-info">{{ lossTriangle.metadata.policyType }} - {{ triangleType }}</span>
+      </div>
+
+      <div class="table-container">
+        <table class="triangle-table">
+          <thead>
+            <tr>
+              <th rowspan="2" class="year-header">Accident<br>Year</th>
+              <th [attr.colspan]="lossTriangle.metadata.totalPeriods" class="development-header">
+                Development Period (Months)
+              </th>
+              <th rowspan="2" class="ultimate-header">Ultimate<br>Loss</th>
+              <th rowspan="2" class="reserve-header">IBNR<br>Reserve</th>
+            </tr>
+            <tr>
+              <th *ngFor="let period of lossTriangle.data[0]?.developmentPeriods" class="period-header">
+                {{ period * 12 }}-{{ (period + 1) * 12 - 1 }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let yearData of lossTriangle.data; let yearIdx = index">
+              <td class="year-cell">{{ yearData.accidentYear }}</td>
+              <td *ngFor="let period of yearData.developmentPeriods; let periodIdx = index" 
+                  class="data-cell"
+                  [class.diagonal]="yearIdx + periodIdx === lossTriangle.data.length - 1"
+                  [class.empty]="getCellValue(yearData, periodIdx) === 0">
+                <span *ngIf="getCellValue(yearData, periodIdx) > 0">
+                  {{ formatCurrency(getCellValue(yearData, periodIdx)) }}
+                </span>
+                <span *ngIf="getCellValue(yearData, periodIdx) === 0" class="empty-marker">-</span>
+              </td>
+              <td class="ultimate-cell">{{ formatCurrency(lossTriangle.ultimateLoss[yearIdx]) }}</td>
+              <td class="reserve-cell">{{ formatCurrency(lossTriangle.reserves[yearIdx]) }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td><strong>Total</strong></td>
+              <td *ngFor="let period of lossTriangle.data[0]?.developmentPeriods; let periodIdx = index" class="total-cell">
+                <strong>{{ formatCurrency(getTotalForPeriod(periodIdx)) }}</strong>
+              </td>
+              <td class="total-cell"><strong>{{ formatCurrency(getTotalUltimateLoss()) }}</strong></td>
+              <td class="total-cell"><strong>{{ formatCurrency(getTotalReserves()) }}</strong></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- Development Factors Table -->
+    <div class="factors-section">
+      <div class="section-header">
+        <h2>Age-to-Age Development Factors</h2>
+        <span class="triangle-info">Chain Ladder Method</span>
+      </div>
+
+      <div class="table-container">
+        <table class="factors-table">
+          <thead>
+            <tr>
+              <th>Accident Year</th>
+              <th *ngFor="let period of lossTriangle.data[0]?.developmentPeriods.slice(0, -1); let i = index">
+                {{ period }} → {{ period + 1 }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let yearData of lossTriangle.data; let yearIdx = index">
+              <td class="year-cell">{{ yearData.accidentYear }}</td>
+              <td *ngFor="let period of yearData.developmentPeriods.slice(0, -1); let periodIdx = index" class="factor-cell">
+                <span *ngIf="getDevelopmentFactor(yearIdx, periodIdx) !== null">
+                  {{ getDevelopmentFactor(yearIdx, periodIdx)?.toFixed(3) }}
+                </span>
+                <span *ngIf="getDevelopmentFactor(yearIdx, periodIdx) === null" class="empty-marker">-</span>
+              </td>
+            </tr>
+            <tr class="average-row">
+              <td><strong>Weighted Avg</strong></td>
+              <td *ngFor="let period of lossTriangle.data[0]?.developmentPeriods.slice(0, -1); let periodIdx = index" class="avg-factor-cell">
+                <strong>{{ getAverageFactor(periodIdx).toFixed(3) }}</strong>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Reserve Estimates Table -->
+    <div class="reserves-section">
+      <div class="section-header">
+        <h2>Reserve Estimates by Accident Year</h2>
+        <span class="triangle-info">IBNR Calculation</span>
+      </div>
+
+      <div class="table-container">
+        <table class="reserves-table">
+          <thead>
+            <tr>
+              <th>Accident Year</th>
+              <th class="text-right">Paid to Date</th>
+              <th class="text-right">Ultimate Loss</th>
+              <th class="text-right">IBNR Reserve</th>
+              <th class="text-right">% Developed</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let estimate of reserveEstimates">
+              <td class="year-cell">{{ estimate.accidentYear }}</td>
+              <td class="text-right">{{ formatCurrency(estimate.paidToDate) }}</td>
+              <td class="text-right">{{ formatCurrency(estimate.ultimateLoss) }}</td>
+              <td class="text-right reserve-amount">{{ formatCurrency(estimate.ibnrReserve) }}</td>
+              <td class="text-right">
+                <span class="percent-badge" [class.high]="estimate.percentDeveloped >= 90">
+                  {{ formatPercent(estimate.percentDeveloped) }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td><strong>Total</strong></td>
+              <td class="text-right"><strong>{{ formatCurrency(getTotalPaidToDate()) }}</strong></td>
+              <td class="text-right"><strong>{{ formatCurrency(getTotalUltimateLoss()) }}</strong></td>
+              <td class="text-right"><strong>{{ formatCurrency(getTotalReserves()) }}</strong></td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3>Cumulative Development by Year</h3>
+        <div class="chart-container">
+          <canvas #cumulativeChart></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h3>Development Factors</h3>
+        <div class="chart-container">
+          <canvas #developmentChart></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Methodology Note -->
+    <div class="methodology-note">
+      <h3>📚 Methodology: Chain Ladder Technique</h3>
+      <p>
+        The loss development triangle shows how insurance claims develop over time. Each row represents an accident year,
+        and each column represents a development period (months since accident). The Chain Ladder method:
+      </p>
+      <ol>
+        <li><strong>Organizes Data</strong>: Claims are grouped by accident year and development period</li>
+        <li><strong>Calculates Factors</strong>: Age-to-age development factors show how claims increase over time</li>
+        <li><strong>Projects Ultimate Loss</strong>: Uses historical patterns to estimate final claim amounts</li>
+        <li><strong>Estimates Reserves</strong>: IBNR (Incurred But Not Reported) = Ultimate Loss - Paid to Date</li>
+      </ol>
+      <p class="note-footer">
+        <strong>Note:</strong> This is a simplified implementation. Production use should include tail factors,
+        trend analysis, and actuarial review. Source: <a href="https://www.casact.org/sites/default/files/2021-02/pubs_proceed_proceed96_96160.pdf" target="_blank">CAS - Chain Ladder Method</a>
+      </p>
+    </div>
+  </div>
+</div>
+

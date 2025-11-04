@@ -40,6 +40,11 @@
               <line x1="6" y1="20" x2="6" y2="16"></line>
             </svg>
             
+            <!-- Triangle Icon -->
+            <svg *ngSwitchCase="'triangle'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 21h18M4 18h16M5 15h14M6 12h12M7 9h10M8 6h8M9 3h6"></path>
+            </svg>
+            
             <!-- Import Icon -->
             <svg *ngSwitchCase="'import'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -64,7 +69,7 @@
           </ng-container>
         </span>
         
-        <span class="nav-label">{{ item.label }}</span>
+        <span class="nav-label">{{ item.translationKey | translate }}</span>
         
         <span class="nav-badge" *ngIf="item.badge">{{ item.badge }}</span>
       </a>
