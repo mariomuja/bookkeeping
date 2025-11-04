@@ -35,6 +35,8 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     // Initialize with the backend organization
     const currentOrg = this.organizationService.getCurrentOrganization();
+    console.log('[AppComponent] Current organization on init:', currentOrg);
+    
     if (!currentOrg) {
       const demoOrg = {
         id: '550e8400-e29b-41d4-a716-446655440000',
@@ -48,7 +50,9 @@ export class AppComponent implements OnInit {
         updatedAt: new Date(),
         isActive: true
       };
+      console.log('[AppComponent] Setting demo organization:', demoOrg);
       this.organizationService.setCurrentOrganization(demoOrg);
+      console.log('[AppComponent] Organization set, verifying:', this.organizationService.getCurrentOrganization());
     }
 
     // Check initial route

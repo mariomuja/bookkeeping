@@ -56,14 +56,19 @@ export class AccountsComponent implements OnInit {
 
   loadAccounts(): void {
     const org = this.organizationService.getCurrentOrganization();
+    console.log('[AccountsComponent] Current organization:', org);
+    
     if (!org) {
       this.error = 'Please select an organization';
       this.loading = false;
+      console.error('[AccountsComponent] No organization found!');
       return;
     }
 
+    console.log('[AccountsComponent] Fetching accounts for org:', org.id);
     this.accountService.getAccounts(org.id).subscribe({
       next: (accounts) => {
+        console.log('[AccountsComponent] Received accounts:', accounts.length, accounts);
         this.accounts = accounts;
         this.filteredAccounts = accounts;
         this.loading = false;
@@ -71,7 +76,7 @@ export class AccountsComponent implements OnInit {
       error: (err) => {
         this.error = 'Failed to load accounts';
         this.loading = false;
-        console.error(err);
+        console.error('[AccountsComponent] Error loading accounts:', err);
       }
     });
   }
