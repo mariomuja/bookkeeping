@@ -211,5 +211,9 @@ export class AuditLogComponent implements OnInit {
     // Show detailed log information in a modal or expand row
     console.log('Log details:', log);
   }
+
+  getActiveUsersCount(): number {
+    return this.stats ? Object.keys(this.stats.byUser).length : 0;
+  }
 }
 

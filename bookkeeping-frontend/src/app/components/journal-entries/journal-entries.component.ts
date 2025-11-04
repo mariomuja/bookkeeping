@@ -92,7 +92,13 @@ export class JournalEntriesComponent implements OnInit {
           if (entry.lines) {
             entry.lines.forEach(line => {
               if (!line.account && line.accountId) {
-                line.account = this.accountsMap.get(line.accountId);
+                const account = this.accountsMap.get(line.accountId);
+                if (account) {
+                  line.account = {
+                    accountNumber: account.accountNumber,
+                    accountName: account.accountName
+                  };
+                }
               }
             });
           }
@@ -469,18 +475,26 @@ export class JournalEntriesComponent implements OnInit {
   }
 
   // Table display helpers
-  getDebitAccount(entry: JournalEntry): Account | undefined {
+  getDebitAccount(entry: JournalEntry): { accountNumber: string; accountName: string } | undefined {
     if (!entry.lines || entry.lines.length === 0) return undefined;
     const debitLine = entry.lines.find(l => l.debitAmount > 0);
     if (!debitLine) return undefined;
-    return debitLine.account || this.accountsMap.get(debitLine.accountId);
+    
+    if (debitLine.account) return debitLine.account;
+    
+    const account = this.accountsMap.get(debitLine.accountId);
+    return account ? { accountNumber: account.accountNumber, accountName: account.accountName } : undefined;
   }
 
-  getCreditAccount(entry: JournalEntry): Account | undefined {
+  getCreditAccount(entry: JournalEntry): { accountNumber: string; accountName: string } | undefined {
     if (!entry.lines || entry.lines.length === 0) return undefined;
     const creditLine = entry.lines.find(l => l.creditAmount > 0);
     if (!creditLine) return undefined;
-    return creditLine.account || this.accountsMap.get(creditLine.accountId);
+    
+    if (creditLine.account) return creditLine.account;
+    
+    const account = this.accountsMap.get(creditLine.accountId);
+    return account ? { accountNumber: account.accountNumber, accountName: account.accountName } : undefined;
   }
 
   getEntryAmount(entry: JournalEntry): number {
