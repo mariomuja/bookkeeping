@@ -119,9 +119,6 @@ function generateInsuranceData(organizationId, count = 10000) {
   let progressCounter = 0;
   const progressInterval = Math.max(1, Math.floor(count / 20)); // Update progress 20 times
   
-  // Load currency converter for multi-currency support
-  const currencyConverter = require('./currency-converter');
-  
   for (let i = 0; i < count; i++) {
     const isClaim = Math.random() < 0.3; // 30% are claims
     const entryId = uuidv4();
@@ -135,7 +132,8 @@ function generateInsuranceData(organizationId, count = 10000) {
     const currencyInfo = randomCurrencyWeighted();
     const transactionCurrency = currencyInfo.currency;
     
-    // Calculate exchange rate to USD (base currency)
+    // Calculate exchange rate to USD (base currency) using simple lookup
+    const currencyConverter = require('./currency-converter');
     const exchangeRate = currencyConverter.getExchangeRate(transactionCurrency, 'USD');
     
     // Create journal entry
