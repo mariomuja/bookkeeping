@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 export interface Language {
   code: string;
@@ -23,7 +24,7 @@ export class LanguageService {
     { code: 'it', name: 'Italiano', flag: '🇮🇹' }
   ];
 
-  constructor(private translate: TranslateService) {
+  constructor(private translate: TranslateService, private http: HttpClient) {
     // Set available languages
     const langCodes = this.availableLanguages.map(l => l.code);
     this.translate.addLangs(langCodes);
@@ -31,7 +32,7 @@ export class LanguageService {
     // Set default language
     this.translate.setDefaultLang('en');
     
-    // Load translations manually (since HTTP loader has version issues)
+    // Load translations from JSON files
     this.loadTranslations();
     
     // Try to use browser language if available
@@ -43,17 +44,19 @@ export class LanguageService {
   }
 
   private loadTranslations(): void {
-    // Basic translations - full translations would be loaded from assets/i18n/*.json files
-    const translations: any = {
-      en: { nav: { dashboard: 'Dashboard', accounts: 'Chart of Accounts', journalEntries: 'Journal Entries', reports: 'Reports', lossTriangle: 'Loss Triangle', import: 'Import Data', customFields: 'Custom Fields', settings: 'Settings' }},
-      de: { nav: { dashboard: 'Dashboard', accounts: 'Kontenplan', journalEntries: 'Buchungen', reports: 'Berichte', lossTriangle: 'Schadendreieck', import: 'Daten importieren', customFields: 'Benutzerdefinierte Felder', settings: 'Einstellungen' }},
-      fr: { nav: { dashboard: 'Tableau de bord', accounts: 'Plan comptable', journalEntries: 'Écritures', reports: 'Rapports', lossTriangle: 'Triangle de Sinistres', import: 'Importer', customFields: 'Champs personnalisés', settings: 'Paramètres' }},
-      es: { nav: { dashboard: 'Panel', accounts: 'Plan de cuentas', journalEntries: 'Asientos', reports: 'Informes', lossTriangle: 'Triángulo', import: 'Importar', customFields: 'Campos', settings: 'Configuración' }},
-      it: { nav: { dashboard: 'Dashboard', accounts: 'Piano conti', journalEntries: 'Registrazioni', reports: 'Report', lossTriangle: 'Triangolo', import: 'Importa', customFields: 'Campi', settings: 'Impostazioni' }}
-    };
+    // Load translation files from assets/i18n/
+    const languages = ['en', 'de', 'fr', 'es', 'it'];
     
-    Object.keys(translations).forEach(lang => {
-      this.translate.setTranslation(lang, translations[lang], false);
+    languages.forEach(lang => {
+      this.http.get(`/assets/i18n/${lang}.json`).subscribe({
+        next: (translations) => {
+          this.translate.setTranslation(lang, translations, true);
+          console.log(`[Language] Loaded ${lang} translations`);
+        },
+        error: (err) => {
+          console.error(`[Language] Failed to load ${lang} translations:`, err);
+        }
+      });
     });
   }
 
