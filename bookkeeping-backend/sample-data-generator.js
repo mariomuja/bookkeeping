@@ -33,6 +33,7 @@ function generateInsuranceData(organizationId, count = 10000) {
   console.log(`\n🏗️  Generating ${count.toLocaleString()} insurance bookings...`);
   console.log(`   Organization: ${organizationId}`);
   
+  const now = new Date();
   const entries = [];
   const lines = [];
   const customFields = [];
