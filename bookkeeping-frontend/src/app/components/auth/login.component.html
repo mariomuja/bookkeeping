@@ -1,0 +1,90 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>📊 BookKeeper Pro</h1>
+      <p class="subtitle" *ngIf="!requiresTwoFactor">Sign in to your account</p>
+      <p class="subtitle" *ngIf="requiresTwoFactor">Two-Factor Authentication</p>
+    </div>
+
+    <!-- Login Form -->
+    <form *ngIf="!requiresTwoFactor" (ngSubmit)="onLogin()" class="login-form">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input 
+          type="text" 
+          id="username" 
+          name="username"
+          [(ngModel)]="username" 
+          placeholder="Enter your username"
+          [disabled]="loading"
+          required
+          autofocus>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input 
+          type="password" 
+          id="password" 
+          name="password"
+          [(ngModel)]="password" 
+          placeholder="Enter your password"
+          [disabled]="loading"
+          required>
+      </div>
+
+      <div class="error-message" *ngIf="error">
+        {{ error }}
+      </div>
+
+      <button type="submit" class="btn-login" [disabled]="loading">
+        <span *ngIf="!loading">Sign In</span>
+        <span *ngIf="loading">Signing in...</span>
+      </button>
+
+      <div class="demo-credentials">
+        <p><strong>Demo Credentials:</strong></p>
+        <p>Username: <code>demo</code></p>
+        <p>Password: <code>demo123</code></p>
+      </div>
+    </form>
+
+    <!-- 2FA Verification Form -->
+    <form *ngIf="requiresTwoFactor" (ngSubmit)="onVerify2FA()" class="login-form">
+      <div class="form-group">
+        <label for="twoFactorCode">Enter your 6-digit code</label>
+        <input 
+          type="text" 
+          id="twoFactorCode" 
+          name="twoFactorCode"
+          [(ngModel)]="twoFactorCode" 
+          placeholder="000000"
+          maxlength="6"
+          [disabled]="loading"
+          required
+          autofocus
+          class="code-input">
+        <p class="help-text">Open Google Authenticator to get your code</p>
+      </div>
+
+      <div class="error-message" *ngIf="error">
+        {{ error }}
+      </div>
+
+      <div class="button-group">
+        <button type="button" class="btn-secondary" (click)="cancelTwoFactor()" [disabled]="loading">
+          Back
+        </button>
+        <button type="submit" class="btn-login" [disabled]="loading">
+          <span *ngIf="!loading">Verify</span>
+          <span *ngIf="loading">Verifying...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="login-footer">
+    <p>BookKeeper Pro © 2025 | Secure Double-Entry Bookkeeping</p>
+  </div>
+</div>
+

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { OrganizationService } from '../../../services/organization.service';
 import { LanguageService, Language } from '../../../services/language.service';
+import { AuthService, User } from '../../../services/auth.service';
 import { Organization } from '../../../models/organization.model';
 
 @Component({
@@ -15,6 +16,7 @@ import { Organization } from '../../../models/organization.model';
 })
 export class HeaderComponent implements OnInit {
   currentOrganization: Organization | null = null;
+  currentUser: User | null = null;
   userMenuOpen = false;
   languageMenuOpen = false;
   currentLanguage: Language | undefined;
@@ -22,12 +24,18 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private organizationService: OrganizationService,
-    public languageService: LanguageService
+    public languageService: LanguageService,
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.organizationService.currentOrganization$.subscribe(org => {
       this.currentOrganization = org;
+    });
+
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
     });
 
     this.availableLanguages = this.languageService.availableLanguages;
@@ -51,6 +59,11 @@ export class HeaderComponent implements OnInit {
   changeLanguage(langCode: string): void {
     this.languageService.setLanguage(langCode);
     this.languageMenuOpen = false;
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }
 

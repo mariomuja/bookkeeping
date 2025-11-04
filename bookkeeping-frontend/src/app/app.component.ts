@@ -27,17 +27,20 @@ export class AppComponent implements OnInit {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
-      // Hide layout for report viewer routes
-      this.showMainLayout = !event.url.startsWith('/report/');
+      // Hide layout for report viewer routes and login page
+      this.showMainLayout = !event.url.startsWith('/report/') && !event.url.startsWith('/login');
     });
   }
 
   ngOnInit(): void {
-    // Initialize with the backend organization
+    // Initialize with the backend organization only if user is authenticated
     const currentOrg = this.organizationService.getCurrentOrganization();
     console.log('[AppComponent] Current organization on init:', currentOrg);
     
-    if (!currentOrg) {
+    // Check if user is authenticated via token
+    const isAuthenticated = localStorage.getItem('authToken');
+    
+    if (isAuthenticated && !currentOrg) {
       const demoOrg = {
         id: '550e8400-e29b-41d4-a716-446655440000',
         name: 'Demo Insurance Company',
@@ -56,6 +59,6 @@ export class AppComponent implements OnInit {
     }
 
     // Check initial route
-    this.showMainLayout = !this.router.url.startsWith('/report/');
+    this.showMainLayout = !this.router.url.startsWith('/report/') && !this.router.url.startsWith('/login');
   }
 }
