@@ -1,7 +1,25 @@
 <div class="dashboard">
   <div class="dashboard-header">
-    <h1>Dashboard</h1>
-    <p class="subtitle">Overview of your bookkeeping</p>
+    <div>
+      <h1>Dashboard</h1>
+      <p class="subtitle">Overview of your bookkeeping</p>
+    </div>
+    <div class="currency-selector">
+      <label for="currency">Report Currency:</label>
+      <select id="currency" [(ngModel)]="selectedCurrency" (ngModelChange)="onCurrencyChange()" class="currency-select">
+        <option *ngFor="let curr of availableCurrencies" [value]="curr.code">
+          {{ curr.symbol }} {{ curr.name }} ({{ curr.code }})
+        </option>
+      </select>
+      <span class="currency-info">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        Real-time conversion from transaction currencies
+      </span>
+    </div>
   </div>
 
   <div *ngIf="loading" class="loading">

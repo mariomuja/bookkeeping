@@ -23,7 +23,9 @@ export class CustomFieldsComponent implements OnInit {
     { value: 'TEXT', label: 'Text' },
     { value: 'NUMBER', label: 'Number (Integer)' },
     { value: 'DECIMAL', label: 'Decimal Number' },
-    { value: 'DATE', label: 'Date' },
+    { value: 'DATE', label: 'Date (no time)' },
+    { value: 'DATETIME', label: 'Date & Time' },
+    { value: 'TIMESTAMP', label: 'Timestamp (with timezone)' },
     { value: 'BOOLEAN', label: 'Yes/No' },
     { value: 'SELECT', label: 'Dropdown Select' }
   ];
@@ -257,6 +259,8 @@ export class CustomFieldsComponent implements OnInit {
       'NUMBER': '#️⃣',
       'DECIMAL': '💰',
       'DATE': '📅',
+      'DATETIME': '🕐',
+      'TIMESTAMP': '⏰',
       'BOOLEAN': '☑️',
       'SELECT': '📋'
     };

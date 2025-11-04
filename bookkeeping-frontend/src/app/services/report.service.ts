@@ -35,8 +35,11 @@ export class ReportService {
     return this.api.get<ProfitLossItem[]>(path);
   }
 
-  getDashboardMetrics(organizationId: string): Observable<DashboardMetrics> {
-    return this.api.get<DashboardMetrics>(`/organizations/${organizationId}/dashboard`);
+  getDashboardMetrics(organizationId: string, targetCurrency?: string): Observable<DashboardMetrics> {
+    const url = targetCurrency 
+      ? `/organizations/${organizationId}/dashboard?targetCurrency=${targetCurrency}`
+      : `/organizations/${organizationId}/dashboard`;
+    return this.api.get<DashboardMetrics>(url);
   }
 
   exportReport(organizationId: string, reportType: string, format: 'csv' | 'excel' | 'pdf'): Observable<Blob> {

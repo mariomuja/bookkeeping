@@ -16,3 +16,19 @@ export interface ExchangeRate {
   createdAt: Date;
 }
 
+export interface CurrencyConversion {
+  fromCurrency: string;
+  toCurrency: string;
+  rate: number;
+  effectiveDate: Date;
+  source: string;
+}
+
+export interface MultiCurrencyAmount {
+  originalAmount: number;
+  originalCurrency: string;
+  convertedAmount: number;
+  targetCurrency: string;
+  exchangeRate: number;
+  conversionDate: Date;
+}

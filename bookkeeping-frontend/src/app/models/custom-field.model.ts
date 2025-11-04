@@ -1,4 +1,4 @@
-export type CustomFieldType = 'TEXT' | 'NUMBER' | 'DATE' | 'BOOLEAN' | 'DECIMAL' | 'SELECT';
+export type CustomFieldType = 'TEXT' | 'NUMBER' | 'DATE' | 'DATETIME' | 'TIMESTAMP' | 'BOOLEAN' | 'DECIMAL' | 'SELECT';
 
 export interface CustomFieldDefinition {
   id: string;

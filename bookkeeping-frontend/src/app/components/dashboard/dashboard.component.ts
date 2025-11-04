@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ReportService } from '../../services/report.service';
 import { OrganizationService } from '../../services/organization.service';
 import { DashboardMetrics } from '../../models/report.model';
@@ -7,7 +8,7 @@ import { DashboardMetrics } from '../../models/report.model';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
@@ -15,6 +16,15 @@ export class DashboardComponent implements OnInit {
   metrics: DashboardMetrics | null = null;
   loading = true;
   error: string | null = null;
+  selectedCurrency = 'EUR'; // Default to EUR for European insurance company
+
+  availableCurrencies = [
+    { code: 'USD', name: 'US Dollar', symbol: '$' },
+    { code: 'EUR', name: 'Euro', symbol: '€' },
+    { code: 'GBP', name: 'British Pound', symbol: '£' },
+    { code: 'PLN', name: 'Polish Zloty', symbol: 'zł' },
+    { code: 'CHF', name: 'Swiss Franc', symbol: 'CHF' }
+  ];
 
   constructor(
     private reportService: ReportService,
@@ -22,6 +32,16 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Load saved preference
+    const saved = localStorage.getItem('dashboardCurrency');
+    if (saved) {
+      this.selectedCurrency = saved;
+    }
+    this.loadDashboard();
+  }
+
+  onCurrencyChange(): void {
+    localStorage.setItem('dashboardCurrency', this.selectedCurrency);
     this.loadDashboard();
   }
 
@@ -33,7 +53,7 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
-    this.reportService.getDashboardMetrics(org.id).subscribe({
+    this.reportService.getDashboardMetrics(org.id, this.selectedCurrency).subscribe({
       next: (metrics) => {
         this.metrics = metrics;
         this.loading = false;
@@ -49,8 +69,12 @@ export class DashboardComponent implements OnInit {
   formatCurrency(value: number): string {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: this.selectedCurrency
     }).format(value);
+  }
+
+  getCurrencySymbol(): string {
+    return this.availableCurrencies.find(c => c.code === this.selectedCurrency)?.symbol || this.selectedCurrency;
   }
 
   getMetricCards() {
