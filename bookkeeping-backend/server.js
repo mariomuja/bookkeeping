@@ -44,6 +44,76 @@ app.post('/api/organizations', (req, res) => {
 });
 
 // ============================================================================
+// CURRENCIES & EXCHANGE RATES
+// ============================================================================
+
+app.get('/api/currencies', (req, res) => {
+  const currencyConverter = require('./currency-converter');
+  res.json(currencyConverter.getAvailableCurrencies());
+});
+
+app.get('/api/exchange-rates', async (req, res) => {
+  const { from, to, date } = req.query;
+  
+  if (!from || !to) {
+    return res.status(400).json({ error: 'from and to currencies required' });
+  }
+
+  try {
+    const exchangeRateService = require('./exchange-rate-service');
+    const rate = await exchangeRateService.getExchangeRate(from, to, date || null);
+    
+    res.json([{
+      id: `${from}_${to}_${Date.now()}`,
+      fromCurrency: from,
+      toCurrency: to,
+      rate: rate,
+      effectiveDate: date || new Date(),
+      source: 'Public API',
+      createdAt: new Date()
+    }]);
+  } catch (error) {
+    console.error('Exchange rate fetch error:', error);
+    res.status(500).json({ error: 'Failed to fetch exchange rate' });
+  }
+});
+
+app.get('/api/exchange-rates/historical', async (req, res) => {
+  const { from, to, startDate, endDate } = req.query;
+  
+  try {
+    const currencyConverter = require('./currency-converter');
+    const rates = currencyConverter.getExchangeRatesHistory(from, to, 30);
+    res.json(rates);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch historical rates' });
+  }
+});
+
+app.post('/api/exchange-rates/bulk', async (req, res) => {
+  const { baseCurrency, targetCurrencies } = req.body;
+  
+  try {
+    const exchangeRateService = require('./exchange-rate-service');
+    const rates = await exchangeRateService.getBulkRates(baseCurrency, targetCurrencies);
+    
+    const result = Object.entries(rates).map(([currency, rate]) => ({
+      id: `${baseCurrency}_${currency}_${Date.now()}`,
+      fromCurrency: baseCurrency,
+      toCurrency: currency,
+      rate: rate,
+      effectiveDate: new Date(),
+      source: 'Public API',
+      createdAt: new Date()
+    }));
+    
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch bulk rates' });
+  }
+});
+
+// ============================================================================
 // ACCOUNT TYPES
 // ============================================================================
 
@@ -299,24 +369,47 @@ app.post('/api/organizations/:orgId/custom-fields/insurance-defaults', (req, res
 // REPORTS
 // ============================================================================
 
-app.get('/api/organizations/:orgId/dashboard', (req, res) => {
-  const metrics = mockData.getDashboardMetrics(req.params.orgId);
-  res.json(metrics);
+app.get('/api/organizations/:orgId/dashboard', async (req, res) => {
+  const { targetCurrency } = req.query;
+  const orgId = req.params.orgId;
+  
+  try {
+    const metrics = await mockData.getDashboardMetrics(orgId, targetCurrency || 'USD');
+    res.json(metrics);
+  } catch (error) {
+    console.error('Dashboard error:', error);
+    res.status(500).json({ error: 'Failed to calculate dashboard metrics' });
+  }
 });
 
-app.get('/api/organizations/:orgId/reports/trial-balance', (req, res) => {
-  const trialBalance = mockData.getTrialBalance(req.params.orgId);
-  res.json(trialBalance);
+app.get('/api/organizations/:orgId/reports/trial-balance', async (req, res) => {
+  const { targetCurrency } = req.query;
+  try {
+    const trialBalance = await mockData.getTrialBalance(req.params.orgId, targetCurrency || 'USD');
+    res.json(trialBalance);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to generate trial balance' });
+  }
 });
 
-app.get('/api/organizations/:orgId/reports/balance-sheet', (req, res) => {
-  const balanceSheet = mockData.getBalanceSheet(req.params.orgId);
-  res.json(balanceSheet);
+app.get('/api/organizations/:orgId/reports/balance-sheet', async (req, res) => {
+  const { targetCurrency } = req.query;
+  try {
+    const balanceSheet = await mockData.getBalanceSheet(req.params.orgId, targetCurrency || 'USD');
+    res.json(balanceSheet);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to generate balance sheet' });
+  }
 });
 
-app.get('/api/organizations/:orgId/reports/profit-loss', (req, res) => {
-  const profitLoss = mockData.getProfitLoss(req.params.orgId);
-  res.json(profitLoss);
+app.get('/api/organizations/:orgId/reports/profit-loss', async (req, res) => {
+  const { targetCurrency } = req.query;
+  try {
+    const profitLoss = await mockData.getProfitLoss(req.params.orgId, targetCurrency || 'USD');
+    res.json(profitLoss);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to generate profit/loss' });
+  }
 });
 
 app.get('/api/organizations/:orgId/reports/policy-summary', (req, res) => {
@@ -327,6 +420,66 @@ app.get('/api/organizations/:orgId/reports/policy-summary', (req, res) => {
 app.get('/api/organizations/:orgId/reports/claim-summary', (req, res) => {
   const claimSummary = mockData.getClaimSummary(req.params.orgId);
   res.json(claimSummary);
+});
+
+// ============================================================================
+// ACTUARIAL - LOSS TRIANGLES
+// ============================================================================
+
+app.get('/api/organizations/:orgId/actuarial/loss-triangle', (req, res) => {
+  const { triangleType, policyType, developmentPeriods } = req.query;
+  
+  const triangleCalculator = require('./loss-triangle-calculator');
+  const entries = mockData.journalEntries.filter(e => e.organizationId === req.params.orgId);
+  
+  // Add custom fields to entries
+  const entriesWithFields = entries.map(entry => ({
+    ...entry,
+    customFields: mockData.customFieldValues.filter(cf => cf.journalEntryId === entry.id),
+    lines: mockData.journalEntryLines.filter(l => l.journalEntryId === entry.id)
+  }));
+  
+  const options = {
+    triangleType: triangleType || 'PAID',
+    policyType: policyType || null,
+    developmentPeriods: parseInt(developmentPeriods) || 12
+  };
+  
+  const triangle = triangleCalculator.calculateLossTriangle(
+    entriesWithFields,
+    mockData.customFieldDefinitions,
+    options
+  );
+  
+  res.json(triangle);
+});
+
+app.get('/api/organizations/:orgId/actuarial/reserves', (req, res) => {
+  const { policyType } = req.query;
+  
+  const triangleCalculator = require('./loss-triangle-calculator');
+  const entries = mockData.journalEntries.filter(e => e.organizationId === req.params.orgId);
+  
+  const entriesWithFields = entries.map(entry => ({
+    ...entry,
+    customFields: mockData.customFieldValues.filter(cf => cf.journalEntryId === entry.id),
+    lines: mockData.journalEntryLines.filter(l => l.journalEntryId === entry.id)
+  }));
+  
+  const options = {
+    triangleType: 'PAID',
+    policyType: policyType || null,
+    developmentPeriods: 12
+  };
+  
+  const triangle = triangleCalculator.calculateLossTriangle(
+    entriesWithFields,
+    mockData.customFieldDefinitions,
+    options
+  );
+  
+  const reserves = triangleCalculator.calculateReserveEstimates(triangle);
+  res.json(reserves);
 });
 
 // ============================================================================

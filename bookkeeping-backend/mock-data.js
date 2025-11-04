@@ -57,7 +57,8 @@ const journalEntryLines = [];
 const customFieldValues = [];
 
 // Helper functions for reports
-function getDashboardMetrics(orgId) {
+async function getDashboardMetrics(orgId, targetCurrency = 'USD') {
+  const exchangeRateService = require('./exchange-rate-service');
   const entries = journalEntries.filter(e => e.organizationId === orgId && e.status === 'POSTED');
   const lines = journalEntryLines.filter(l => 
     entries.some(e => e.id === l.journalEntryId)
@@ -66,21 +67,29 @@ function getDashboardMetrics(orgId) {
   let totalAssets = 0, totalLiabilities = 0, totalEquity = 0;
   let totalRevenue = 0, totalExpenses = 0;
   
-  lines.forEach(line => {
+  for (const line of lines) {
     const account = accounts.find(a => a.id === line.accountId);
-    if (!account) return;
+    if (!account) continue;
     
     const accountType = accountTypes.find(t => t.id === account.accountTypeId);
-    if (!accountType) return;
+    if (!accountType) continue;
     
-    const balance = line.debitAmount - line.creditAmount;
+    // Get entry currency
+    const entry = entries.find(e => e.id === line.journalEntryId);
+    const entryCurrency = entry?.currency || 'USD';
+    
+    // Convert to target currency
+    const rate = await exchangeRateService.getExchangeRate(entryCurrency, targetCurrency);
+    const debitConverted = line.debitAmount * rate;
+    const creditConverted = line.creditAmount * rate;
+    const balance = debitConverted - creditConverted;
     
     if (accountType.category === 'ASSET') totalAssets += balance;
     if (accountType.category === 'LIABILITY') totalLiabilities += Math.abs(balance);
     if (accountType.category === 'EQUITY') totalEquity += Math.abs(balance);
     if (accountType.category === 'REVENUE') totalRevenue += Math.abs(balance);
     if (accountType.category === 'EXPENSE') totalExpenses += balance;
-  });
+  }
   
   return {
     totalAssets,
@@ -90,18 +99,31 @@ function getDashboardMetrics(orgId) {
     totalExpenses,
     netIncome: totalRevenue - totalExpenses,
     entryCount: entries.length,
-    accountCount: accounts.filter(a => a.organizationId === orgId && a.isActive).length
+    accountCount: accounts.filter(a => a.organizationId === orgId && a.isActive).length,
+    currency: targetCurrency
   };
 }
 
-function getTrialBalance(orgId) {
+async function getTrialBalance(orgId, targetCurrency = 'USD') {
+  const exchangeRateService = require('./exchange-rate-service');
   const result = [];
   const orgAccounts = accounts.filter(a => a.organizationId === orgId && a.isActive);
+  const orgEntries = journalEntries.filter(e => e.organizationId === orgId && e.status === 'POSTED');
   
-  orgAccounts.forEach(account => {
+  for (const account of orgAccounts) {
     const lines = journalEntryLines.filter(l => l.accountId === account.id);
-    const totalDebits = lines.reduce((sum, l) => sum + (l.debitAmount || 0), 0);
-    const totalCredits = lines.reduce((sum, l) => sum + (l.creditAmount || 0), 0);
+    let totalDebits = 0;
+    let totalCredits = 0;
+    
+    // Convert each line to target currency
+    for (const line of lines) {
+      const entry = orgEntries.find(e => e.id === line.journalEntryId);
+      const entryCurrency = entry?.currency || 'USD';
+      const rate = await exchangeRateService.getExchangeRate(entryCurrency, targetCurrency);
+      
+      totalDebits += (line.debitAmount || 0) * rate;
+      totalCredits += (line.creditAmount || 0) * rate;
+    }
     
     const accountType = accountTypes.find(t => t.id === account.accountTypeId);
     const balance = accountType?.normalBalance === 'DEBIT' 
@@ -116,24 +138,37 @@ function getTrialBalance(orgId) {
       normalBalance: accountType?.normalBalance || 'DEBIT',
       totalDebits,
       totalCredits,
-      balance
+      balance,
+      currency: targetCurrency
     });
-  });
+  }
   
   return result;
 }
 
-function getBalanceSheet(orgId) {
+async function getBalanceSheet(orgId, targetCurrency = 'USD') {
+  const exchangeRateService = require('./exchange-rate-service');
   const result = [];
   const orgAccounts = accounts.filter(a => a.organizationId === orgId && a.isActive);
+  const orgEntries = journalEntries.filter(e => e.organizationId === orgId && e.status === 'POSTED');
   
-  orgAccounts.forEach(account => {
+  for (const account of orgAccounts) {
     const accountType = accountTypes.find(t => t.id === account.accountTypeId);
-    if (!accountType?.isBalanceSheet) return;
+    if (!accountType?.isBalanceSheet) continue;
     
     const lines = journalEntryLines.filter(l => l.accountId === account.id);
-    const totalDebits = lines.reduce((sum, l) => sum + (l.debitAmount || 0), 0);
-    const totalCredits = lines.reduce((sum, l) => sum + (l.creditAmount || 0), 0);
+    let totalDebits = 0;
+    let totalCredits = 0;
+    
+    // Convert to target currency
+    for (const line of lines) {
+      const entry = orgEntries.find(e => e.id === line.journalEntryId);
+      const entryCurrency = entry?.currency || 'USD';
+      const rate = await exchangeRateService.getExchangeRate(entryCurrency, targetCurrency);
+      
+      totalDebits += (line.debitAmount || 0) * rate;
+      totalCredits += (line.creditAmount || 0) * rate;
+    }
     
     const balance = accountType.normalBalance === 'DEBIT'
       ? totalDebits - totalCredits
@@ -144,24 +179,37 @@ function getBalanceSheet(orgId) {
       accountTypeName: accountType.name,
       accountNumber: account.accountNumber,
       accountName: account.accountName,
-      balance
+      balance,
+      currency: targetCurrency
     });
-  });
+  }
   
   return result;
 }
 
-function getProfitLoss(orgId) {
+async function getProfitLoss(orgId, targetCurrency = 'USD') {
+  const exchangeRateService = require('./exchange-rate-service');
   const result = [];
   const orgAccounts = accounts.filter(a => a.organizationId === orgId && a.isActive);
+  const orgEntries = journalEntries.filter(e => e.organizationId === orgId && e.status === 'POSTED');
   
-  orgAccounts.forEach(account => {
+  for (const account of orgAccounts) {
     const accountType = accountTypes.find(t => t.id === account.accountTypeId);
-    if (accountType?.isBalanceSheet) return; // Skip balance sheet accounts
+    if (accountType?.isBalanceSheet) continue; // Skip balance sheet accounts
     
     const lines = journalEntryLines.filter(l => l.accountId === account.id);
-    const totalDebits = lines.reduce((sum, l) => sum + (l.debitAmount || 0), 0);
-    const totalCredits = lines.reduce((sum, l) => sum + (l.creditAmount || 0), 0);
+    let totalDebits = 0;
+    let totalCredits = 0;
+    
+    // Convert to target currency
+    for (const line of lines) {
+      const entry = orgEntries.find(e => e.id === line.journalEntryId);
+      const entryCurrency = entry?.currency || 'USD';
+      const rate = await exchangeRateService.getExchangeRate(entryCurrency, targetCurrency);
+      
+      totalDebits += (line.debitAmount || 0) * rate;
+      totalCredits += (line.creditAmount || 0) * rate;
+    }
     
     const amount = accountType?.category === 'EXPENSE'
       ? totalDebits - totalCredits
@@ -173,10 +221,11 @@ function getProfitLoss(orgId) {
         accountTypeName: accountType?.name || 'Unknown',
         accountNumber: account.accountNumber,
         accountName: account.accountName,
-        amount
+        amount,
+        currency: targetCurrency
       });
     }
-  });
+  }
   
   return result;
 }

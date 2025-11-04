@@ -5,10 +5,25 @@ const mockData = require('./mock-data');
 const policyTypes = ['Auto', 'Home', 'Life', 'Health', 'Business', 'Liability'];
 const claimStatuses = ['Open', 'Under Review', 'Approved', 'Paid', 'Closed'];
 
+// Multi-currency support with country associations
+const currencyCountries = [
+  { currency: 'USD', country: 'USA', weight: 0.20 },
+  { currency: 'EUR', country: 'Germany', weight: 0.25 },
+  { currency: 'GBP', country: 'UK', weight: 0.15 },
+  { currency: 'PLN', country: 'Poland', weight: 0.15 },
+  { currency: 'CZK', country: 'Czech Republic', weight: 0.10 },
+  { currency: 'CHF', country: 'Switzerland', weight: 0.08 },
+  { currency: 'SEK', country: 'Sweden', weight: 0.07 }
+];
+
 const firstNames = ['John', 'Jane', 'Michael', 'Sarah', 'David', 'Emily', 'Robert', 'Lisa', 'James', 'Mary', 
-                     'William', 'Patricia', 'Richard', 'Jennifer', 'Thomas', 'Linda', 'Charles', 'Barbara'];
+                     'William', 'Patricia', 'Richard', 'Jennifer', 'Thomas', 'Linda', 'Charles', 'Barbara',
+                     'Anna', 'Piotr', 'Katarzyna', 'Jan', 'Maria', 'Tomasz', 'Agnieszka', 'Lukasz',
+                     'Hans', 'Greta', 'Klaus', 'Petra', 'Stefan', 'Monika'];
 const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 
-                   'Martinez', 'Anderson', 'Taylor', 'Thomas', 'Moore', 'Jackson', 'Martin', 'Lee', 'Thompson'];
+                   'Martinez', 'Anderson', 'Taylor', 'Thomas', 'Moore', 'Jackson', 'Martin', 'Lee', 'Thompson',
+                   'Kowalski', 'Nowak', 'Wisniewski', 'Wojcik', 'Kowalczyk', 'Kaminski', 'Lewandowski',
+                   'Mueller', 'Schmidt', 'Schneider', 'Fischer', 'Weber', 'Wagner', 'Becker'];
 
 function random(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -27,6 +42,20 @@ function randomDate(daysBack) {
 
 function randomItem(array) {
   return array[random(0, array.length - 1)];
+}
+
+function randomCurrencyWeighted() {
+  const rand = Math.random();
+  let cumulativeWeight = 0;
+  
+  for (const item of currencyCountries) {
+    cumulativeWeight += item.weight;
+    if (rand <= cumulativeWeight) {
+      return item;
+    }
+  }
+  
+  return currencyCountries[0]; // Default to USD
 }
 
 function generateInsuranceData(organizationId, count = 10000) {
@@ -90,6 +119,9 @@ function generateInsuranceData(organizationId, count = 10000) {
   let progressCounter = 0;
   const progressInterval = Math.max(1, Math.floor(count / 20)); // Update progress 20 times
   
+  // Load currency converter for multi-currency support
+  const currencyConverter = require('./currency-converter');
+  
   for (let i = 0; i < count; i++) {
     const isClaim = Math.random() < 0.3; // 30% are claims
     const entryId = uuidv4();
@@ -99,6 +131,13 @@ function generateInsuranceData(organizationId, count = 10000) {
     const policyType = randomItem(policyTypes);
     const insuredName = `${randomItem(firstNames)} ${randomItem(lastNames)}`;
     
+    // Select currency based on weighted distribution
+    const currencyInfo = randomCurrencyWeighted();
+    const transactionCurrency = currencyInfo.currency;
+    
+    // Calculate exchange rate to USD (base currency)
+    const exchangeRate = currencyConverter.getExchangeRate(transactionCurrency, 'USD');
+    
     // Create journal entry
     const entry = {
       id: entryId,
@@ -106,13 +145,15 @@ function generateInsuranceData(organizationId, count = 10000) {
       entryNumber: `JE-${String(entryNum).padStart(10, '0')}`,
       entryDate,
       entryTimestamp: new Date(entryDate),
-      description: isClaim ? `Insurance Claim Payment - ${policyType}` : `Premium Collection - ${policyType}`,
+      description: isClaim ? 
+        `Insurance Claim Payment - ${policyType} (${currencyInfo.country})` : 
+        `Premium Collection - ${policyType} (${currencyInfo.country})`,
       referenceNumber: isClaim ? `REF-CLM-${entryNum}` : `REF-PREM-${entryNum}`,
       documentType: isClaim ? 'CLAIM' : 'PREMIUM',
       source: 'SAMPLE_DATA',
-      currency: 'USD',
+      currency: transactionCurrency,
       baseCurrency: 'USD',
-      exchangeRate: 1.0,
+      exchangeRate: exchangeRate,
       status: 'POSTED',
       postedAt: new Date(entryDate),
       postedBy: 'System',
