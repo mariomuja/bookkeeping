@@ -9,10 +9,17 @@ A comprehensive, modern bookkeeping application built with Angular and designed 
 - **Multi-Currency Support**: Handle transactions in multiple currencies with exchange rate management
 - **Chart of Accounts**: Comprehensive account management with DATEV-style structure
 - **Journal Entries**: Create, post, and manage journal entries with real-time balance validation
+- **Custom Fields System**: 🆕 Extend journal entries with custom data fields
+  - Flexible field types (TEXT, NUMBER, DECIMAL, DATE, BOOLEAN, SELECT)
+  - Pre-configured insurance fields (Policy/Claim numbers, types, statuses)
+  - Visual editor for field management
+  - Sample data generator (1M+ insurance bookings)
+  - Aggregation and grouping by custom fields
 - **Financial Reports**:
   - Trial Balance
   - Balance Sheet
   - Profit & Loss Statement
+  - Policy & Claim Summaries 🆕
 - **Data Import**: Import accounts and journal entries from CSV/Excel files
 - **Dashboard**: Real-time metrics and key performance indicators
 
@@ -175,12 +182,25 @@ This frontend requires a REST API backend. The expected endpoints are:
 - Multi-line entries
 - Post and void functionality
 - Entry status tracking (Draft, Posted, Void)
+- Custom fields support 🆕
+
+### Custom Fields Manager 🆕
+- Visual field editor
+- Field type selection (TEXT, NUMBER, DECIMAL, DATE, BOOLEAN, SELECT)
+- Validation rules configuration
+- Formatting templates
+- Reorder fields with drag controls
+- One-click insurance field setup
+- Sample data generator (1M+ records)
 
 ### Reports
 - Trial Balance with totals
 - Balance Sheet (Assets, Liabilities, Equity)
 - Profit & Loss Statement
+- Policy Summary Report 🆕
+- Claim Summary Report 🆕
 - Export to CSV/Excel
+- Custom field filtering 🆕
 
 ### Import Data
 - CSV/Excel file upload
@@ -229,6 +249,41 @@ The system supports:
 - Historical exchange rates
 - Automatic base currency conversion
 - Currency-specific decimal places
+
+## 🎯 Custom Fields System (New!)
+
+### Overview
+Extend journal entries with custom data fields tailored to your business. Perfect for insurance companies, real estate, healthcare, retail, and more.
+
+### Key Features
+- **10+ Field Types**: TEXT, NUMBER, DECIMAL, DATE, BOOLEAN, SELECT
+- **Validation Rules**: Enforce data quality with min/max, patterns, required fields
+- **Formatting Templates**: Auto-format values (e.g., POL-12345678)
+- **Pre-configured Templates**: One-click setup for insurance operations
+- **Sample Data Generator**: Generate 1M+ test records instantly
+- **Aggregation & Grouping**: Built-in views for policy and claim summaries
+
+### Insurance Use Case
+The system includes pre-configured fields for insurance companies:
+- **Policy Management**: Policy numbers, master policies, policy types, premiums
+- **Claims Processing**: Claim numbers, master claims, status tracking, amounts
+- **Customer Data**: Insured party information, contact details
+- **Reporting**: Aggregate by policy type, claim status, date ranges
+
+### Quick Start
+1. Navigate to **Custom Fields** in the sidebar
+2. Click **"Create Insurance Fields"** for instant setup
+3. Click **"Generate Sample Data"** to create 1M test bookings
+4. View **Reports** → Policy/Claim Summaries for aggregations
+
+### Customization
+Create your own fields for any business model:
+- **Real Estate**: Property IDs, lease numbers, tenant info
+- **Healthcare**: Patient IDs, provider NPIs, procedure codes
+- **Retail**: Order numbers, customer IDs, store locations
+- **Manufacturing**: Work orders, SKUs, batch numbers
+
+**See [CUSTOM_FIELDS_GUIDE.md](CUSTOM_FIELDS_GUIDE.md) for complete documentation.**
 
 ## 🔒 Security Considerations
 
