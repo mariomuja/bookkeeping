@@ -15,10 +15,23 @@ import { Account } from '../../models/account.model';
   styleUrls: ['./journal-entries.component.css']
 })
 export class JournalEntriesComponent implements OnInit {
-  entries: JournalEntry[] = [];
+  allEntries: JournalEntry[] = [];
+  displayedEntries: JournalEntry[] = [];
   accounts: Account[] = [];
+  accountsMap: Map<string, Account> = new Map();
+  
   loading = true;
   error: string | null = null;
+  
+  // Pagination
+  currentPage = 1;
+  pageSize = 1000;
+  totalPages = 0;
+  
+  // Search and Filter
+  searchQuery = '';
+  filterAmount = '';
+  filterOperator: '>' | '<' | '=' | '>=' | '<=' = '>';
   
   showModal = false;
   
@@ -50,6 +63,8 @@ export class JournalEntriesComponent implements OnInit {
     this.accountService.getAccounts(org.id).subscribe({
       next: (accounts) => {
         this.accounts = accounts.filter(a => a.isActive);
+        // Create a map for quick lookups
+        this.accountsMap = new Map(accounts.map(a => [a.id, a]));
       },
       error: (err) => console.error('Failed to load accounts:', err)
     });
@@ -63,9 +78,24 @@ export class JournalEntriesComponent implements OnInit {
       return;
     }
 
+    console.log('[JournalEntries] Loading entries...');
     this.journalEntryService.getJournalEntries(org.id).subscribe({
       next: (entries) => {
-        this.entries = entries;
+        console.log('[JournalEntries] Received entries:', entries.length);
+        
+        // Populate account information in lines
+        entries.forEach(entry => {
+          if (entry.lines) {
+            entry.lines.forEach(line => {
+              if (!line.account && line.accountId) {
+                line.account = this.accountsMap.get(line.accountId);
+              }
+            });
+          }
+        });
+        
+        this.allEntries = entries;
+        this.applyFilters();
         this.loading = false;
       },
       error: (err) => {
@@ -74,6 +104,145 @@ export class JournalEntriesComponent implements OnInit {
         console.error(err);
       }
     });
+  }
+
+  applyFilters(): void {
+    let filtered = [...this.allEntries];
+    
+    // Apply search query (account number, description)
+    if (this.searchQuery.trim()) {
+      const query = this.searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(entry => {
+        // Search in description
+        if (entry.description?.toLowerCase().includes(query)) return true;
+        
+        // Search in reference number
+        if (entry.referenceNumber?.toLowerCase().includes(query)) return true;
+        
+        // Search in entry number
+        if (entry.entryNumber?.toLowerCase().includes(query)) return true;
+        
+        // Search in line accounts
+        if (entry.lines) {
+          return entry.lines.some(line => {
+            const account = line.account || this.accountsMap.get(line.accountId);
+            if (!account) return false;
+            
+            return (
+              account.accountNumber?.toLowerCase().includes(query) ||
+              account.accountName?.toLowerCase().includes(query) ||
+              line.description?.toLowerCase().includes(query)
+            );
+          });
+        }
+        
+        return false;
+      });
+    }
+    
+    // Apply amount filter
+    if (this.filterAmount.trim()) {
+      const amount = parseFloat(this.filterAmount);
+      if (!isNaN(amount)) {
+        filtered = filtered.filter(entry => {
+          if (!entry.lines) return false;
+          
+          return entry.lines.some(line => {
+            const lineAmount = Math.max(line.debitAmount || 0, line.creditAmount || 0);
+            switch (this.filterOperator) {
+              case '>': return lineAmount > amount;
+              case '<': return lineAmount < amount;
+              case '=': return Math.abs(lineAmount - amount) < 0.01;
+              case '>=': return lineAmount >= amount;
+              case '<=': return lineAmount <= amount;
+              default: return true;
+            }
+          });
+        });
+      }
+    }
+    
+    // Calculate pagination
+    this.totalPages = Math.ceil(filtered.length / this.pageSize);
+    if (this.currentPage > this.totalPages) {
+      this.currentPage = Math.max(1, this.totalPages);
+    }
+    
+    // Get current page
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.displayedEntries = filtered.slice(startIndex, endIndex);
+    
+    console.log(`[JournalEntries] Filtered: ${filtered.length}, Displaying: ${this.displayedEntries.length}, Page ${this.currentPage}/${this.totalPages}`);
+  }
+
+  onSearchChange(): void {
+    this.currentPage = 1;
+    this.applyFilters();
+  }
+
+  onFilterChange(): void {
+    this.currentPage = 1;
+    this.applyFilters();
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.applyFilters();
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.goToPage(this.currentPage + 1);
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.goToPage(this.currentPage - 1);
+    }
+  }
+
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxPagesToShow = 7;
+    
+    if (this.totalPages <= maxPagesToShow) {
+      for (let i = 1; i <= this.totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Always show first page
+      pages.push(1);
+      
+      // Calculate range around current page
+      const start = Math.max(2, this.currentPage - 2);
+      const end = Math.min(this.totalPages - 1, this.currentPage + 2);
+      
+      if (start > 2) pages.push(-1); // Ellipsis
+      
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+      
+      if (end < this.totalPages - 1) pages.push(-1); // Ellipsis
+      
+      // Always show last page
+      pages.push(this.totalPages);
+    }
+    
+    return pages;
+  }
+
+  clearFilters(): void {
+    this.searchQuery = '';
+    this.filterAmount = '';
+    this.currentPage = 1;
+    this.applyFilters();
   }
 
   openCreateModal(): void {
@@ -181,8 +350,8 @@ export class JournalEntriesComponent implements OnInit {
   }
 
   getAccountName(accountId: string): string {
-    const account = this.accounts.find(a => a.id === accountId);
-    return account ? `${account.accountNumber} - ${account.accountName}` : '';
+    const account = this.accountsMap.get(accountId);
+    return account ? `${account.accountNumber} - ${account.accountName}` : accountId;
   }
 
   formatCurrency(value: number): string {
@@ -204,5 +373,15 @@ export class JournalEntriesComponent implements OnInit {
     };
     return colors[status] || 'gray';
   }
-}
 
+  getTotalFilteredCount(): number {
+    return this.allEntries.length;
+  }
+
+  getDisplayRange(): string {
+    if (this.displayedEntries.length === 0) return '0-0';
+    const start = (this.currentPage - 1) * this.pageSize + 1;
+    const end = Math.min(start + this.displayedEntries.length - 1, this.getTotalFilteredCount());
+    return `${start}-${end}`;
+  }
+}

@@ -13,6 +13,91 @@
     </button>
   </div>
 
+  <!-- Search and Filter Bar -->
+  <div class="filter-bar">
+    <div class="search-container">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-icon">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.35-4.35"></path>
+      </svg>
+      <input 
+        type="text" 
+        class="search-input" 
+        placeholder="Search by account number, description, reference..." 
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="onSearchChange()">
+    </div>
+
+    <div class="amount-filter">
+      <select class="filter-operator" [(ngModel)]="filterOperator" (ngModelChange)="onFilterChange()">
+        <option value=">">></option>
+        <option value="<"><</option>
+        <option value="=">=</option>
+        <option value=">=">=</option>
+        <option value="<="><=</option>
+      </select>
+      <input 
+        type="number" 
+        class="filter-amount" 
+        placeholder="Amount (e.g., 1500)" 
+        [(ngModel)]="filterAmount"
+        (ngModelChange)="onFilterChange()"
+        step="0.01">
+    </div>
+
+    <button class="btn-clear" (click)="clearFilters()" *ngIf="searchQuery || filterAmount">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+      Clear
+    </button>
+  </div>
+
+  <!-- Results Summary -->
+  <div class="results-summary" *ngIf="!loading && !error">
+    <span class="results-info">
+      Showing {{ getDisplayRange() }} of {{ getTotalFilteredCount() }} entries
+      <span *ngIf="searchQuery || filterAmount" class="filtered-indicator">(filtered)</span>
+    </span>
+    <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
+  </div>
+
+  <!-- Pagination (Top) -->
+  <div class="pagination" *ngIf="!loading && !error && displayedEntries.length > 0">
+    <button 
+      class="pagination-btn" 
+      (click)="previousPage()" 
+      [disabled]="currentPage === 1">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      Previous
+    </button>
+
+    <div class="pagination-numbers">
+      <button 
+        *ngFor="let page of getPageNumbers()" 
+        class="pagination-number" 
+        [class.active]="page === currentPage"
+        [class.ellipsis]="page === -1"
+        (click)="page > 0 ? goToPage(page) : null"
+        [disabled]="page === -1">
+        {{ page === -1 ? '...' : page }}
+      </button>
+    </div>
+
+    <button 
+      class="pagination-btn" 
+      (click)="nextPage()" 
+      [disabled]="currentPage === totalPages">
+      Next
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+  </div>
+
   <div *ngIf="loading" class="loading">
     <div class="spinner"></div>
     <p>Loading entries...</p>
@@ -20,17 +105,71 @@
 
   <div *ngIf="error" class="error-message">{{ error }}</div>
 
-  <div *ngIf="!loading && !error" class="entries-list">
-    <div *ngFor="let entry of entries" class="entry-card">
+  <div *ngIf="!loading && !error && displayedEntries.length === 0" class="no-results">
+    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <circle cx="11" cy="11" r="8"></circle>
+      <path d="m21 21-4.35-4.35"></path>
+    </svg>
+    <h3>No entries found</h3>
+    <p>Try adjusting your search or filters</p>
+    <button class="btn-secondary" (click)="clearFilters()">Clear Filters</button>
+  </div>
+
+  <div *ngIf="!loading && !error && displayedEntries.length > 0" class="entries-list">
+    <div *ngFor="let entry of displayedEntries" class="entry-card">
       <div class="entry-header">
         <div class="entry-info">
           <div class="entry-number">{{ entry.entryNumber }}</div>
           <div class="entry-date">{{ entry.entryDate | date:'mediumDate' }}</div>
         </div>
         <div class="entry-status">
-          <span class="status-badge" [class]="'badge-' + getStatusColor(entry.status)">
-            {{ entry.status }}
-          </span>
+          <div class="status-tooltip-wrapper">
+            <span class="status-badge" [class]="'badge-' + getStatusColor(entry.status)">
+              {{ entry.status }}
+            </span>
+            <div class="status-tooltip">
+              <div class="status-tooltip-title">Journal Entry Statuses</div>
+              
+              <div class="status-explanation">
+                <div class="status-label">
+                  <span class="status-icon green"></span>
+                  <span>POSTED</span>
+                </div>
+                <div class="status-description">
+                  Entry is finalized and recorded in the books. Amounts are included in all reports and account balances.
+                </div>
+                <div class="status-effect">
+                  Cannot be edited or deleted - must be reversed with a new entry
+                </div>
+              </div>
+
+              <div class="status-explanation">
+                <div class="status-label">
+                  <span class="status-icon gray"></span>
+                  <span>DRAFT</span>
+                </div>
+                <div class="status-description">
+                  Entry is not yet finalized. Can be edited or deleted before posting.
+                </div>
+                <div class="status-effect">
+                  Not included in reports or account balances
+                </div>
+              </div>
+
+              <div class="status-explanation">
+                <div class="status-label">
+                  <span class="status-icon red"></span>
+                  <span>VOID</span>
+                </div>
+                <div class="status-description">
+                  Entry has been cancelled. A reversing entry was created to maintain audit trail.
+                </div>
+                <div class="status-effect">
+                  Reversed transactions - amounts nullified
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       
@@ -53,8 +192,8 @@
           <tbody>
             <tr *ngFor="let line of entry.lines">
               <td>
-                <span class="account-code">{{ line.account?.accountNumber }}</span>
-                {{ line.account?.accountName }}
+                <span class="account-code">{{ line.account?.accountNumber || 'N/A' }}</span>
+                {{ line.account?.accountName || getAccountName(line.accountId) }}
               </td>
               <td class="text-right">
                 {{ line.debitAmount > 0 ? formatCurrency(line.debitAmount) : '-' }}
@@ -216,4 +355,3 @@
     </div>
   </div>
 </div>
-
