@@ -33,12 +33,12 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Initialize with a demo organization if none exists
+    // Initialize with the backend organization
     const currentOrg = this.organizationService.getCurrentOrganization();
     if (!currentOrg) {
       const demoOrg = {
-        id: 'demo-org-1',
-        name: 'Demo Company Inc.',
+        id: '550e8400-e29b-41d4-a716-446655440000',
+        name: 'Demo Insurance Company',
         countryCode: 'US',
         defaultCurrency: 'USD',
         defaultTimezone: 'America/New_York',
