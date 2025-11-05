@@ -642,6 +642,269 @@ app.get('/api/organizations/:orgId/datev/validate', (req, res) => {
 });
 
 // ============================================================================
+// PAYROLL MANAGEMENT
+// ============================================================================
+
+const payrollManager = require('./payroll-manager');
+
+// Get all employees
+app.get('/api/organizations/:orgId/employees', (req, res) => {
+  const filters = {
+    isActive: req.query.isActive,
+    department: req.query.department,
+    costCenter: req.query.costCenter
+  };
+  
+  const orgEmployees = payrollManager.getEmployees(req.params.orgId, filters);
+  res.json(orgEmployees);
+});
+
+// Get single employee
+app.get('/api/employees/:id', (req, res) => {
+  try {
+    const employee = payrollManager.getEmployee(req.params.id);
+    res.json(employee);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+// Create employee
+app.post('/api/organizations/:orgId/employees', (req, res) => {
+  try {
+    const user = req.user || { username: 'System' };
+    const employee = payrollManager.createEmployee(req.params.orgId, req.body, user.username);
+    res.status(201).json(employee);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Update employee
+app.put('/api/employees/:id', (req, res) => {
+  try {
+    const user = req.user || { username: 'System' };
+    const employee = payrollManager.updateEmployee(req.params.id, req.body, user.username);
+    res.json(employee);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Delete employee
+app.delete('/api/employees/:id', (req, res) => {
+  try {
+    payrollManager.deleteEmployee(req.params.id);
+    res.status(204).send();
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+// Run payroll
+app.post('/api/organizations/:orgId/payroll/run', (req, res) => {
+  try {
+    const { periodStart, periodEnd } = req.body;
+    const user = req.user || { username: 'System' };
+    
+    if (!periodStart || !periodEnd) {
+      return res.status(400).json({ error: 'periodStart and periodEnd are required' });
+    }
+    
+    const payrollRun = payrollManager.runPayroll(
+      req.params.orgId,
+      periodStart,
+      periodEnd,
+      user.username
+    );
+    
+    res.status(201).json(payrollRun);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Get payroll runs
+app.get('/api/organizations/:orgId/payroll/runs', (req, res) => {
+  const filters = {
+    status: req.query.status
+  };
+  
+  const runs = payrollManager.getPayrollRuns(req.params.orgId, filters);
+  res.json(runs);
+});
+
+// Get single payroll run
+app.get('/api/payroll/runs/:id', (req, res) => {
+  try {
+    const run = payrollManager.getPayrollRun(req.params.id);
+    res.json(run);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+// Post payroll run (create journal entries)
+app.post('/api/payroll/runs/:id/post', (req, res) => {
+  try {
+    const result = payrollManager.postPayrollRun(
+      req.params.id,
+      mockData.journalEntries,
+      mockData.journalEntryLines,
+      mockData.accounts
+    );
+    
+    res.json(result);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// ============================================================================
+// COST CENTER MANAGEMENT
+// ============================================================================
+
+const costCenterManager = require('./cost-center-manager');
+
+// Get all cost centers
+app.get('/api/organizations/:orgId/cost-centers', (req, res) => {
+  const filters = {
+    isActive: req.query.isActive,
+    type: req.query.type,
+    parentId: req.query.parentId
+  };
+  
+  const costCenters = costCenterManager.getCostCenters(req.params.orgId, filters);
+  res.json(costCenters);
+});
+
+// Get cost center hierarchy
+app.get('/api/organizations/:orgId/cost-centers/hierarchy', (req, res) => {
+  const hierarchy = costCenterManager.getCostCenterHierarchy(req.params.orgId);
+  res.json(hierarchy);
+});
+
+// Get single cost center
+app.get('/api/cost-centers/:id', (req, res) => {
+  try {
+    const costCenter = costCenterManager.getCostCenter(req.params.id);
+    res.json(costCenter);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+// Create cost center
+app.post('/api/organizations/:orgId/cost-centers', (req, res) => {
+  try {
+    const user = req.user || { username: 'System' };
+    const costCenter = costCenterManager.createCostCenter(req.params.orgId, req.body, user.username);
+    res.status(201).json(costCenter);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Update cost center
+app.put('/api/cost-centers/:id', (req, res) => {
+  try {
+    const user = req.user || { username: 'System' };
+    const costCenter = costCenterManager.updateCostCenter(req.params.id, req.body, user.username);
+    res.json(costCenter);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Delete cost center
+app.delete('/api/cost-centers/:id', (req, res) => {
+  try {
+    costCenterManager.deleteCostCenter(req.params.id);
+    res.status(204).send();
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Cost center report
+app.get('/api/organizations/:orgId/cost-centers/report', (req, res) => {
+  const { costCenterId, periodStart, periodEnd } = req.query;
+  
+  const report = costCenterManager.getCostCenterReport(
+    req.params.orgId,
+    mockData.journalEntryLines,
+    mockData.accounts,
+    costCenterId,
+    periodStart,
+    periodEnd
+  );
+  
+  res.json(report);
+});
+
+// Contribution margin analysis
+app.get('/api/organizations/:orgId/cost-centers/contribution-margin', (req, res) => {
+  const analysis = costCenterManager.calculateContributionMargin(
+    req.params.orgId,
+    mockData.journalEntryLines,
+    mockData.accounts,
+    mockData.accountTypes
+  );
+  
+  res.json(analysis);
+});
+
+// Cost Objects (Kostenträger)
+
+app.get('/api/organizations/:orgId/cost-objects', (req, res) => {
+  const filters = {
+    isActive: req.query.isActive,
+    type: req.query.type
+  };
+  
+  const costObjects = costCenterManager.getCostObjects(req.params.orgId, filters);
+  res.json(costObjects);
+});
+
+app.post('/api/organizations/:orgId/cost-objects', (req, res) => {
+  try {
+    const user = req.user || { username: 'System' };
+    const costObject = costCenterManager.createCostObject(req.params.orgId, req.body, user.username);
+    res.status(201).json(costObject);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.get('/api/cost-objects/:id', (req, res) => {
+  try {
+    const costObject = costCenterManager.getCostObject(req.params.id);
+    res.json(costObject);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+app.put('/api/cost-objects/:id', (req, res) => {
+  try {
+    const user = req.user || { username: 'System' };
+    const costObject = costCenterManager.updateCostObject(req.params.id, req.body, user.username);
+    res.json(costObject);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.delete('/api/cost-objects/:id', (req, res) => {
+  try {
+    costCenterManager.deleteCostObject(req.params.id);
+    res.status(204).send();
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+// ============================================================================
 // AUDIT LOGS
 // ============================================================================
 

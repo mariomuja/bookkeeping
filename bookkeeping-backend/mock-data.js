@@ -51,6 +51,49 @@ const accounts = [
 // Custom Field Definitions (initially empty, can be created via API)
 const customFieldDefinitions = [];
 
+// Cost Centers (Kostenstellen)
+const costCenters = [
+  {
+    id: uuidv4(),
+    organizationId: demoOrgId,
+    costCenterNumber: '100',
+    name: 'Administration',
+    description: 'General administration and management',
+    parentId: null,
+    type: 'COST_CENTER',
+    isActive: true,
+    displayOrder: 1,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    organizationId: demoOrgId,
+    costCenterNumber: '200',
+    name: 'Sales & Marketing',
+    description: 'Sales and marketing department',
+    parentId: null,
+    type: 'PROFIT_CENTER',
+    isActive: true,
+    displayOrder: 2,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    id: uuidv4(),
+    organizationId: demoOrgId,
+    costCenterNumber: '300',
+    name: 'Operations',
+    description: 'Operational activities',
+    parentId: null,
+    type: 'COST_CENTER',
+    isActive: true,
+    displayOrder: 3,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  }
+];
+
 // Journal Entries with sample data
 const journalEntries = [
   {
@@ -116,6 +159,8 @@ const journalEntryLines = [
     description: 'Cash received',
     debitAmount: 50000,
     creditAmount: 0,
+    costCenter: null,
+    costObject: null,
     createdAt: new Date('2024-01-15')
   },
   {
@@ -126,6 +171,8 @@ const journalEntryLines = [
     description: 'Sales revenue',
     debitAmount: 0,
     creditAmount: 50000,
+    costCenter: null,
+    costObject: null,
     createdAt: new Date('2024-01-15')
   },
   // JE-2024-002: Other income
@@ -137,6 +184,8 @@ const journalEntryLines = [
     description: 'Other income received',
     debitAmount: 5000,
     creditAmount: 0,
+    costCenter: null,
+    costObject: null,
     createdAt: new Date('2024-01-20')
   },
   {
@@ -147,6 +196,8 @@ const journalEntryLines = [
     description: 'Other income',
     debitAmount: 0,
     creditAmount: 5000,
+    costCenter: null,
+    costObject: null,
     createdAt: new Date('2024-01-20')
   },
   // JE-2024-003: Cost of services
@@ -158,6 +209,8 @@ const journalEntryLines = [
     description: 'Cost of services',
     debitAmount: 15000,
     creditAmount: 0,
+    costCenter: null,
+    costObject: null,
     createdAt: new Date('2024-02-01')
   },
   {
@@ -168,6 +221,8 @@ const journalEntryLines = [
     description: 'Cash paid for services',
     debitAmount: 0,
     creditAmount: 15000,
+    costCenter: null,
+    costObject: null,
     createdAt: new Date('2024-02-01')
   },
   // JE-2024-004: Operating expenses
@@ -179,6 +234,8 @@ const journalEntryLines = [
     description: 'Operating expenses',
     debitAmount: 8000,
     creditAmount: 0,
+    costCenter: null,
+    costObject: null,
     createdAt: new Date('2024-02-15')
   },
   {
@@ -189,6 +246,8 @@ const journalEntryLines = [
     description: 'Cash paid for expenses',
     debitAmount: 0,
     creditAmount: 8000,
+    costCenter: null,
+    costObject: null,
     createdAt: new Date('2024-02-15')
   }
 ];
@@ -377,6 +436,7 @@ module.exports = {
   journalEntries,
   journalEntryLines,
   customFieldValues,
+  costCenters,
   getDashboardMetrics,
   getTrialBalance,
   getBalanceSheet,
