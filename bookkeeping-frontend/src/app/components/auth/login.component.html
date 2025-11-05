@@ -1,10 +1,28 @@
 <div class="login-container">
-  <div class="login-card">
-    <div class="login-header">
-      <h1>📊 International Bookkeeping</h1>
-      <p class="subtitle" *ngIf="!requiresTwoFactor">Sign in to your account</p>
-      <p class="subtitle" *ngIf="requiresTwoFactor">Two-Factor Authentication</p>
+  <div class="login-content">
+    <!-- Developer Contact Card -->
+    <div class="developer-card">
+      <div class="developer-photo">
+        <img src="assets/images/mario-muja.jpg" alt="Mario Muja" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+        <div class="photo-placeholder">MM</div>
+      </div>
+      <div class="developer-info">
+        <p class="developer-greeting">
+          Hi, I am <strong>Mario Muja</strong>. I live in Hamburg. This is an application that I have created in my spare free time. 
+          If you need support with Angular/TypeScript development or with this app, then you can contact me on my German phone number 
+          <a href="tel:+4915204641473">+49 1520 464 1473</a> or at 
+          <a href="mailto:mario.muja&#64;gmail.com">mario.muja&#64;gmail.com</a>. 
+          I am looking forward to hearing from you! Have a nice day.
+        </p>
+      </div>
     </div>
+
+    <div class="login-card">
+      <div class="login-header">
+        <h1>📊 International Bookkeeping</h1>
+        <p class="subtitle" *ngIf="!requiresTwoFactor">Sign in to your account</p>
+        <p class="subtitle" *ngIf="requiresTwoFactor">Two-Factor Authentication</p>
+      </div>
 
     <!-- Login Form -->
     <form *ngIf="!requiresTwoFactor" (ngSubmit)="onLogin()" class="login-form">
@@ -81,22 +99,6 @@
         </button>
       </div>
     </form>
-  </div>
-
-  <!-- Developer Contact Card -->
-  <div class="developer-card">
-    <div class="developer-photo">
-      <img src="assets/images/mario-muja.jpg" alt="Mario Muja" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-      <div class="photo-placeholder">MM</div>
-    </div>
-    <div class="developer-info">
-      <p class="developer-greeting">
-        Hi, I am <strong>Mario Muja</strong>. I live in Hamburg. This is an application that I have created in my spare free time. 
-        If you need support with Angular/TypeScript development or with this app, then you can contact me on my German phone number 
-        <a href="tel:+4915204641473">+49 1520 464 1473</a> or at 
-        <a href="mailto:mario.muja&#64;gmail.com">mario.muja&#64;gmail.com</a>. 
-        I am looking forward to hearing from you! Have a nice day.
-      </p>
     </div>
   </div>
 

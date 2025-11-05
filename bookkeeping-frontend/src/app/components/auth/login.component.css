@@ -8,14 +8,23 @@
   padding: 2rem;
 }
 
+.login-content {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 1100px;
+  animation: slideUp 0.5s ease;
+}
+
 .login-card {
   background: white;
   border-radius: 1rem;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  padding: 3rem;
+  padding: 2rem;
   width: 100%;
   max-width: 420px;
-  animation: slideUp 0.5s ease;
+  flex-shrink: 0;
 }
 
 @keyframes slideUp {
@@ -31,11 +40,11 @@
 
 .login-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.25rem;
 }
 
 .login-header h1 {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #1f2937;
   margin-bottom: 0.5rem;
@@ -43,13 +52,13 @@
 
 .subtitle {
   color: #6b7280;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .form-group {
@@ -65,10 +74,10 @@
 }
 
 .form-group input {
-  padding: 0.75rem 1rem;
+  padding: 0.625rem 0.875rem;
   border: 1px solid #d1d5db;
   border-radius: 0.5rem;
-  font-size: 1rem;
+  font-size: 0.95rem;
   transition: all 0.2s;
 }
 
@@ -108,13 +117,13 @@
 }
 
 .btn-login {
-  padding: 0.875rem 1.5rem;
+  padding: 0.75rem 1.25rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
   border-radius: 0.5rem;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -156,8 +165,8 @@
 }
 
 .demo-credentials {
-  margin-top: 1rem;
-  padding: 1rem;
+  margin-top: 0.5rem;
+  padding: 0.75rem;
   background: #f0fdf4;
   border: 1px solid #bbf7d0;
   border-radius: 0.5rem;
@@ -185,11 +194,11 @@
   padding: 2rem;
   width: 100%;
   max-width: 520px;
-  margin-top: 2rem;
   display: flex;
+  flex-direction: column;
   gap: 1.5rem;
-  align-items: flex-start;
-  animation: slideUp 0.5s ease 0.2s both;
+  align-items: center;
+  text-align: center;
 }
 
 .developer-photo {
@@ -254,14 +263,18 @@
   opacity: 0.9;
 }
 
-@media (max-width: 640px) {
-  .developer-card {
+@media (max-width: 1024px) {
+  .login-content {
     flex-direction: column;
     align-items: center;
-    text-align: center;
-    max-width: 420px;
   }
   
+  .developer-card {
+    max-width: 420px;
+  }
+}
+
+@media (max-width: 640px) {
   .developer-photo img,
   .photo-placeholder {
     width: 80px;
@@ -275,11 +288,11 @@
 
 @media (max-width: 480px) {
   .login-card {
-    padding: 2rem 1.5rem;
+    padding: 1.5rem 1.25rem;
   }
   
   .login-header h1 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
   }
   
   .developer-card {
