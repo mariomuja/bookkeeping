@@ -178,12 +178,99 @@
   color: #15803d;
 }
 
+.developer-card {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  padding: 2rem;
+  width: 100%;
+  max-width: 520px;
+  margin-top: 2rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  animation: slideUp 0.5s ease 0.2s both;
+}
+
+.developer-photo {
+  flex-shrink: 0;
+  position: relative;
+}
+
+.developer-photo img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #667eea;
+}
+
+.photo-placeholder {
+  display: none;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 2rem;
+  font-weight: 700;
+  align-items: center;
+  justify-content: center;
+}
+
+.developer-info {
+  flex: 1;
+}
+
+.developer-greeting {
+  color: #374151;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.developer-greeting strong {
+  color: #1f2937;
+  font-weight: 700;
+}
+
+.developer-greeting a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.developer-greeting a:hover {
+  color: #764ba2;
+  text-decoration: underline;
+}
+
 .login-footer {
   margin-top: 2rem;
   text-align: center;
   color: white;
   font-size: 0.875rem;
   opacity: 0.9;
+}
+
+@media (max-width: 640px) {
+  .developer-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 420px;
+  }
+  
+  .developer-photo img,
+  .photo-placeholder {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .photo-placeholder {
+    font-size: 1.5rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -193,6 +280,14 @@
   
   .login-header h1 {
     font-size: 1.5rem;
+  }
+  
+  .developer-card {
+    padding: 1.5rem;
+  }
+  
+  .developer-greeting {
+    font-size: 0.85rem;
   }
 }
 
