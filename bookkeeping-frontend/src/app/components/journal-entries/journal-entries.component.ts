@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { JournalEntryService } from '../../services/journal-entry.service';
 import { AccountService } from '../../services/account.service';
 import { OrganizationService } from '../../services/organization.service';
@@ -10,7 +11,7 @@ import { Account } from '../../models/account.model';
 @Component({
   selector: 'app-journal-entries',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './journal-entries.component.html',
   styleUrls: ['./journal-entries.component.css']
 })

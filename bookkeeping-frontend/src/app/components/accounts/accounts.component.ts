@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { AccountService } from '../../services/account.service';
 import { OrganizationService } from '../../services/organization.service';
 import { Account, AccountType } from '../../models/account.model';
@@ -31,7 +32,7 @@ export interface ImportResult {
 @Component({
   selector: 'app-accounts',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './accounts.component.html',
   styleUrls: ['./accounts.component.css']
 })
