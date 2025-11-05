@@ -1,8 +1,8 @@
 <div class="import-page">
   <div class="page-header">
     <div>
-      <h1>Import Data</h1>
-      <p class="subtitle">Import accounts and journal entries from CSV or Excel files</p>
+      <h1>{{ 'import.title' | translate }}</h1>
+      <p class="subtitle">{{ 'import.subtitle' | translate }}</p>
     </div>
   </div>
 
@@ -10,8 +10,8 @@
     <!-- Upload Section -->
     <div class="upload-card">
       <div class="card-header">
-        <h2>Upload File</h2>
-        <p>Import your bookkeeping data from CSV or Excel files</p>
+        <h2>{{ 'import.uploadFile' | translate }}</h2>
+        <p>{{ 'import.importBookkeepingData' | translate }}</p>
       </div>
 
       <div class="import-type-selector">
@@ -23,8 +23,8 @@
               <polyline points="14 2 14 8 20 8"></polyline>
             </svg>
             <div>
-              <strong>Journal Entries</strong>
-              <span>Import transactions with debits and credits</span>
+              <strong>{{ 'import.journalEntries' | translate }}</strong>
+              <span>{{ 'import.importTransactions' | translate }}</span>
             </div>
           </div>
         </label>
@@ -37,8 +37,8 @@
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
             <div>
-              <strong>Chart of Accounts</strong>
-              <span>Import account numbers and details</span>
+              <strong>{{ 'import.chartOfAccounts' | translate }}</strong>
+              <span>{{ 'import.importAccountDetails' | translate }}</span>
             </div>
           </div>
         </label>
@@ -51,8 +51,8 @@
             <polyline points="17 8 12 3 7 8"></polyline>
             <line x1="12" y1="3" x2="12" y2="15"></line>
           </svg>
-          <p class="dropzone-text">Click to upload or drag and drop</p>
-          <p class="dropzone-hint">CSV or Excel files (Max 10MB)</p>
+          <p class="dropzone-text">{{ 'import.dragDropOrClick' | translate }}</p>
+          <p class="dropzone-hint">{{ 'import.supportedFormats' | translate }}</p>
           <input 
             #fileInput 
             type="file" 
@@ -72,7 +72,7 @@
               <span>{{ formatFileSize(selectedFile.size) }}</span>
             </div>
           </div>
-          <button class="btn-icon" (click)="removeFile()" *ngIf="!isUploading">
+          <button class="btn-icon" (click)="removeFile()" *ngIf="!isUploading" [title]="'import.removeFile' | translate">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -84,7 +84,7 @@
           <div class="progress-bar">
             <div class="progress-fill" [style.width.%]="uploadProgress"></div>
           </div>
-          <p class="progress-text">Uploading... {{ uploadProgress }}%</p>
+          <p class="progress-text">{{ 'import.uploading' | translate }}... {{ uploadProgress }}%</p>
         </div>
 
         <div *ngIf="uploadComplete" class="upload-success">
@@ -92,8 +92,8 @@
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
             <polyline points="22 4 12 14.01 9 11.01"></polyline>
           </svg>
-          <p class="success-text">File uploaded successfully!</p>
-          <button class="btn-secondary" (click)="removeFile()">Upload Another File</button>
+          <p class="success-text">{{ 'import.success' | translate }}!</p>
+          <button class="btn-secondary" (click)="removeFile()">{{ 'import.uploadFile' | translate }}</button>
         </div>
 
         <div *ngIf="uploadError" class="upload-error">
@@ -116,7 +116,7 @@
             <polyline points="17 8 12 3 7 8"></polyline>
             <line x1="12" y1="3" x2="12" y2="15"></line>
           </svg>
-          Upload File
+          {{ 'import.uploadAndImport' | translate }}
         </button>
       </div>
     </div>
@@ -124,8 +124,8 @@
     <!-- Import History -->
     <div class="history-card">
       <div class="card-header">
-        <h2>Import History</h2>
-        <p>Recent file imports and their status</p>
+        <h2>{{ 'import.importHistory' | translate }}</h2>
+        <p>{{ 'import.startImporting' | translate }}</p>
       </div>
 
       <div class="history-list">
@@ -148,11 +148,11 @@
           
           <div class="history-stats">
             <div class="stat">
-              <span class="stat-label">Records</span>
+              <span class="stat-label">{{ 'import.recordsImported' | translate }}</span>
               <span class="stat-value">{{ item.records }}</span>
             </div>
             <div class="stat">
-              <span class="stat-label">Errors</span>
+              <span class="stat-label">{{ 'import.recordsFailed' | translate }}</span>
               <span class="stat-value" [class.error]="item.errors > 0">{{ item.errors }}</span>
             </div>
           </div>

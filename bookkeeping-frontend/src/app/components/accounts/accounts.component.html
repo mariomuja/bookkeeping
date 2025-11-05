@@ -1,8 +1,8 @@
 <div class="accounts-page">
   <div class="page-header">
     <div>
-      <h1>Chart of Accounts</h1>
-      <p class="subtitle">Manage your account structure</p>
+      <h1>{{ 'accounts.title' | translate }}</h1>
+      <p class="subtitle">{{ 'accounts.subtitle' | translate }}</p>
     </div>
     <div class="header-actions">
       <button class="btn-secondary" (click)="openFrameworkModal()">
@@ -11,21 +11,21 @@
           <polyline points="7 10 12 15 17 10"></polyline>
           <line x1="12" y1="15" x2="12" y2="3"></line>
         </svg>
-        Import Framework
+        {{ 'accounts.importFramework' | translate }}
       </button>
       <button class="btn-primary" (click)="openCreateModal()">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="12" y1="5" x2="12" y2="19"></line>
           <line x1="5" y1="12" x2="19" y2="12"></line>
         </svg>
-        Add Account
+        {{ 'accounts.addAccount' | translate }}
       </button>
     </div>
   </div>
 
   <div *ngIf="loading" class="loading">
     <div class="spinner"></div>
-    <p>Loading accounts...</p>
+    <p>{{ 'accounts.loading' | translate }}</p>
   </div>
 
   <div *ngIf="error" class="error-message">
@@ -42,13 +42,13 @@
         </svg>
         <input 
           type="text" 
-          placeholder="Search accounts..." 
+          [placeholder]="'accounts.search' | translate" 
           [(ngModel)]="searchQuery"
           (ngModelChange)="filterAccounts()">
       </div>
       
       <select class="filter-select" [(ngModel)]="filterCategory" (ngModelChange)="filterAccounts()">
-        <option value="ALL">All Categories</option>
+        <option value="ALL">{{ 'accounts.allCategories' | translate }}</option>
         <option value="ASSET">Assets</option>
         <option value="LIABILITY">Liabilities</option>
         <option value="EQUITY">Equity</option>
@@ -62,13 +62,13 @@
       <table class="accounts-table">
         <thead>
           <tr>
-            <th>Account Number</th>
-            <th>Account Name</th>
-            <th>Type</th>
-            <th>Category</th>
-            <th>Currency</th>
-            <th>Status</th>
-            <th>Actions</th>
+            <th>{{ 'accounts.accountNumber' | translate }}</th>
+            <th>{{ 'accounts.accountName' | translate }}</th>
+            <th>{{ 'accounts.type' | translate }}</th>
+            <th>{{ 'accounts.category' | translate }}</th>
+            <th>{{ 'accounts.currency' | translate }}</th>
+            <th>{{ 'accounts.status' | translate }}</th>
+            <th>{{ 'accounts.actions' | translate }}</th>
           </tr>
         </thead>
         <tbody>

@@ -1,14 +1,14 @@
 <div class="reports-page">
   <div class="page-header">
     <div>
-      <h1>Financial Reports</h1>
-      <p class="subtitle">Select a report to open in a new tab</p>
+      <h1>{{ 'reports.title' | translate }}</h1>
+      <p class="subtitle">{{ 'reports.subtitle' | translate }}</p>
     </div>
   </div>
 
   <!-- Financial Reports Section -->
   <div class="reports-section">
-    <h2 class="section-title">Financial Reports</h2>
+    <h2 class="section-title">{{ 'reports.financialReportsSection' | translate }}</h2>
     <div class="reports-grid">
       <div *ngFor="let report of getFinancialReports()" 
            class="report-card" 
@@ -28,7 +28,7 @@
             <polyline points="15 3 21 3 21 9"></polyline>
             <line x1="10" y1="14" x2="21" y2="3"></line>
           </svg>
-          Open in new tab
+          {{ 'reports.openInNewTab' | translate }}
         </div>
       </div>
     </div>
