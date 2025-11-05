@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: bookkeeper-pro-api
+    runtime: node
+    env: node
+    region: frankfurt
+    plan: free
+    buildCommand: cd bookkeeping-backend && npm install
+    startCommand: cd bookkeeping-backend && node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: CORS_ORIGIN
+        sync: false
+      - key: USE_MOCK_DATA
+        value: true
+    healthCheckPath: /api/health

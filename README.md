@@ -354,6 +354,23 @@ When implementing the backend API:
 - **Revenue**: Normal balance = Credit
 - **Expenses**: Normal balance = Debit
 
+## 🌐 Free Hosting & Deployment
+
+Deploy your own instance for **FREE** on:
+- **Frontend**: [Vercel](https://vercel.com) (100% free, unlimited bandwidth)
+- **Backend**: [Render.com](https://render.com) (Free tier with 750h/month)
+
+**📖 Complete deployment guide**: See [DEPLOYMENT.md](DEPLOYMENT.md) for step-by-step instructions.
+
+**⚡ Quick Deploy**:
+1. Fork this repository
+2. Sign up for Vercel (GitHub login)
+3. Sign up for Render (GitHub login)
+4. Follow the [deployment guide](DEPLOYMENT.md)
+5. Your app will be live in ~5 minutes!
+
+**Live Demo**: Share your deployed URL with anyone to showcase the application.
+
 ## 🤝 Contributing
 
 This is a demonstration/template project. Feel free to:

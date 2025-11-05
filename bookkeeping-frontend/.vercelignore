@@ -1,0 +1,9 @@
+node_modules
+.angular
+*.log
+*.spec.ts
+test
+e2e
+src/**/*.spec.ts
+karma.conf.js
+
