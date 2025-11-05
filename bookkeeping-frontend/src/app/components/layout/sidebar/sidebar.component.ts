@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { filter } from 'rxjs/operators';
+import { AuthService } from '../../services/auth.service';
 
 interface MenuItem {
   icon: string;
@@ -33,7 +34,10 @@ export class SidebarComponent {
     { icon: 'settings', label: 'Settings', translationKey: 'nav.settings', route: '/settings' }
   ];
 
-  constructor(public router: Router) {
+  constructor(
+    public router: Router,
+    private authService: AuthService
+  ) {
     // Close sidebar on navigation (mobile)
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
@@ -48,6 +52,12 @@ export class SidebarComponent {
   
   onNavItemClick(): void {
     this.closeSidebar.emit();
+  }
+  
+  onLogout(): void {
+    this.authService.logout();
+    this.closeSidebar.emit();
+    this.router.navigate(['/login']);
   }
 }
 

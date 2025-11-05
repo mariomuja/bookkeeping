@@ -14,7 +14,8 @@
     "import": "Import Data",
     "customFields": "Custom Fields",
     "auditLog": "Audit Log",
-    "settings": "Settings"
+    "settings": "Settings",
+    "logout": "Logout"
   },
   "dashboard": {
     "title": "Dashboard",

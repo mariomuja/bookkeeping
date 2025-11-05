@@ -74,6 +74,31 @@
   font-weight: 600;
 }
 
+/* Logout Section */
+.logout-section {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.logout-item {
+  width: 100%;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logout-item:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.logout-item .nav-icon svg {
+  stroke: currentColor;
+}
+
 /* Mobile Responsive Styles */
 @media (max-width: 768px) {
   .sidebar {
