@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, firstValueFrom } from 'rxjs';
 import { catchError, map, timeout } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
@@ -116,14 +116,15 @@ export class BootstrapService {
    */
   private async checkBackendConnectivity(): Promise<BootstrapCheck> {
     try {
-      await this.http.get(`${this.apiUrl}/health`)
-        .pipe(
-          timeout(this.TIMEOUT_MS),
-          catchError((error: HttpErrorResponse) => {
-            throw error;
-          })
-        )
-        .toPromise();
+      await firstValueFrom(
+        this.http.get(`${this.apiUrl}/health`)
+          .pipe(
+            timeout(this.TIMEOUT_MS),
+            catchError((error: HttpErrorResponse) => {
+              throw error;
+            })
+          )
+      );
       
       return {
         name: 'Backend Connectivity',
@@ -160,9 +161,10 @@ export class BootstrapService {
    */
   private async checkBackendHealth(): Promise<BootstrapCheck> {
     try {
-      const health: any = await this.http.get(`${this.apiUrl}/health`)
-        .pipe(timeout(this.TIMEOUT_MS))
-        .toPromise();
+      const health: any = await firstValueFrom(
+        this.http.get(`${this.apiUrl}/health`)
+          .pipe(timeout(this.TIMEOUT_MS))
+      );
       
       if (health.status !== 'ok') {
         return {
@@ -196,12 +198,13 @@ export class BootstrapService {
    */
   private async checkApiEndpoints(): Promise<BootstrapCheck> {
     try {
-      const orgs: any = await this.http.get(`${this.apiUrl}/organizations`)
-        .pipe(
-          timeout(this.TIMEOUT_MS),
-          catchError(() => of(null))
-        )
-        .toPromise();
+      const orgs: any = await firstValueFrom(
+        this.http.get(`${this.apiUrl}/organizations`)
+          .pipe(
+            timeout(this.TIMEOUT_MS),
+            catchError(() => of(null))
+          )
+      );
       
       if (!orgs || orgs.length === 0) {
         return {
