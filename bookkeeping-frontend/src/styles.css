@@ -252,6 +252,80 @@ table {
 
 @media (max-width: 1024px) {
   /* Tablet and mobile adjustments */
+  body {
+    overflow-x: hidden;
+  }
+}
+
+/* Mobile-Specific Enhancements */
+@media (max-width: 768px) {
+  /* Improve touch targets */
+  button, .btn-primary, .btn-secondary, .btn-icon {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Optimize spacing for mobile */
+  h1 {
+    font-size: 1.5rem;
+  }
+  
+  h2 {
+    font-size: 1.25rem;
+  }
+  
+  /* Make tables horizontally scrollable */
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+  
+  /* Optimize modal sizing */
+  .modal, .modal-overlay .modal {
+    max-width: calc(100vw - 2rem);
+    max-height: 95vh;
+  }
+  
+  /* Stack flex items */
+  .page-header, .header-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  /* Full-width buttons on mobile */
+  .modal-footer, .button-group {
+    flex-direction: column-reverse;
+  }
+  
+  .modal-footer button, .button-group button {
+    width: 100%;
+  }
+}
+
+/* Very Small Screens */
+@media (max-width: 480px) {
+  body {
+    font-size: 0.9rem;
+  }
+  
+  /* Tighter padding for small screens */
+  .page-header, .settings-section, .card {
+    padding: 1rem;
+  }
+  
+  /* Smaller form inputs */
+  input, select, textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* Landscape mobile optimization */
+@media (max-width: 768px) and (orientation: landscape) {
+  .modal {
+    max-height: 90vh;
+  }
 }
 
 /* Focus Visible for Accessibility */

@@ -916,3 +916,107 @@ body.resizing {
 .pagination-number.ellipsis:hover {
   background: white;
 }
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .journal-entries-page {
+    padding: 1rem;
+  }
+  
+  .page-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .filter-bar {
+    flex-direction: column;
+    padding: 1rem;
+  }
+  
+  .search-container {
+    width: 100%;
+  }
+  
+  .amount-filter {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .filter-operator, .filter-amount {
+    width: 100%;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .entries-table {
+    min-width: 800px;
+  }
+  
+  .modal {
+    width: calc(100% - 2rem);
+    max-width: none;
+    max-height: 95vh;
+  }
+  
+  .modal-header h2 {
+    font-size: 1.25rem;
+  }
+  
+  .modal-body {
+    padding: 1rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .line-row {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .line-number {
+    margin-top: 0;
+  }
+  
+  .line-fields {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+  
+  .btn-icon {
+    margin-top: 0;
+    width: 100%;
+  }
+  
+  .pagination {
+    padding: 0.75rem;
+    flex-wrap: wrap;
+  }
+  
+  .pagination-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .journal-entries-page {
+    padding: 0.75rem;
+  }
+  
+  .filter-bar {
+    padding: 0.75rem;
+  }
+  
+  .pagination-numbers {
+    display: none;
+  }
+}
