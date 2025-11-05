@@ -14,7 +14,8 @@
     "import": "Daten importieren",
     "customFields": "Benutzerdefinierte Felder",
     "auditLog": "Prüfprotokoll",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "logout": "Abmelden"
   },
   "dashboard": {
     "title": "Dashboard",

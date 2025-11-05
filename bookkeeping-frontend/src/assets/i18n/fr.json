@@ -14,7 +14,8 @@
     "import": "Importer des données",
     "customFields": "Champs personnalisés",
     "auditLog": "Journal d'audit",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "logout": "Déconnexion"
   },
   "dashboard": {
     "title": "Tableau de bord",

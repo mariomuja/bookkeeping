@@ -14,7 +14,8 @@
     "import": "Importar datos",
     "customFields": "Campos personalizados",
     "auditLog": "Registro de auditoría",
-    "settings": "Configuración"
+    "settings": "Configuración",
+    "logout": "Cerrar sesión"
   },
   "dashboard": {
     "title": "Panel de control",

@@ -14,7 +14,8 @@
     "import": "Importa dati",
     "customFields": "Campi personalizzati",
     "auditLog": "Registro di audit",
-    "settings": "Impostazioni"
+    "settings": "Impostazioni",
+    "logout": "Esci"
   },
   "dashboard": {
     "title": "Dashboard",
