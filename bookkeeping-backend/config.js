@@ -1,4 +1,4 @@
-// Configuration for BookKeeper Pro Backend
+// Configuration for International Bookkeeping Backend
 
 module.exports = {
   port: process.env.PORT || 3000,

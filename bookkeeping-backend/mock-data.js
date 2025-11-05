@@ -1,4 +1,4 @@
-// Mock Data for BookKeeper Pro
+// Mock Data for International Bookkeeping
 const { v4: uuidv4 } = require('uuid');
 const config = require('./config');
 

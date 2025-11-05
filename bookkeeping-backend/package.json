@@ -1,7 +1,7 @@
 {
   "name": "bookkeeping-backend",
   "version": "1.0.0",
-  "description": "BookKeeper Pro Backend API with Custom Fields Support",
+  "description": "International Bookkeeping Backend API with Custom Fields Support",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

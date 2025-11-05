@@ -194,7 +194,7 @@ class GoBDCompliance {
     <Location>Germany</Location>
   </DataSupplier>
   <SoftwareInfo>
-    <Name>BookKeeper Pro</Name>
+    <Name>International Bookkeeping</Name>
     <Version>1.0.0</Version>
   </SoftwareInfo>
   <Command>
@@ -350,16 +350,16 @@ class GoBDCompliance {
     const timestamp = new Date().toISOString();
     
     return {
-      title: 'Verfahrensdokumentation - BookKeeper Pro',
+      title: 'Verfahrensdokumentation - International Bookkeeping',
       organization: organizationInfo,
       generatedAt: timestamp,
       sections: [
         {
           title: '1. Allgemeine Beschreibung',
-          content: `Dieses Dokument beschreibt das Verfahren zur Führung der Buchführung in BookKeeper Pro gemäß GoBD.
+          content: `Dieses Dokument beschreibt das Verfahren zur Führung der Buchführung in International Bookkeeping gemäß GoBD.
 
 Organisation: ${organizationInfo.name}
-System: BookKeeper Pro v1.0.0
+System: International Bookkeeping v1.0.0
 Zeitpunkt der Erstellung: ${new Date().toLocaleDateString('de-DE')}`
         },
         {

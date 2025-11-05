@@ -1,4 +1,4 @@
-# Custom Fields Guide - BookKeeper Pro
+# Custom Fields Guide - International Bookkeeping
 
 ## Overview
 

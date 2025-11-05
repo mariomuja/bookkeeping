@@ -16,7 +16,7 @@ import { filter } from 'rxjs/operators';
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
-  title = 'BookKeeper Pro';
+  title = 'International Bookkeeping';
   showMainLayout = true;
   showDocumentationModal = false;
 

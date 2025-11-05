@@ -1,4 +1,4 @@
-# BookKeeper Pro - International Bookkeeping System
+# International Bookkeeping System
 
 A comprehensive, modern bookkeeping application built with Angular and designed to work with PostgreSQL + TimescaleDB. This application supports double-entry accounting, multi-currency operations, and can handle millions of bookings efficiently.
 

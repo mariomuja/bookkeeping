@@ -1,9 +1,9 @@
-# BookKeeper Pro - Silent Startup Script
+# International Bookkeeping - Silent Startup Script
 
 Write-Host ""
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "  BookKeeper Pro - Starting Application" -ForegroundColor Cyan
-Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "================================================" -ForegroundColor Cyan
+Write-Host "  International Bookkeeping - Starting Application" -ForegroundColor Cyan
+Write-Host "================================================" -ForegroundColor Cyan
 Write-Host ""
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path

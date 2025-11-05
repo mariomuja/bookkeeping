@@ -1,4 +1,4 @@
-# 📚 BookKeeper Pro - Complete System Guide
+# 📚 International Bookkeeping - Complete System Guide
 
 ## 🎯 Getting Started
 
@@ -374,5 +374,5 @@ For questions or issues:
 
 ---
 
-**BookKeeper Pro © 2025 | Professional Insurance Bookkeeping System**
+**International Bookkeeping © 2025 | Professional Insurance Bookkeeping System**
 

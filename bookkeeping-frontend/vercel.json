@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "bookkeeper-pro",
+  "name": "international-bookkeeping",
   "builds": [
     {
       "src": "package.json",

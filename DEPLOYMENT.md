@@ -1,13 +1,13 @@
-# 🚀 Deployment Guide - BookKeeper Pro
+# 🚀 Deployment Guide - International Bookkeeping
 
-This guide explains how to deploy BookKeeper Pro to **Vercel (Frontend)** and **Render.com (Backend)** for free.
+This guide explains how to deploy International Bookkeeping to **Vercel (Frontend)** and **Render.com (Backend)** for free.
 
 ## 📋 Prerequisites
 
 - GitHub account
 - Vercel account (sign up at https://vercel.com - free)
 - Render account (sign up at https://render.com - free)
-- Your BookKeeper Pro code pushed to GitHub
+- Your International Bookkeeping code pushed to GitHub
 
 ## 🎯 Deployment Overview
 
@@ -16,7 +16,7 @@ This guide explains how to deploy BookKeeper Pro to **Vercel (Frontend)** and **
 Frontend (Angular)          Backend (Express/Node.js)
     Vercel                        Render.com
        ↓                              ↓
-https://bookkeeper-pro          https://bookkeeper-pro-api
+https://international-bookkeeping          https://international-bookkeeping-api
     .vercel.app              →   .onrender.com/api
 ```
 
@@ -33,7 +33,7 @@ https://bookkeeper-pro          https://bookkeeper-pro-api
 1. Click **"New +"** → **"Web Service"**
 2. Connect your GitHub repository: `mariomuja/bookkeeping`
 3. Configure the service:
-   - **Name**: `bookkeeper-pro-api`
+   - **Name**: `international-bookkeeping-api`
    - **Region**: `Frankfurt` (closest to Germany)
    - **Branch**: `main`
    - **Root Directory**: Leave empty (or enter `bookkeeping-backend` if structure changes)
@@ -49,7 +49,7 @@ In the Render dashboard, add these environment variables:
 NODE_ENV=production
 PORT=3000
 USE_MOCK_DATA=true
-CORS_ORIGIN=https://bookkeeper-pro.vercel.app
+CORS_ORIGIN=https://international-bookkeeping.vercel.app
 ```
 
 **Important**: You'll update `CORS_ORIGIN` after deploying the frontend in Part 2.
@@ -57,12 +57,12 @@ CORS_ORIGIN=https://bookkeeper-pro.vercel.app
 ### Step 4: Deploy
 1. Click **"Create Web Service"**
 2. Wait 2-3 minutes for deployment
-3. Your backend will be available at: `https://bookkeeper-pro-api.onrender.com`
-4. Test it: Open `https://bookkeeper-pro-api.onrender.com/api/health`
+3. Your backend will be available at: `https://international-bookkeeping-api.onrender.com`
+4. Test it: Open `https://international-bookkeeping-api.onrender.com/api/health`
    - You should see: `{"status":"ok","version":"1.0.0",...}`
 
 ### Step 5: Note Your Backend URL
-Copy the URL: `https://bookkeeper-pro-api.onrender.com/api`
+Copy the URL: `https://international-bookkeeping-api.onrender.com/api`
 You'll need this for the frontend deployment.
 
 ---
@@ -75,7 +75,7 @@ You'll need this for the frontend deployment.
    ```typescript
    export const environment = {
      production: true,
-     apiUrl: 'https://bookkeeper-pro-api.onrender.com/api'  // Your actual URL
+     apiUrl: 'https://international-bookkeeping-api.onrender.com/api'  // Your actual URL
    };
    ```
 3. Commit and push this change:
@@ -103,7 +103,7 @@ You'll need this for the frontend deployment.
 ### Step 4: Deploy
 1. Click **"Deploy"**
 2. Wait 2-3 minutes for build and deployment
-3. Your frontend will be available at: `https://bookkeeper-pro-XXXXX.vercel.app`
+3. Your frontend will be available at: `https://international-bookkeeping-XXXXX.vercel.app`
    (Vercel generates a unique URL)
 
 ### Step 5: Update CORS in Backend
@@ -113,7 +113,7 @@ Now that you have your Vercel URL, update the backend:
 2. Go to **"Environment"** tab
 3. Update `CORS_ORIGIN` environment variable:
    ```
-   CORS_ORIGIN=https://bookkeeper-pro-XXXXX.vercel.app
+   CORS_ORIGIN=https://international-bookkeeping-XXXXX.vercel.app
    ```
    (Use your actual Vercel URL)
 4. Click **"Save Changes"**
@@ -125,7 +125,7 @@ Now that you have your Vercel URL, update the backend:
 
 ### Test Your Deployed Application
 
-1. **Open Frontend**: `https://bookkeeper-pro-XXXXX.vercel.app`
+1. **Open Frontend**: `https://international-bookkeeping-XXXXX.vercel.app`
 2. **Check Bootstrap Screen**: Should show all systems ready
 3. **Login**: Use `demo` / `demo123`
 4. **Test Features**:
@@ -253,9 +253,9 @@ git push
 
 Your application is now live and accessible worldwide:
 
-- **Frontend**: https://bookkeeper-pro-XXXXX.vercel.app
-- **Backend API**: https://bookkeeper-pro-api.onrender.com/api
-- **Health Check**: https://bookkeeper-pro-api.onrender.com/api/health
+- **Frontend**: https://international-bookkeeping-XXXXX.vercel.app
+- **Backend API**: https://international-bookkeeping-api.onrender.com/api
+- **Health Check**: https://international-bookkeeping-api.onrender.com/api/health
 
 **Demo Credentials**: `demo` / `demo123`
 

@@ -1,6 +1,6 @@
 # Screenshots
 
-This folder contains screenshots of the main features of BookKeeper Pro.
+This folder contains screenshots of the main features of International Bookkeeping.
 
 ## How to Create Screenshots
 

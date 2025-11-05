@@ -1,6 +1,6 @@
-# BookKeeper Pro - Backend API
+# International Bookkeeping - Backend API
 
-Express.js REST API for BookKeeper Pro with custom fields support.
+Express.js REST API for International Bookkeeping with custom fields support.
 
 ## Features
 

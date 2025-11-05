@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: bookkeeper-pro-api
+    name: international-bookkeeping-api
     runtime: node
     env: node
     region: frankfurt

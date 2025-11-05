@@ -1,8 +1,8 @@
-# 🔐 Authentication & 2FA Guide - BookKeeper Pro
+# 🔐 Authentication & 2FA Guide - International Bookkeeping
 
 ## Overview
 
-BookKeeper Pro now includes a comprehensive authentication system with optional Two-Factor Authentication (2FA) using Google Authenticator.
+International Bookkeeping now includes a comprehensive authentication system with optional Two-Factor Authentication (2FA) using Google Authenticator.
 
 ---
 
@@ -336,7 +336,7 @@ If you have issues with authentication:
 
 ## ✅ Summary
 
-Your BookKeeper Pro installation now has:
+Your International Bookkeeping installation now has:
 - ✅ Secure login system
 - ✅ Password encryption
 - ✅ JWT authentication

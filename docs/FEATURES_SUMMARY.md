@@ -1,8 +1,8 @@
-# BookKeeper Pro - Complete Features Summary
+# International Bookkeeping - Complete Features Summary
 
 ## 🎯 System Overview
 
-**BookKeeper Pro** is an enterprise-grade international bookkeeping system specifically designed for insurance companies operating across multiple European countries. Built with Angular 17, Express.js, and PostgreSQL/TimescaleDB.
+**International Bookkeeping** is an enterprise-grade international bookkeeping system specifically designed for insurance companies operating across multiple European countries. Built with Angular 17, Express.js, and PostgreSQL/TimescaleDB.
 
 ---
 

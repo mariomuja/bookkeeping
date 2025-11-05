@@ -2,7 +2,7 @@
 
 ## Overview
 
-BookKeeper Pro provides comprehensive support for international operations with real-time currency conversion and timezone-aware datetime fields. Perfect for insurance companies operating across multiple countries.
+International Bookkeeping provides comprehensive support for international operations with real-time currency conversion and timezone-aware datetime fields. Perfect for insurance companies operating across multiple countries.
 
 ## 🌍 Multi-Currency Features
 

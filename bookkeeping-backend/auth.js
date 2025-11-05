@@ -181,8 +181,8 @@ const setup2FA = async (userId) => {
   
   // Generate secret
   const secret = speakeasy.generateSecret({
-    name: `BookKeeper Pro (${user.username})`,
-    issuer: 'BookKeeper Pro'
+    name: `International Bookkeeping (${user.username})`,
+    issuer: 'International Bookkeeping'
   });
   
   // Store secret (temporarily, until confirmed)

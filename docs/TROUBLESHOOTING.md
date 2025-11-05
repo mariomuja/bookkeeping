@@ -1,4 +1,4 @@
-# Troubleshooting Guide - BookKeeper Pro
+# Troubleshooting Guide - International Bookkeeping
 
 ## Issue: No Data Showing in App
 

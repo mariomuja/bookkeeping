@@ -1,9 +1,9 @@
-# BookKeeper Pro - Stop Script
+# International Bookkeeping - Stop Script
 
 Write-Host ""
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "  BookKeeper Pro - Stopping Application" -ForegroundColor Cyan
-Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "================================================" -ForegroundColor Cyan
+Write-Host "  International Bookkeeping - Stopping Application" -ForegroundColor Cyan
+Write-Host "================================================" -ForegroundColor Cyan
 Write-Host ""
 
 Write-Host "Stopping all Node processes..." -ForegroundColor Yellow

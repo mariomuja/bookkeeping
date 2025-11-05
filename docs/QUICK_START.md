@@ -1,4 +1,4 @@
-# 🚀 Quick Start - BookKeeper Pro is Running!
+# 🚀 Quick Start - International Bookkeeping is Running!
 
 ## ✅ What's Currently Running
 

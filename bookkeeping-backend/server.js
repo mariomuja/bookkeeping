@@ -1225,7 +1225,7 @@ app.use((err, req, res, next) => {
 
 app.listen(config.port, () => {
   console.log('\n=================================================');
-  console.log('  📊 BookKeeper Pro Backend API');
+  console.log('  📊 International Bookkeeping Backend API');
   console.log('=================================================');
   console.log(`  🚀 Server running on http://localhost:${config.port}`);
   console.log(`  📝 Mode: ${config.useMockData ? 'MOCK DATA' : 'DATABASE'}`);

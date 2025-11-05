@@ -22,10 +22,10 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have the 'BookKeeper Pro' title`, () => {
+  it(`should have the 'International Bookkeeping' title`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('BookKeeper Pro');
+    expect(app.title).toEqual('International Bookkeeping');
   });
 
   it('should render the main app container', () => {
