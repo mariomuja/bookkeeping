@@ -4,48 +4,47 @@ A comprehensive, modern bookkeeping application built with Angular and designed 
 
 ## 📸 Application Screenshots
 
-> **Note**: Screenshots are available in the `screenshots/` folder. To create them, see [screenshots/README.md](screenshots/README.md)
-
 ### 📊 Dashboard - Financial Overview
+<img src="screenshots/dashboard.png" alt="Dashboard" width="700">
+
 *Real-time financial metrics, activity summary, and quick actions for managing your bookkeeping*
-- Total Assets, Liabilities, Equity, Net Income with trend indicators
-- Activity summary with journal entry and account counts
-- Multi-currency support with real-time conversion
-- Quick action buttons for common tasks
+
+---
 
 ### 📁 Chart of Accounts - Standard Framework Import
-*Import from 7 international standard account frameworks*
-- **German Standards**: SKR03 (Prozessgliederung), SKR04 (Abschlussgliederung), IKR (Industrie)
-- **US Standards**: US GAAP
-- **International**: IFRS
-- **French**: Plan Comptable Général (PCG)
-- **Spanish**: Plan General de Contabilidad (PGC)
-- Selective or full framework import
-- Duplicate prevention and import statistics
+<img src="screenshots/framework-import.png" alt="Framework Import" width="700">
+
+*Import from 7 international standard account frameworks: SKR03, SKR04, IKR (Germany), US GAAP, IFRS, PCG (France), PGC (Spain)*
+
+---
+
+### 📋 Chart of Accounts Table
+<img src="screenshots/chart-of-accounts.png" alt="Chart of Accounts" width="700">
+
+*Manage your complete chart of accounts with search, filtering, and categorization*
+
+---
 
 ### 📝 Journal Entries - Double-Entry Bookkeeping
-*Manage all transactions with comprehensive validation*
-- Automatic debit/credit balance validation
-- Multi-currency transaction support
-- Post/Void operations with GoBD immutability
-- Cost center and cost object allocation
-- Custom fields for extended data
-- Advanced filtering and search
+<img src="screenshots/journal-entries.png" alt="Journal Entries" width="700">
 
-### 📈 Financial Reports
-*Generate comprehensive financial reports*
-- **Trial Balance**: All account balances with debits and credits
-- **Balance Sheet**: Assets, Liabilities, and Equity summary
-- **Profit & Loss**: Revenue and expenses for any period
-- **DATEV Export**: German tax advisor integration (SKR03/SKR04)
-- CSV/Excel export for all reports
+*Record and manage all transactions with automatic debit/credit balance validation and GoBD compliance*
+
+---
+
+### 📈 Financial Reports & DATEV Export
+<img src="screenshots/reports.png" alt="Reports" width="700">
+
+*Generate Trial Balance, Balance Sheet, and P&L reports. Export to DATEV format for German tax advisors*
+
+---
 
 ### 📖 Documentation System - Built-in Help
-*Access comprehensive documentation directly in the application*
-- In-app documentation viewer with markdown rendering
-- Searchable index organized by category
-- Quick access via "?" icon in header
-- Available in 5 languages (DE, EN, ES, FR, IT)
+<img src="screenshots/documentation-modal.png" alt="Documentation" width="700">
+
+*Access comprehensive documentation directly in the application with searchable index and markdown rendering*
+
+---
 
 ## 🌟 Features
 
