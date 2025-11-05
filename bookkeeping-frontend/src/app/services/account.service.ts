@@ -44,5 +44,25 @@ export class AccountService {
     return this.api.get<AccountBalance>(`/accounts/${accountId}/calculate-balance`, 
       new URLSearchParams({ startDate, endDate }) as any);
   }
+
+  // Account Framework methods
+  getAccountFrameworks(): Observable<any[]> {
+    return this.api.get<any[]>('/account-frameworks');
+  }
+
+  getAccountFramework(frameworkId: string): Observable<any> {
+    return this.api.get<any>(`/account-frameworks/${frameworkId}`);
+  }
+
+  getFrameworkAccounts(frameworkId: string): Observable<any[]> {
+    return this.api.get<any[]>(`/account-frameworks/${frameworkId}/accounts`);
+  }
+
+  importFrameworkAccounts(organizationId: string, frameworkId: string, accountNumbers: string[]): Observable<any> {
+    return this.api.post<any>(`/organizations/${organizationId}/accounts/import-framework`, {
+      frameworkId,
+      accountNumbers: accountNumbers.length > 0 ? accountNumbers : undefined
+    });
+  }
 }
 

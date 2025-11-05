@@ -34,6 +34,7 @@
     "title": "Plan comptable",
     "subtitle": "Gérer la structure de vos comptes",
     "addAccount": "Ajouter un compte",
+    "importFramework": "Importer un référentiel",
     "accountNumber": "Numéro de compte",
     "accountName": "Nom du compte",
     "type": "Type",
@@ -44,7 +45,28 @@
     "active": "Actif",
     "inactive": "Inactif",
     "search": "Rechercher des comptes...",
-    "allCategories": "Toutes les catégories"
+    "allCategories": "Toutes les catégories",
+    "frameworkImport": {
+      "title": "Importer un référentiel comptable",
+      "selectFramework": "1. Sélectionner le référentiel",
+      "selectFrameworkDesc": "Choisissez un plan comptable standard à importer",
+      "selectAccounts": "2. Sélectionner les comptes à importer",
+      "selectAccountsDesc": "Choisissez des comptes spécifiques ou importez tous",
+      "selectAll": "Sélectionner tout",
+      "deselectAll": "Désélectionner tout",
+      "selectedCount": "sur",
+      "selected": "sélectionnés",
+      "importAll": "Importer tout",
+      "importSelected": "Importer sélectionnés",
+      "importing": "Importation...",
+      "importResult": "Résultat de l'importation",
+      "accountsImported": "comptes importés",
+      "accountsSkipped": "comptes ignorés (déjà existants)",
+      "loadingFrameworks": "Chargement des référentiels...",
+      "loadingAccounts": "Chargement des comptes...",
+      "close": "Fermer",
+      "accounts": "comptes"
+    }
   },
   "journalEntries": {
     "title": "Écritures comptables",

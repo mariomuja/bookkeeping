@@ -34,6 +34,7 @@
     "title": "Piano dei conti",
     "subtitle": "Gestisci la struttura dei conti",
     "addAccount": "Aggiungi conto",
+    "importFramework": "Importa schema contabile",
     "accountNumber": "Numero conto",
     "accountName": "Nome conto",
     "type": "Tipo",
@@ -44,7 +45,28 @@
     "active": "Attivo",
     "inactive": "Inattivo",
     "search": "Cerca conti...",
-    "allCategories": "Tutte le categorie"
+    "allCategories": "Tutte le categorie",
+    "frameworkImport": {
+      "title": "Importa schema contabile",
+      "selectFramework": "1. Seleziona schema contabile",
+      "selectFrameworkDesc": "Scegli un piano dei conti standard da importare",
+      "selectAccounts": "2. Seleziona conti da importare",
+      "selectAccountsDesc": "Scegli conti specifici o importa tutti",
+      "selectAll": "Seleziona tutti",
+      "deselectAll": "Deseleziona tutti",
+      "selectedCount": "di",
+      "selected": "selezionati",
+      "importAll": "Importa tutti",
+      "importSelected": "Importa selezionati",
+      "importing": "Importazione...",
+      "importResult": "Risultato importazione",
+      "accountsImported": "conti importati",
+      "accountsSkipped": "conti ignorati (già esistenti)",
+      "loadingFrameworks": "Caricamento schemi...",
+      "loadingAccounts": "Caricamento conti...",
+      "close": "Chiudi",
+      "accounts": "conti"
+    }
   },
   "journalEntries": {
     "title": "Registrazioni contabili",

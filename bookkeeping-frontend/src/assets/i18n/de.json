@@ -34,6 +34,7 @@
     "title": "Kontenplan",
     "subtitle": "Verwalten Sie Ihre Kontenstruktur",
     "addAccount": "Konto hinzufügen",
+    "importFramework": "Kontenrahmen importieren",
     "accountNumber": "Kontonummer",
     "accountName": "Kontobezeichnung",
     "type": "Typ",
@@ -44,7 +45,28 @@
     "active": "Aktiv",
     "inactive": "Inaktiv",
     "search": "Konten suchen...",
-    "allCategories": "Alle Kategorien"
+    "allCategories": "Alle Kategorien",
+    "frameworkImport": {
+      "title": "Kontenrahmen importieren",
+      "selectFramework": "1. Kontenrahmen auswählen",
+      "selectFrameworkDesc": "Wählen Sie einen Standard-Kontenrahmen zum Importieren",
+      "selectAccounts": "2. Konten zum Import auswählen",
+      "selectAccountsDesc": "Wählen Sie bestimmte Konten oder importieren Sie alle",
+      "selectAll": "Alle auswählen",
+      "deselectAll": "Auswahl aufheben",
+      "selectedCount": "von",
+      "selected": "ausgewählt",
+      "importAll": "Alle importieren",
+      "importSelected": "Ausgewählte importieren",
+      "importing": "Importiere...",
+      "importResult": "Importergebnis",
+      "accountsImported": "Konten importiert",
+      "accountsSkipped": "Konten übersprungen (existieren bereits)",
+      "loadingFrameworks": "Lade Kontenrahmen...",
+      "loadingAccounts": "Lade Konten...",
+      "close": "Schließen",
+      "accounts": "Konten"
+    }
   },
   "journalEntries": {
     "title": "Buchungssätze",

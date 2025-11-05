@@ -34,6 +34,7 @@
     "title": "Chart of Accounts",
     "subtitle": "Manage your account structure",
     "addAccount": "Add Account",
+    "importFramework": "Import Framework",
     "accountNumber": "Account Number",
     "accountName": "Account Name",
     "type": "Type",
@@ -44,7 +45,28 @@
     "active": "Active",
     "inactive": "Inactive",
     "search": "Search accounts...",
-    "allCategories": "All Categories"
+    "allCategories": "All Categories",
+    "frameworkImport": {
+      "title": "Import Account Framework",
+      "selectFramework": "1. Select Account Framework",
+      "selectFrameworkDesc": "Choose a standard chart of accounts to import",
+      "selectAccounts": "2. Select Accounts to Import",
+      "selectAccountsDesc": "Choose specific accounts or import all",
+      "selectAll": "Select All",
+      "deselectAll": "Deselect All",
+      "selectedCount": "of",
+      "selected": "selected",
+      "importAll": "Import All",
+      "importSelected": "Import Selected",
+      "importing": "Importing...",
+      "importResult": "Import Result",
+      "accountsImported": "accounts imported",
+      "accountsSkipped": "accounts skipped (already exist)",
+      "loadingFrameworks": "Loading frameworks...",
+      "loadingAccounts": "Loading accounts...",
+      "close": "Close",
+      "accounts": "accounts"
+    }
   },
   "journalEntries": {
     "title": "Journal Entries",

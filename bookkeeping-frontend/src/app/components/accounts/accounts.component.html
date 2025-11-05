@@ -4,13 +4,23 @@
       <h1>Chart of Accounts</h1>
       <p class="subtitle">Manage your account structure</p>
     </div>
-    <button class="btn-primary" (click)="openCreateModal()">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <line x1="5" y1="12" x2="19" y2="12"></line>
-      </svg>
-      Add Account
-    </button>
+    <div class="header-actions">
+      <button class="btn-secondary" (click)="openFrameworkModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Import Framework
+      </button>
+      <button class="btn-primary" (click)="openCreateModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Add Account
+      </button>
+    </div>
   </div>
 
   <div *ngIf="loading" class="loading">
@@ -162,6 +172,134 @@
           {{ isEditMode ? 'Update' : 'Create' }}
         </button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Framework Import Modal -->
+<div class="modal-overlay" *ngIf="showFrameworkModal" (click)="closeFrameworkModal()">
+  <div class="modal-container framework-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Import Account Framework
+      </h2>
+      <button class="close-btn" (click)="closeFrameworkModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <!-- Framework Selection -->
+      <div class="form-section">
+        <h3>1. Select Account Framework</h3>
+        <p class="section-description">Choose a standard chart of accounts to import</p>
+        
+        <div *ngIf="loadingFrameworks" class="loading-inline">
+          <div class="spinner-small"></div>
+          Loading frameworks...
+        </div>
+        
+        <div *ngIf="!loadingFrameworks" class="framework-grid">
+          <div *ngFor="let framework of frameworks" 
+               class="framework-card"
+               [class.selected]="selectedFramework === framework.id"
+               (click)="selectedFramework = framework.id; onFrameworkChange()">
+            <div class="framework-header">
+              <div class="framework-title">
+                <div class="framework-flag">{{ framework.country }}</div>
+                <strong>{{ framework.name }}</strong>
+              </div>
+              <div class="framework-badge">{{ framework.accountCount }} accounts</div>
+            </div>
+            <p class="framework-description">{{ framework.description }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account Selection -->
+      <div class="form-section" *ngIf="selectedFramework">
+        <h3>2. Select Accounts to Import</h3>
+        <p class="section-description">Choose specific accounts or import all</p>
+        
+        <div *ngIf="loadingFrameworkAccounts" class="loading-inline">
+          <div class="spinner-small"></div>
+          Loading accounts...
+        </div>
+        
+        <div *ngIf="!loadingFrameworkAccounts && frameworkAccounts.length > 0" class="accounts-selection">
+          <div class="selection-actions">
+            <button class="btn-link" (click)="selectAllAccounts()">Select All</button>
+            <button class="btn-link" (click)="deselectAllAccounts()">Deselect All</button>
+            <span class="selection-count">{{ selectedAccountNumbers.length }} of {{ frameworkAccounts.length }} selected</span>
+          </div>
+          
+          <div class="accounts-list">
+            <div *ngFor="let account of frameworkAccounts" 
+                 class="account-item"
+                 [class.selected]="isAccountSelected(account.number)"
+                 (click)="toggleAccountSelection(account.number)">
+              <input type="checkbox" 
+                     [checked]="isAccountSelected(account.number)"
+                     (click)="$event.stopPropagation()">
+              <div class="account-info">
+                <strong>{{ account.number }}</strong>
+                <span class="account-name">{{ account.name }}</span>
+              </div>
+              <span class="account-type-badge" [class]="'badge-' + getCategoryColor(account.category)">
+                {{ account.type }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Import Result -->
+      <div class="form-section" *ngIf="importResult">
+        <h3>Import Result</h3>
+        <div class="import-result">
+          <div class="result-summary">
+            <div class="result-item success">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span>{{ importResult.imported }} accounts imported</span>
+            </div>
+            <div class="result-item warning" *ngIf="importResult.skipped > 0">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              <span>{{ importResult.skipped }} accounts skipped (already exist)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeFrameworkModal()">Close</button>
+      <button class="btn-secondary" 
+              *ngIf="selectedFramework && frameworkAccounts.length > 0"
+              [disabled]="importing"
+              (click)="importAllAccounts()">
+        Import All ({{ frameworkAccounts.length }})
+      </button>
+      <button class="btn-primary" 
+              *ngIf="selectedFramework && selectedAccountNumbers.length > 0"
+              [disabled]="importing"
+              (click)="importSelectedAccounts()">
+        <span *ngIf="!importing">Import Selected ({{ selectedAccountNumbers.length }})</span>
+        <span *ngIf="importing">Importing...</span>
+      </button>
     </div>
   </div>
 </div>

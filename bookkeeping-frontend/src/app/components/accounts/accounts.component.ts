@@ -12,6 +12,29 @@ import { Account, AccountType } from '../../models/account.model';
   templateUrl: './accounts.component.html',
   styleUrls: ['./accounts.component.css']
 })
+export interface AccountFramework {
+  id: string;
+  name: string;
+  country: string;
+  description: string;
+  accountCount: number;
+}
+
+export interface FrameworkAccount {
+  number: string;
+  name: string;
+  type: string;
+  category: string;
+}
+
+export interface ImportResult {
+  imported: number;
+  skipped: number;
+  accounts: Account[];
+  skippedAccounts: any[];
+  framework: string;
+}
+
 export class AccountsComponent implements OnInit {
   accounts: Account[] = [];
   accountTypes: AccountType[] = [];
@@ -23,6 +46,17 @@ export class AccountsComponent implements OnInit {
   filterCategory = 'ALL';
   showModal = false;
   isEditMode = false;
+  
+  // Framework import properties
+  showFrameworkModal = false;
+  frameworks: AccountFramework[] = [];
+  selectedFramework: string = '';
+  frameworkAccounts: FrameworkAccount[] = [];
+  selectedAccountNumbers: string[] = [];
+  loadingFrameworks = false;
+  loadingFrameworkAccounts = false;
+  importing = false;
+  importResult: ImportResult | null = null;
   
   currentAccount: Partial<Account> = {
     accountNumber: '',
@@ -175,6 +209,136 @@ export class AccountsComponent implements OnInit {
       'EXPENSE': 'orange'
     };
     return colors[category] || 'gray';
+  }
+
+  // Framework import methods
+  openFrameworkModal(): void {
+    this.showFrameworkModal = true;
+    this.importResult = null;
+    this.loadFrameworks();
+  }
+
+  closeFrameworkModal(): void {
+    this.showFrameworkModal = false;
+    this.selectedFramework = '';
+    this.frameworkAccounts = [];
+    this.selectedAccountNumbers = [];
+    this.importResult = null;
+  }
+
+  loadFrameworks(): void {
+    this.loadingFrameworks = true;
+    this.accountService.getAccountFrameworks().subscribe({
+      next: (frameworks) => {
+        this.frameworks = frameworks;
+        this.loadingFrameworks = false;
+      },
+      error: (err) => {
+        console.error('Failed to load frameworks:', err);
+        this.loadingFrameworks = false;
+        alert('Failed to load account frameworks');
+      }
+    });
+  }
+
+  onFrameworkChange(): void {
+    if (!this.selectedFramework) {
+      this.frameworkAccounts = [];
+      this.selectedAccountNumbers = [];
+      return;
+    }
+
+    this.loadingFrameworkAccounts = true;
+    this.accountService.getFrameworkAccounts(this.selectedFramework).subscribe({
+      next: (accounts) => {
+        this.frameworkAccounts = accounts;
+        this.selectedAccountNumbers = []; // Reset selection
+        this.loadingFrameworkAccounts = false;
+      },
+      error: (err) => {
+        console.error('Failed to load framework accounts:', err);
+        this.loadingFrameworkAccounts = false;
+        alert('Failed to load framework accounts');
+      }
+    });
+  }
+
+  toggleAccountSelection(accountNumber: string): void {
+    const index = this.selectedAccountNumbers.indexOf(accountNumber);
+    if (index > -1) {
+      this.selectedAccountNumbers.splice(index, 1);
+    } else {
+      this.selectedAccountNumbers.push(accountNumber);
+    }
+  }
+
+  selectAllAccounts(): void {
+    this.selectedAccountNumbers = this.frameworkAccounts.map(acc => acc.number);
+  }
+
+  deselectAllAccounts(): void {
+    this.selectedAccountNumbers = [];
+  }
+
+  isAccountSelected(accountNumber: string): boolean {
+    return this.selectedAccountNumbers.includes(accountNumber);
+  }
+
+  importSelectedAccounts(): void {
+    const org = this.organizationService.getCurrentOrganization();
+    if (!org || !this.selectedFramework) return;
+
+    if (this.selectedAccountNumbers.length === 0) {
+      alert('Please select at least one account to import');
+      return;
+    }
+
+    this.importing = true;
+    this.accountService.importFrameworkAccounts(org.id, this.selectedFramework, this.selectedAccountNumbers).subscribe({
+      next: (result) => {
+        this.importResult = result;
+        this.importing = false;
+        this.loadAccounts(); // Reload accounts to show newly imported ones
+        
+        // Show success message
+        const message = `Successfully imported ${result.imported} account(s). ${result.skipped} account(s) were skipped (already exist).`;
+        alert(message);
+        
+        // Reset selection but keep modal open to see results
+        this.selectedAccountNumbers = [];
+      },
+      error: (err) => {
+        console.error('Failed to import accounts:', err);
+        this.importing = false;
+        alert('Failed to import accounts');
+      }
+    });
+  }
+
+  importAllAccounts(): void {
+    const org = this.organizationService.getCurrentOrganization();
+    if (!org || !this.selectedFramework) return;
+
+    if (!confirm(`Import all ${this.frameworkAccounts.length} accounts from ${this.selectedFramework}?`)) {
+      return;
+    }
+
+    this.importing = true;
+    this.accountService.importFrameworkAccounts(org.id, this.selectedFramework, []).subscribe({
+      next: (result) => {
+        this.importResult = result;
+        this.importing = false;
+        this.loadAccounts();
+        
+        const message = `Successfully imported ${result.imported} account(s). ${result.skipped} account(s) were skipped (already exist).`;
+        alert(message);
+      },
+      error: (err) => {
+        console.error('Failed to import accounts:', err);
+        this.importing = false;
+        alert('Failed to import accounts');
+      }
+    });
   }
 }
 

@@ -309,6 +309,101 @@ app.delete('/api/accounts/:id', (req, res) => {
 });
 
 // ============================================================================
+// CHART OF ACCOUNTS TEMPLATES
+// ============================================================================
+
+const chartOfAccountsTemplates = require('./chart-of-accounts-templates');
+
+// Get all available account frameworks
+app.get('/api/account-frameworks', (req, res) => {
+  const frameworks = chartOfAccountsTemplates.getAccountFrameworks();
+  res.json(frameworks);
+});
+
+// Get a specific account framework with its accounts
+app.get('/api/account-frameworks/:frameworkId', (req, res) => {
+  const framework = chartOfAccountsTemplates.getAccountFramework(req.params.frameworkId);
+  if (!framework) {
+    return res.status(404).json({ error: 'Account framework not found' });
+  }
+  res.json(framework);
+});
+
+// Get accounts for a specific framework
+app.get('/api/account-frameworks/:frameworkId/accounts', (req, res) => {
+  const accounts = chartOfAccountsTemplates.getFrameworkAccounts(req.params.frameworkId);
+  if (!accounts || accounts.length === 0) {
+    return res.status(404).json({ error: 'Account framework not found' });
+  }
+  res.json(accounts);
+});
+
+// Import accounts from a framework template into an organization
+app.post('/api/organizations/:orgId/accounts/import-framework', (req, res) => {
+  const { frameworkId, accountNumbers } = req.body;
+  
+  if (!frameworkId) {
+    return res.status(400).json({ error: 'Framework ID is required' });
+  }
+  
+  const frameworkAccounts = chartOfAccountsTemplates.getFrameworkAccounts(frameworkId);
+  if (!frameworkAccounts || frameworkAccounts.length === 0) {
+    return res.status(404).json({ error: 'Account framework not found' });
+  }
+  
+  // Filter accounts if specific account numbers are provided
+  let accountsToImport = frameworkAccounts;
+  if (accountNumbers && Array.isArray(accountNumbers) && accountNumbers.length > 0) {
+    accountsToImport = frameworkAccounts.filter(acc => accountNumbers.includes(acc.number));
+  }
+  
+  // Check for duplicate account numbers
+  const existingAccountNumbers = mockData.accounts
+    .filter(a => a.organizationId === req.params.orgId)
+    .map(a => a.accountNumber);
+  
+  const newAccounts = [];
+  const skippedAccounts = [];
+  
+  accountsToImport.forEach(templateAccount => {
+    if (existingAccountNumbers.includes(templateAccount.number)) {
+      skippedAccounts.push({
+        number: templateAccount.number,
+        name: templateAccount.name,
+        reason: 'Account number already exists'
+      });
+    } else {
+      const newAccount = {
+        id: require('uuid').v4(),
+        organizationId: req.params.orgId,
+        accountNumber: templateAccount.number,
+        accountName: templateAccount.name,
+        type: templateAccount.type,
+        category: templateAccount.category,
+        currency: 'EUR', // Default currency, can be overridden
+        isActive: true,
+        balance: 0,
+        normalBalance: templateAccount.type === 'ASSET' || templateAccount.type === 'EXPENSE' ? 'DEBIT' : 'CREDIT',
+        description: `Imported from ${frameworkId} framework`,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      mockData.accounts.push(newAccount);
+      newAccounts.push(newAccount);
+      existingAccountNumbers.push(templateAccount.number);
+    }
+  });
+  
+  res.status(201).json({
+    imported: newAccounts.length,
+    skipped: skippedAccounts.length,
+    accounts: newAccounts,
+    skippedAccounts: skippedAccounts,
+    framework: frameworkId
+  });
+});
+
+// ============================================================================
 // JOURNAL ENTRIES
 // ============================================================================
 

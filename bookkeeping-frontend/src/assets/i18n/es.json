@@ -34,6 +34,7 @@
     "title": "Plan de cuentas",
     "subtitle": "Gestionar la estructura de sus cuentas",
     "addAccount": "Agregar cuenta",
+    "importFramework": "Importar marco contable",
     "accountNumber": "Número de cuenta",
     "accountName": "Nombre de cuenta",
     "type": "Tipo",
@@ -44,7 +45,28 @@
     "active": "Activa",
     "inactive": "Inactiva",
     "search": "Buscar cuentas...",
-    "allCategories": "Todas las categorías"
+    "allCategories": "Todas las categorías",
+    "frameworkImport": {
+      "title": "Importar marco contable",
+      "selectFramework": "1. Seleccionar marco contable",
+      "selectFrameworkDesc": "Elija un plan contable estándar para importar",
+      "selectAccounts": "2. Seleccionar cuentas a importar",
+      "selectAccountsDesc": "Elija cuentas específicas o importe todas",
+      "selectAll": "Seleccionar todas",
+      "deselectAll": "Deseleccionar todas",
+      "selectedCount": "de",
+      "selected": "seleccionadas",
+      "importAll": "Importar todas",
+      "importSelected": "Importar seleccionadas",
+      "importing": "Importando...",
+      "importResult": "Resultado de importación",
+      "accountsImported": "cuentas importadas",
+      "accountsSkipped": "cuentas omitidas (ya existen)",
+      "loadingFrameworks": "Cargando marcos...",
+      "loadingAccounts": "Cargando cuentas...",
+      "close": "Cerrar",
+      "accounts": "cuentas"
+    }
   },
   "journalEntries": {
     "title": "Asientos contables",
