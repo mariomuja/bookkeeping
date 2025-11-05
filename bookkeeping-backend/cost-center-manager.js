@@ -320,7 +320,6 @@ module.exports = {
   getCostCenterReport,
   calculateContributionMargin,
   // Export arrays for testing
-  _employees: employees,
   _costCenters: costCenters,
   _costObjects: costObjects
 };

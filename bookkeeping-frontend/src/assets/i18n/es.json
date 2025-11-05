@@ -292,6 +292,15 @@
     "confirm": "Confirmar",
     "success": "Éxito",
     "error": "Error"
+  },
+  "docs": {
+    "title": "Documentación",
+    "helpTooltip": "Ayuda y Documentación",
+    "close": "Cerrar",
+    "searchPlaceholder": "Buscar documentación...",
+    "noResults": "No se encontró documentación para su búsqueda",
+    "backToIndex": "Volver al Índice",
+    "loading": "Cargando documentación..."
   }
 }
 

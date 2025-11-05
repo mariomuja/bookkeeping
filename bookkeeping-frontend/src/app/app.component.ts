@@ -3,6 +3,7 @@ import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './components/layout/header/header.component';
 import { SidebarComponent } from './components/layout/sidebar/sidebar.component';
+import { DocumentationModalComponent } from './components/documentation-modal/documentation-modal.component';
 import { OrganizationService } from './services/organization.service';
 import { LanguageService } from './services/language.service';
 import { filter } from 'rxjs/operators';
@@ -10,13 +11,14 @@ import { filter } from 'rxjs/operators';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent, SidebarComponent],
+  imports: [CommonModule, RouterOutlet, HeaderComponent, SidebarComponent, DocumentationModalComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
   title = 'BookKeeper Pro';
   showMainLayout = true;
+  showDocumentationModal = false;
 
   constructor(
     private organizationService: OrganizationService,
@@ -60,5 +62,13 @@ export class AppComponent implements OnInit {
 
     // Check initial route
     this.showMainLayout = !this.router.url.startsWith('/report/') && !this.router.url.startsWith('/login');
+  }
+
+  openDocumentation(): void {
+    this.showDocumentationModal = true;
+  }
+
+  closeDocumentation(): void {
+    this.showDocumentationModal = false;
   }
 }

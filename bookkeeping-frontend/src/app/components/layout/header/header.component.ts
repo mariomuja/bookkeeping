@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -15,12 +15,15 @@ import { Organization } from '../../../models/organization.model';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
+  @Output() openDocumentation = new EventEmitter<void>();
+  
   currentOrganization: Organization | null = null;
   currentUser: User | null = null;
   userMenuOpen = false;
   languageMenuOpen = false;
   currentLanguage: Language | undefined;
   availableLanguages: Language[] = [];
+  showHelpTooltip = false;
 
   constructor(
     private organizationService: OrganizationService,
@@ -58,6 +61,12 @@ export class HeaderComponent implements OnInit {
 
   changeLanguage(langCode: string): void {
     this.languageService.setLanguage(langCode);
+    this.languageMenuOpen = false;
+  }
+
+  openDocumentationModal(): void {
+    this.openDocumentation.emit();
+    this.userMenuOpen = false;
     this.languageMenuOpen = false;
   }
 
