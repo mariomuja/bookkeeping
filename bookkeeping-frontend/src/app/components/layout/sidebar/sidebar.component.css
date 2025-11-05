@@ -1,13 +1,9 @@
 .sidebar {
-  position: fixed;
-  left: 0;
-  top: 64px;
-  bottom: 0;
   width: 260px;
+  height: 100%;
   background: #ffffff;
   border-right: 1px solid #e5e7eb;
   overflow-y: auto;
-  z-index: 50;
 }
 
 .sidebar-nav {
