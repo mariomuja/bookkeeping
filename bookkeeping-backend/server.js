@@ -395,13 +395,51 @@ app.post('/api/organizations/:orgId/journal-entries', (req, res) => {
 });
 
 app.post('/api/journal-entries/:id/post', (req, res) => {
+  const { GoBDCompliance } = require('./gobd-compliance');
+  const gobd = new GoBDCompliance();
+  
   const entry = mockData.journalEntries.find(e => e.id === req.params.id);
   if (!entry) return res.status(404).json({ error: 'Journal entry not found' });
   
+  if (entry.status === 'POSTED') {
+    return res.status(400).json({ error: 'Entry already posted (GoBD: immutable)' });
+  }
+  
+  // Get entry lines
+  const lines = mockData.journalEntryLines.filter(l => l.journalEntryId === entry.id);
+  
+  // Validate GoBD compliance
+  const validation = gobd.validateEntry(entry, lines);
+  if (!validation.compliant) {
+    return res.status(400).json({
+      error: 'GoBD validation failed',
+      violations: validation.violations
+    });
+  }
+  
+  // Generate immutability hash
+  const hash = gobd.generateEntryHash(entry, lines);
+  
   entry.status = 'POSTED';
   entry.postedAt = new Date();
-  entry.postedBy = req.body.postedBy || 'Admin';
+  entry.postedBy = req.body.postedBy || req.user?.username || 'Admin';
+  entry.hash = hash;
+  entry.hashAlgorithm = 'sha256';
   entry.updatedAt = new Date();
+  
+  // Log posting
+  const auditLog = require('./audit-log');
+  auditLog.createAuditLog({
+    userId: req.user?.userId || 'system',
+    username: req.user?.username || 'System',
+    action: auditLog.LOG_TYPES.POST,
+    entityType: auditLog.ENTITY_TYPES.JOURNAL_ENTRY,
+    entityId: entry.id,
+    description: `Posted journal entry ${entry.entryNumber} (GoBD compliant)`,
+    metadata: { hash, entryNumber: entry.entryNumber },
+    ipAddress: req.ip,
+    userAgent: req.headers['user-agent']
+  });
   
   res.json(entry);
 });
@@ -902,6 +940,118 @@ app.delete('/api/cost-objects/:id', (req, res) => {
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
+});
+
+// ============================================================================
+// GOBD COMPLIANCE
+// ============================================================================
+
+const { GoBDCompliance } = require('./gobd-compliance');
+
+// GoBD Compliance Check
+app.get('/api/organizations/:orgId/gobd/compliance-check', (req, res) => {
+  const gobd = new GoBDCompliance();
+  
+  const entries = mockData.journalEntries.filter(e => e.organizationId === req.params.orgId);
+  const lines = mockData.journalEntryLines.filter(l => 
+    entries.some(e => e.id === l.journalEntryId)
+  );
+  
+  const complianceCheck = gobd.performComplianceCheck(
+    entries,
+    lines,
+    auditLog.getLogs({})
+  );
+  
+  res.json(complianceCheck);
+});
+
+// GoBD Compliance Certificate
+app.get('/api/organizations/:orgId/gobd/certificate', (req, res) => {
+  const gobd = new GoBDCompliance();
+  const org = mockData.organizations.find(o => o.id === req.params.orgId);
+  
+  if (!org) {
+    return res.status(404).json({ error: 'Organization not found' });
+  }
+  
+  const entries = mockData.journalEntries.filter(e => e.organizationId === req.params.orgId);
+  const lines = mockData.journalEntryLines.filter(l => 
+    entries.some(e => e.id === l.journalEntryId)
+  );
+  
+  const complianceCheck = gobd.performComplianceCheck(entries, lines, auditLog.getLogs({}));
+  const certificate = gobd.generateComplianceCertificate(complianceCheck, org);
+  
+  res.json(certificate);
+});
+
+// GoBD Procedure Documentation (Verfahrensdokumentation)
+app.get('/api/organizations/:orgId/gobd/procedure-documentation', (req, res) => {
+  const gobd = new GoBDCompliance();
+  const org = mockData.organizations.find(o => o.id === req.params.orgId);
+  
+  if (!org) {
+    return res.status(404).json({ error: 'Organization not found' });
+  }
+  
+  const documentation = gobd.generateProcedureDocumentation(org);
+  
+  res.json(documentation);
+});
+
+// GDPdU Export (for tax audit)
+app.get('/api/organizations/:orgId/gobd/gdpdu-export', (req, res) => {
+  try {
+    const gobd = new GoBDCompliance();
+    const org = mockData.organizations.find(o => o.id === req.params.orgId);
+    
+    if (!org) {
+      return res.status(404).json({ error: 'Organization not found' });
+    }
+    
+    const entries = mockData.journalEntries.filter(e => e.organizationId === req.params.orgId);
+    const lines = mockData.journalEntryLines.filter(l => 
+      entries.some(e => e.id === l.journalEntryId)
+    );
+    
+    const gdpduExport = gobd.generateGDPdUExport(entries, lines, mockData.accounts, org);
+    
+    // Return as JSON (frontend will create ZIP file)
+    res.json(gdpduExport);
+  } catch (error) {
+    console.error('GDPdU export error:', error);
+    res.status(500).json({ error: 'Failed to generate GDPdU export' });
+  }
+});
+
+// Verify entry hash (integrity check)
+app.get('/api/journal-entries/:id/verify-hash', (req, res) => {
+  const gobd = new GoBDCompliance();
+  
+  const entry = mockData.journalEntries.find(e => e.id === req.params.id);
+  if (!entry) {
+    return res.status(404).json({ error: 'Journal entry not found' });
+  }
+  
+  const lines = mockData.journalEntryLines.filter(l => l.journalEntryId === entry.id);
+  
+  if (!entry.hash) {
+    return res.json({
+      verified: false,
+      reason: 'Entry not yet posted or hash not generated'
+    });
+  }
+  
+  const isValid = gobd.verifyEntryIntegrity(entry, lines, entry.hash);
+  
+  res.json({
+    verified: isValid,
+    hash: entry.hash,
+    algorithm: entry.hashAlgorithm || 'sha256',
+    postedAt: entry.postedAt,
+    postedBy: entry.postedBy
+  });
 });
 
 // ============================================================================
