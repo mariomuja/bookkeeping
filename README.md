@@ -2,6 +2,51 @@
 
 A comprehensive, modern bookkeeping application built with Angular and designed to work with PostgreSQL + TimescaleDB. This application supports double-entry accounting, multi-currency operations, and can handle millions of bookings efficiently.
 
+## 📸 Application Screenshots
+
+> **Note**: Screenshots are available in the `screenshots/` folder. To create them, see [screenshots/README.md](screenshots/README.md)
+
+### 📊 Dashboard - Financial Overview
+*Real-time financial metrics, activity summary, and quick actions for managing your bookkeeping*
+- Total Assets, Liabilities, Equity, Net Income with trend indicators
+- Activity summary with journal entry and account counts
+- Multi-currency support with real-time conversion
+- Quick action buttons for common tasks
+
+### 📁 Chart of Accounts - Standard Framework Import
+*Import from 7 international standard account frameworks*
+- **German Standards**: SKR03 (Prozessgliederung), SKR04 (Abschlussgliederung), IKR (Industrie)
+- **US Standards**: US GAAP
+- **International**: IFRS
+- **French**: Plan Comptable Général (PCG)
+- **Spanish**: Plan General de Contabilidad (PGC)
+- Selective or full framework import
+- Duplicate prevention and import statistics
+
+### 📝 Journal Entries - Double-Entry Bookkeeping
+*Manage all transactions with comprehensive validation*
+- Automatic debit/credit balance validation
+- Multi-currency transaction support
+- Post/Void operations with GoBD immutability
+- Cost center and cost object allocation
+- Custom fields for extended data
+- Advanced filtering and search
+
+### 📈 Financial Reports
+*Generate comprehensive financial reports*
+- **Trial Balance**: All account balances with debits and credits
+- **Balance Sheet**: Assets, Liabilities, and Equity summary
+- **Profit & Loss**: Revenue and expenses for any period
+- **DATEV Export**: German tax advisor integration (SKR03/SKR04)
+- CSV/Excel export for all reports
+
+### 📖 Documentation System - Built-in Help
+*Access comprehensive documentation directly in the application*
+- In-app documentation viewer with markdown rendering
+- Searchable index organized by category
+- Quick access via "?" icon in header
+- Available in 5 languages (DE, EN, ES, FR, IT)
+
 ## 🌟 Features
 
 ### Core Functionality
