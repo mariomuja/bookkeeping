@@ -1,0 +1,101 @@
+<div class="startup-container">
+  <div class="startup-card">
+    <div class="startup-header">
+      <div class="logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+      </div>
+      <h1>BookKeeper Pro</h1>
+      <p class="subtitle">Starting application...</p>
+    </div>
+
+    <div class="startup-body">
+      <!-- Overall Status -->
+      <div class="status-indicator" [ngClass]="bootstrapState.overallStatus">
+        <div class="spinner" *ngIf="bootstrapState.overallStatus === 'initializing'"></div>
+        <div class="status-icon success" *ngIf="bootstrapState.overallStatus === 'ready'">✓</div>
+        <div class="status-icon error" *ngIf="bootstrapState.overallStatus === 'error'">✗</div>
+      </div>
+
+      <!-- Bootstrap Checks -->
+      <div class="checks-list">
+        <div 
+          class="check-item" 
+          *ngFor="let check of bootstrapState.checks"
+          [ngClass]="getStatusClass(check.status)">
+          <div class="check-icon">
+            <span class="icon">{{ getStatusIcon(check.status) }}</span>
+          </div>
+          <div class="check-content">
+            <div class="check-name">{{ check.name }}</div>
+            <div class="check-message">{{ check.message }}</div>
+            <div class="check-details" *ngIf="check.details && check.status === 'error'">
+              <pre>{{ check.details | json }}</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading indicator when no checks yet -->
+        <div class="check-item status-pending" *ngIf="bootstrapState.checks.length === 0">
+          <div class="check-icon">
+            <span class="icon spinner-small"></span>
+          </div>
+          <div class="check-content">
+            <div class="check-name">Initializing...</div>
+            <div class="check-message">Running bootstrap checks</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-container" *ngIf="bootstrapState.overallStatus === 'error' && bootstrapState.error">
+        <div class="error-icon">⚠️</div>
+        <div class="error-message">
+          <h3>Startup Failed</h3>
+          <p>{{ bootstrapState.error }}</p>
+        </div>
+      </div>
+
+      <!-- Success Message -->
+      <div class="success-container" *ngIf="bootstrapState.overallStatus === 'ready'">
+        <div class="success-icon">✓</div>
+        <div class="success-message">
+          <h3>All Systems Ready</h3>
+          <p>Launching application...</p>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions" *ngIf="bootstrapState.overallStatus === 'error'">
+        <button 
+          class="btn-retry" 
+          (click)="retry()"
+          [disabled]="isRetrying">
+          <span *ngIf="!isRetrying">🔄 Retry Connection</span>
+          <span *ngIf="isRetrying">Retrying...</span>
+        </button>
+        <button class="btn-secondary" (click)="openBackendInstructions()">
+          📖 Setup Instructions
+        </button>
+      </div>
+
+      <!-- Help Text -->
+      <div class="help-text" *ngIf="bootstrapState.overallStatus === 'error'">
+        <h4>Troubleshooting Steps:</h4>
+        <ol>
+          <li>Ensure the backend server is running: <code>cd bookkeeping-backend && npm start</code></li>
+          <li>Check that the backend is accessible at: <code>http://localhost:3000</code></li>
+          <li>Verify no firewall is blocking the connection</li>
+          <li>Check the browser console for additional error details</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="startup-footer">
+      <small>Version 1.0.0</small>
+    </div>
+  </div>
+</div>
+

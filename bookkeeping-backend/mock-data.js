@@ -8,7 +8,7 @@ const demoOrgId = config.demoOrgId;
 const organizations = [
   {
     id: demoOrgId,
-    name: 'Demo Insurance Company',
+    name: 'Demo Company',
     countryCode: 'US',
     defaultCurrency: 'USD',
     defaultTimezone: 'America/New_York',
@@ -40,20 +40,159 @@ const accounts = [
   { id: uuidv4(), organizationId: demoOrgId, accountNumber: '1200', accountName: 'Accounts Receivable', accountTypeId: 1, currency: 'USD', isSystemAccount: false, isActive: true, createdAt: new Date(), updatedAt: new Date() },
   { id: uuidv4(), organizationId: demoOrgId, accountNumber: '1500', accountName: 'Investments', accountTypeId: 1, currency: 'USD', isSystemAccount: false, isActive: true, createdAt: new Date(), updatedAt: new Date() },
   { id: uuidv4(), organizationId: demoOrgId, accountNumber: '2000', accountName: 'Accounts Payable', accountTypeId: 4, currency: 'USD', isSystemAccount: false, isActive: true, createdAt: new Date(), updatedAt: new Date() },
-  { id: uuidv4(), organizationId: demoOrgId, accountNumber: '2100', accountName: 'Claims Payable', accountTypeId: 4, currency: 'USD', isSystemAccount: false, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+  { id: uuidv4(), organizationId: demoOrgId, accountNumber: '2100', accountName: 'Accrued Expenses', accountTypeId: 4, currency: 'USD', isSystemAccount: false, isActive: true, createdAt: new Date(), updatedAt: new Date() },
   { id: uuidv4(), organizationId: demoOrgId, accountNumber: '3000', accountName: 'Owner Equity', accountTypeId: 6, currency: 'USD', isSystemAccount: false, isActive: true, createdAt: new Date(), updatedAt: new Date() },
-  { id: uuidv4(), organizationId: demoOrgId, accountNumber: '4000', accountName: 'Premium Revenue', accountTypeId: 8, currency: 'USD', isSystemAccount: false, isActive: true, createdAt: new Date(), updatedAt: new Date() },
-  { id: uuidv4(), organizationId: demoOrgId, accountNumber: '4100', accountName: 'Investment Income', accountTypeId: 8, currency: 'USD', isSystemAccount: false, isActive: true, createdAt: new Date(), updatedAt: new Date() },
-  { id: uuidv4(), organizationId: demoOrgId, accountNumber: '6000', accountName: 'Claims Expense', accountTypeId: 10, currency: 'USD', isSystemAccount: false, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+  { id: uuidv4(), organizationId: demoOrgId, accountNumber: '4000', accountName: 'Sales Revenue', accountTypeId: 8, currency: 'USD', isSystemAccount: false, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+  { id: uuidv4(), organizationId: demoOrgId, accountNumber: '4100', accountName: 'Other Income', accountTypeId: 8, currency: 'USD', isSystemAccount: false, isActive: true, createdAt: new Date(), updatedAt: new Date() },
+  { id: uuidv4(), organizationId: demoOrgId, accountNumber: '6000', accountName: 'Cost of Services', accountTypeId: 10, currency: 'USD', isSystemAccount: false, isActive: true, createdAt: new Date(), updatedAt: new Date() },
   { id: uuidv4(), organizationId: demoOrgId, accountNumber: '6100', accountName: 'Operating Expenses', accountTypeId: 10, currency: 'USD', isSystemAccount: false, isActive: true, createdAt: new Date(), updatedAt: new Date() }
 ];
 
 // Custom Field Definitions (initially empty, can be created via API)
 const customFieldDefinitions = [];
 
-// Journal Entries (initially empty, will be populated by generator)
-const journalEntries = [];
-const journalEntryLines = [];
+// Journal Entries with sample data
+const journalEntries = [
+  {
+    id: uuidv4(),
+    organizationId: demoOrgId,
+    entryNumber: 'JE-2024-001',
+    entryDate: new Date('2024-01-15'),
+    description: 'Sales revenue for January',
+    currency: 'USD',
+    status: 'POSTED',
+    createdAt: new Date('2024-01-15'),
+    updatedAt: new Date('2024-01-15')
+  },
+  {
+    id: uuidv4(),
+    organizationId: demoOrgId,
+    entryNumber: 'JE-2024-002',
+    entryDate: new Date('2024-01-20'),
+    description: 'Other income received',
+    currency: 'USD',
+    status: 'POSTED',
+    createdAt: new Date('2024-01-20'),
+    updatedAt: new Date('2024-01-20')
+  },
+  {
+    id: uuidv4(),
+    organizationId: demoOrgId,
+    entryNumber: 'JE-2024-003',
+    entryDate: new Date('2024-02-01'),
+    description: 'Cost of services',
+    currency: 'USD',
+    status: 'POSTED',
+    createdAt: new Date('2024-02-01'),
+    updatedAt: new Date('2024-02-01')
+  },
+  {
+    id: uuidv4(),
+    organizationId: demoOrgId,
+    entryNumber: 'JE-2024-004',
+    entryDate: new Date('2024-02-15'),
+    description: 'Operating expenses - February',
+    currency: 'USD',
+    status: 'POSTED',
+    createdAt: new Date('2024-02-15'),
+    updatedAt: new Date('2024-02-15')
+  }
+];
+
+// Get account IDs for journal entry lines
+const cashAccount = accounts.find(a => a.accountNumber === '1000');
+const salesRevenueAccount = accounts.find(a => a.accountNumber === '4000');
+const otherIncomeAccount = accounts.find(a => a.accountNumber === '4100');
+const costOfServicesAccount = accounts.find(a => a.accountNumber === '6000');
+const operatingExpensesAccount = accounts.find(a => a.accountNumber === '6100');
+
+const journalEntryLines = [
+  // JE-2024-001: Sales revenue
+  {
+    id: uuidv4(),
+    journalEntryId: journalEntries[0].id,
+    accountId: cashAccount.id,
+    lineNumber: 1,
+    description: 'Cash received',
+    debitAmount: 50000,
+    creditAmount: 0,
+    createdAt: new Date('2024-01-15')
+  },
+  {
+    id: uuidv4(),
+    journalEntryId: journalEntries[0].id,
+    accountId: salesRevenueAccount.id,
+    lineNumber: 2,
+    description: 'Sales revenue',
+    debitAmount: 0,
+    creditAmount: 50000,
+    createdAt: new Date('2024-01-15')
+  },
+  // JE-2024-002: Other income
+  {
+    id: uuidv4(),
+    journalEntryId: journalEntries[1].id,
+    accountId: cashAccount.id,
+    lineNumber: 1,
+    description: 'Other income received',
+    debitAmount: 5000,
+    creditAmount: 0,
+    createdAt: new Date('2024-01-20')
+  },
+  {
+    id: uuidv4(),
+    journalEntryId: journalEntries[1].id,
+    accountId: otherIncomeAccount.id,
+    lineNumber: 2,
+    description: 'Other income',
+    debitAmount: 0,
+    creditAmount: 5000,
+    createdAt: new Date('2024-01-20')
+  },
+  // JE-2024-003: Cost of services
+  {
+    id: uuidv4(),
+    journalEntryId: journalEntries[2].id,
+    accountId: costOfServicesAccount.id,
+    lineNumber: 1,
+    description: 'Cost of services',
+    debitAmount: 15000,
+    creditAmount: 0,
+    createdAt: new Date('2024-02-01')
+  },
+  {
+    id: uuidv4(),
+    journalEntryId: journalEntries[2].id,
+    accountId: cashAccount.id,
+    lineNumber: 2,
+    description: 'Cash paid for services',
+    debitAmount: 0,
+    creditAmount: 15000,
+    createdAt: new Date('2024-02-01')
+  },
+  // JE-2024-004: Operating expenses
+  {
+    id: uuidv4(),
+    journalEntryId: journalEntries[3].id,
+    accountId: operatingExpensesAccount.id,
+    lineNumber: 1,
+    description: 'Operating expenses',
+    debitAmount: 8000,
+    creditAmount: 0,
+    createdAt: new Date('2024-02-15')
+  },
+  {
+    id: uuidv4(),
+    journalEntryId: journalEntries[3].id,
+    accountId: cashAccount.id,
+    lineNumber: 2,
+    description: 'Cash paid for expenses',
+    debitAmount: 0,
+    creditAmount: 8000,
+    createdAt: new Date('2024-02-15')
+  }
+];
+
 const customFieldValues = [];
 
 // Helper functions for reports
@@ -230,90 +369,6 @@ async function getProfitLoss(orgId, targetCurrency = 'USD') {
   return result;
 }
 
-function getPolicySummary(orgId) {
-  const policyField = customFieldDefinitions.find(f => 
-    f.organizationId === orgId && f.fieldName === 'policy_number'
-  );
-  
-  if (!policyField) return [];
-  
-  const entriesWithPolicies = customFieldValues
-    .filter(cf => cf.fieldDefinitionId === policyField.id)
-    .map(cf => ({
-      policyNumber: cf.fieldValue,
-      entryId: cf.journalEntryId
-    }));
-  
-  // Group by policy number
-  const grouped = {};
-  entriesWithPolicies.forEach(item => {
-    if (!grouped[item.policyNumber]) {
-      grouped[item.policyNumber] = {
-        policyNumber: item.policyNumber,
-        entryCount: 0,
-        totalDebits: 0,
-        totalCredits: 0,
-        entries: []
-      };
-    }
-    grouped[item.policyNumber].entries.push(item.entryId);
-  });
-  
-  // Calculate totals
-  Object.values(grouped).forEach(policy => {
-    policy.entryCount = policy.entries.length;
-    policy.entries.forEach(entryId => {
-      const lines = journalEntryLines.filter(l => l.journalEntryId === entryId);
-      policy.totalDebits += lines.reduce((sum, l) => sum + (l.debitAmount || 0), 0);
-      policy.totalCredits += lines.reduce((sum, l) => sum + (l.creditAmount || 0), 0);
-    });
-    delete policy.entries; // Remove from response
-  });
-  
-  return Object.values(grouped);
-}
-
-function getClaimSummary(orgId) {
-  const claimField = customFieldDefinitions.find(f => 
-    f.organizationId === orgId && f.fieldName === 'claim_number'
-  );
-  
-  if (!claimField) return [];
-  
-  const entriesWithClaims = customFieldValues
-    .filter(cf => cf.fieldDefinitionId === claimField.id)
-    .map(cf => ({
-      claimNumber: cf.fieldValue,
-      entryId: cf.journalEntryId
-    }));
-  
-  // Group by claim number
-  const grouped = {};
-  entriesWithClaims.forEach(item => {
-    if (!grouped[item.claimNumber]) {
-      grouped[item.claimNumber] = {
-        claimNumber: item.claimNumber,
-        entryCount: 0,
-        totalClaimPayments: 0,
-        entries: []
-      };
-    }
-    grouped[item.claimNumber].entries.push(item.entryId);
-  });
-  
-  // Calculate totals
-  Object.values(grouped).forEach(claim => {
-    claim.entryCount = claim.entries.length;
-    claim.entries.forEach(entryId => {
-      const lines = journalEntryLines.filter(l => l.journalEntryId === entryId);
-      claim.totalClaimPayments += lines.reduce((sum, l) => sum + (l.creditAmount || 0), 0);
-    });
-    delete claim.entries;
-  });
-  
-  return Object.values(grouped);
-}
-
 module.exports = {
   organizations,
   accountTypes,
@@ -325,8 +380,6 @@ module.exports = {
   getDashboardMetrics,
   getTrialBalance,
   getBalanceSheet,
-  getProfitLoss,
-  getPolicySummary,
-  getClaimSummary
+  getProfitLoss
 };
 

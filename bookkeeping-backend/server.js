@@ -489,17 +489,6 @@ app.post('/api/organizations/:orgId/custom-fields/reorder', (req, res) => {
   res.status(200).json({ message: 'Fields reordered successfully' });
 });
 
-app.post('/api/organizations/:orgId/custom-fields/insurance-defaults', (req, res) => {
-  const orgId = req.params.orgId;
-  const mockInsurance = require('./mock-insurance-fields');
-  
-  mockInsurance.createInsuranceFields(orgId).forEach(field => {
-    mockData.customFieldDefinitions.push(field);
-  });
-  
-  res.status(201).json({ message: 'Insurance fields created successfully', count: 10 });
-});
-
 // ============================================================================
 // REPORTS
 // ============================================================================
@@ -547,118 +536,6 @@ app.get('/api/organizations/:orgId/reports/profit-loss', async (req, res) => {
   }
 });
 
-app.get('/api/organizations/:orgId/reports/policy-summary', (req, res) => {
-  const policySummary = mockData.getPolicySummary(req.params.orgId);
-  res.json(policySummary);
-});
-
-app.get('/api/organizations/:orgId/reports/claim-summary', (req, res) => {
-  const claimSummary = mockData.getClaimSummary(req.params.orgId);
-  res.json(claimSummary);
-});
-
-// ============================================================================
-// ACTUARIAL - LOSS TRIANGLES
-// ============================================================================
-
-app.get('/api/organizations/:orgId/actuarial/loss-triangle', (req, res) => {
-  const { triangleType, policyType, developmentPeriods } = req.query;
-  
-  const triangleCalculator = require('./loss-triangle-calculator');
-  const entries = mockData.journalEntries.filter(e => e.organizationId === req.params.orgId);
-  
-  // Add custom fields to entries
-  const entriesWithFields = entries.map(entry => ({
-    ...entry,
-    customFields: mockData.customFieldValues.filter(cf => cf.journalEntryId === entry.id),
-    lines: mockData.journalEntryLines.filter(l => l.journalEntryId === entry.id)
-  }));
-  
-  const options = {
-    triangleType: triangleType || 'PAID',
-    policyType: policyType || null,
-    developmentPeriods: parseInt(developmentPeriods) || 12
-  };
-  
-  const triangle = triangleCalculator.calculateLossTriangle(
-    entriesWithFields,
-    mockData.customFieldDefinitions,
-    options
-  );
-  
-  res.json(triangle);
-});
-
-app.get('/api/organizations/:orgId/actuarial/reserves', (req, res) => {
-  const { policyType } = req.query;
-  
-  const triangleCalculator = require('./loss-triangle-calculator');
-  const entries = mockData.journalEntries.filter(e => e.organizationId === req.params.orgId);
-  
-  const entriesWithFields = entries.map(entry => ({
-    ...entry,
-    customFields: mockData.customFieldValues.filter(cf => cf.journalEntryId === entry.id),
-    lines: mockData.journalEntryLines.filter(l => l.journalEntryId === entry.id)
-  }));
-  
-  const options = {
-    triangleType: 'PAID',
-    policyType: policyType || null,
-    developmentPeriods: 12
-  };
-  
-  const triangle = triangleCalculator.calculateLossTriangle(
-    entriesWithFields,
-    mockData.customFieldDefinitions,
-    options
-  );
-  
-  const reserves = triangleCalculator.calculateReserveEstimates(triangle);
-  res.json(reserves);
-});
-
-// ============================================================================
-// SAMPLE DATA GENERATION
-// ============================================================================
-
-app.post('/api/organizations/:orgId/sample-data/insurance', (req, res) => {
-  const { count } = req.body;
-  const orgId = req.params.orgId;
-  const user = req.user || { userId: 'system', username: 'System' };
-  
-  console.log(`Generating ${count} sample insurance bookings...`);
-  
-  const generator = require('./sample-data-generator');
-  const result = generator.generateInsuranceData(orgId, count || 10000);
-  
-  // Add to mock data
-  mockData.journalEntries.push(...result.entries);
-  mockData.journalEntryLines.push(...result.lines);
-  mockData.customFieldValues.push(...result.customFields);
-  
-  // Log data generation
-  auditLog.createAuditLog({
-    userId: user.userId,
-    username: user.username,
-    action: auditLog.LOG_TYPES.GENERATE,
-    entityType: auditLog.ENTITY_TYPES.SAMPLE_DATA,
-    entityId: orgId,
-    description: `Generated ${result.entries.length} insurance sample bookings`,
-    metadata: {
-      entriesGenerated: result.entries.length,
-      linesGenerated: result.lines.length,
-      customFieldsGenerated: result.customFields.length
-    },
-    ipAddress: req.ip,
-    userAgent: req.headers['user-agent']
-  });
-  
-  res.json({
-    message: `Successfully generated ${result.entries.length} insurance bookings`,
-    generated: result.entries.length
-  });
-});
-
 // ============================================================================
 // AUDIT LOGS
 // ============================================================================
@@ -692,11 +569,24 @@ app.get('/api/audit-logs/stats', (req, res) => {
 // ============================================================================
 
 app.get('/api/health', (req, res) => {
+  const mockData = require('./mock-data');
   res.json({
     status: 'ok',
     timestamp: new Date(),
     version: '1.0.0',
-    useMockData: config.useMockData
+    environment: config.nodeEnv,
+    useMockData: config.useMockData,
+    dataStatus: {
+      organizations: mockData.organizations.length,
+      accounts: mockData.accounts.length,
+      journalEntries: mockData.journalEntries.length,
+      accountTypes: mockData.accountTypes.length
+    },
+    services: {
+      api: 'running',
+      auth: 'available',
+      mockData: 'loaded'
+    }
   });
 });
 
@@ -727,7 +617,6 @@ app.listen(config.port, () => {
   console.log('  GET  /api/organizations/:orgId/accounts');
   console.log('  GET  /api/organizations/:orgId/journal-entries');
   console.log('  GET  /api/organizations/:orgId/custom-fields');
-  console.log('  POST /api/organizations/:orgId/sample-data/insurance');
   console.log('  GET  /api/organizations/:orgId/dashboard');
   console.log('  GET  /api/organizations/:orgId/reports/*');
   console.log('\n  📚 See README.md for full API documentation\n');

@@ -7,10 +7,13 @@
     "dashboard": "Tableau de bord",
     "accounts": "Plan comptable",
     "journalEntries": "Écritures comptables",
+    "claims": "Gestion des Sinistres",
+    "reserves": "Analyse des Réserves",
     "reports": "Rapports",
     "lossTriangle": "Triangle de Sinistres",
     "import": "Importer des données",
     "customFields": "Champs personnalisés",
+    "auditLog": "Journal d'audit",
     "settings": "Paramètres"
   },
   "dashboard": {

@@ -203,57 +203,6 @@ export class CustomFieldsComponent implements OnInit {
     });
   }
 
-  createInsuranceDefaults(): void {
-    const org = this.organizationService.getCurrentOrganization();
-    if (!org) return;
-
-    if (!confirm('This will create default insurance-related custom fields (Policy Number, Claim Number, etc.). Continue?')) {
-      return;
-    }
-
-    this.customFieldService.createInsuranceFields(org.id).subscribe({
-      next: () => {
-        alert('Insurance fields created successfully');
-        this.loadCustomFields();
-      },
-      error: (err) => {
-        alert('Failed to create insurance fields');
-        console.error(err);
-      }
-    });
-  }
-
-  generateSampleData(): void {
-    const org = this.organizationService.getCurrentOrganization();
-    if (!org) return;
-
-    const count = prompt('How many sample insurance bookings to generate? (e.g., 1000000 for 1 million)', '10000');
-    if (!count) return;
-
-    const numCount = parseInt(count);
-    if (isNaN(numCount) || numCount < 1) {
-      alert('Please enter a valid number');
-      return;
-    }
-
-    if (numCount > 100000 && !confirm(`You are about to generate ${numCount.toLocaleString()} records. This may take several minutes. Continue?`)) {
-      return;
-    }
-
-    this.loading = true;
-    this.customFieldService.generateSampleData(org.id, numCount).subscribe({
-      next: (result) => {
-        alert(`${result.message}\nGenerated: ${result.generated} records`);
-        this.loading = false;
-      },
-      error: (err) => {
-        alert('Failed to generate sample data');
-        this.loading = false;
-        console.error(err);
-      }
-    });
-  }
-
   getTypeIcon(fieldType: CustomFieldType): string {
     const icons: { [key in CustomFieldType]: string } = {
       'TEXT': '📝',

@@ -7,6 +7,8 @@
     "dashboard": "Dashboard",
     "accounts": "Kontenplan",
     "journalEntries": "Buchungen",
+    "claims": "Schadensmanagement",
+    "reserves": "Rückstellungsanalyse",
     "reports": "Berichte",
     "lossTriangle": "Schadendreieck",
     "import": "Daten importieren",

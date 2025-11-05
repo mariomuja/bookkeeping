@@ -84,7 +84,7 @@ export class LoginComponent {
     // Set the demo organization
     const demoOrg = {
       id: '550e8400-e29b-41d4-a716-446655440000',
-      name: 'Demo Insurance Company',
+      name: 'Demo Company',
       countryCode: 'US',
       defaultCurrency: 'USD',
       defaultTimezone: 'America/New_York',

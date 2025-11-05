@@ -23,7 +23,7 @@
       <input 
         type="text" 
         class="search-input" 
-        placeholder="Search by account, description, policy, claim..." 
+        placeholder="Search by account, description, reference..." 
         [(ngModel)]="searchQuery"
         (ngModelChange)="onSearchChange()">
     </div>
@@ -148,14 +148,6 @@
             <span class="th-content">Amount <span class="sort-indicator">{{ getSortIcon('amount') }}</span></span>
             <span class="resize-handle" (mousedown)="onResizeStart($event, 'amount')"></span>
           </th>
-          <th class="sortable resizable" [style.width]="getColumnWidth('policyNumber')" (click)="sortBy('policyNumber')">
-            <span class="th-content">Policy # <span class="sort-indicator">{{ getSortIcon('policyNumber') }}</span></span>
-            <span class="resize-handle" (mousedown)="onResizeStart($event, 'policyNumber')"></span>
-          </th>
-          <th class="sortable resizable" [style.width]="getColumnWidth('claimNumber')" (click)="sortBy('claimNumber')">
-            <span class="th-content">Claim # <span class="sort-indicator">{{ getSortIcon('claimNumber') }}</span></span>
-            <span class="resize-handle" (mousedown)="onResizeStart($event, 'claimNumber')"></span>
-          </th>
           <th class="sortable resizable" [style.width]="getColumnWidth('reference')" (click)="sortBy('reference')">
             <span class="th-content">Ref <span class="sort-indicator">{{ getSortIcon('reference') }}</span></span>
             <span class="resize-handle" (mousedown)="onResizeStart($event, 'reference')"></span>
@@ -226,8 +218,6 @@
             <span class="account-name">{{ getCreditAccount(entry)?.accountName || '' }}</span>
           </td>
           <td class="text-right amount-cell">{{ formatCurrency(getEntryAmount(entry)) }}</td>
-          <td class="custom-field-cell">{{ getCustomFieldValue(entry, 'policy_number') }}</td>
-          <td class="custom-field-cell">{{ getCustomFieldValue(entry, 'claim_number') }}</td>
           <td class="ref-cell">{{ entry.referenceNumber || '-' }}</td>
           <td class="actions-cell">
             <div class="action-buttons" *ngIf="entry.status === 'DRAFT'">
@@ -282,8 +272,6 @@
                 <option value="INVOICE">Invoice</option>
                 <option value="PAYMENT">Payment</option>
                 <option value="RECEIPT">Receipt</option>
-                <option value="PREMIUM">Premium</option>
-                <option value="CLAIM">Claim</option>
               </select>
             </div>
           </div>

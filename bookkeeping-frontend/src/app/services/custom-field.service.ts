@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
-import { CustomFieldDefinition, CreateCustomFieldDefinitionRequest, PolicySummary, ClaimSummary } from '../models/custom-field.model';
+import { CustomFieldDefinition, CreateCustomFieldDefinitionRequest } from '../models/custom-field.model';
 
 @Injectable({
   providedIn: 'root'
@@ -40,26 +40,5 @@ export class CustomFieldService {
     return this.api.post<void>(`/organizations/${organizationId}/custom-fields/reorder`, { fieldIds });
   }
 
-  // Initialize default insurance fields
-  createInsuranceFields(organizationId: string): Observable<void> {
-    return this.api.post<void>(`/organizations/${organizationId}/custom-fields/insurance-defaults`, {});
-  }
-
-  // Aggregation Reports
-  getPolicySummaries(organizationId: string, filters?: any): Observable<PolicySummary[]> {
-    return this.api.get<PolicySummary[]>(`/organizations/${organizationId}/reports/policy-summary`, filters);
-  }
-
-  getClaimSummaries(organizationId: string, filters?: any): Observable<ClaimSummary[]> {
-    return this.api.get<ClaimSummary[]>(`/organizations/${organizationId}/reports/claim-summary`, filters);
-  }
-
-  // Sample Data Generation
-  generateSampleData(organizationId: string, count: number): Observable<{ message: string; generated: number }> {
-    return this.api.post<{ message: string; generated: number }>(
-      `/organizations/${organizationId}/sample-data/insurance`, 
-      { count }
-    );
-  }
 }
 

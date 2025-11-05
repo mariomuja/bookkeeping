@@ -5,19 +5,6 @@
       <p class="subtitle">Define custom fields for your journal entries</p>
     </div>
     <div class="header-actions">
-      <button class="btn-secondary" (click)="createInsuranceDefaults()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-        </svg>
-        Create Insurance Fields
-      </button>
-      <button class="btn-secondary" (click)="generateSampleData()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="23 4 23 10 17 10"></polyline>
-          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
-        </svg>
-        Generate Sample Data
-      </button>
       <button class="btn-primary" (click)="openCreateModal()">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -134,14 +121,14 @@
             <div class="form-group">
               <label>Field Name (Internal) *</label>
               <input type="text" [(ngModel)]="currentField.fieldName" name="fieldName" 
-                     placeholder="e.g., policy_number" required>
+                     placeholder="e.g., invoice_number" required>
               <small>Use lowercase with underscores. This is the internal identifier.</small>
             </div>
 
             <div class="form-group">
               <label>Display Name *</label>
               <input type="text" [(ngModel)]="currentField.displayName" name="displayName" 
-                     placeholder="e.g., Policy Number" required>
+                     placeholder="e.g., Invoice Number" required>
               <small>This is what users will see in the interface.</small>
             </div>
           </div>

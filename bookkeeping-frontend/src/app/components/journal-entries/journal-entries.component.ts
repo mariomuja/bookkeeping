@@ -46,8 +46,6 @@ export class JournalEntriesComponent implements OnInit, OnDestroy {
     'debitAccount': 180,
     'creditAccount': 180,
     'amount': 120,
-    'policyNumber': 130,
-    'claimNumber': 130,
     'reference': 100,
     'actions': 100
   };
@@ -255,18 +253,6 @@ export class JournalEntriesComponent implements OnInit, OnDestroy {
           
         case 'amount':
           compareResult = this.getEntryAmount(a) - this.getEntryAmount(b);
-          break;
-          
-        case 'policyNumber':
-          compareResult = this.getCustomFieldValue(a, 'policy_number').localeCompare(
-            this.getCustomFieldValue(b, 'policy_number')
-          );
-          break;
-          
-        case 'claimNumber':
-          compareResult = this.getCustomFieldValue(a, 'claim_number').localeCompare(
-            this.getCustomFieldValue(b, 'claim_number')
-          );
           break;
           
         case 'reference':

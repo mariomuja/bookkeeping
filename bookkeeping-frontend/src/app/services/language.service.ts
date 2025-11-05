@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
 
 export interface Language {
   code: string;
@@ -24,7 +23,7 @@ export class LanguageService {
     { code: 'it', name: 'Italiano', flag: '🇮🇹' }
   ];
 
-  constructor(private translate: TranslateService, private http: HttpClient) {
+  constructor(private translate: TranslateService) {
     // Set available languages
     const langCodes = this.availableLanguages.map(l => l.code);
     this.translate.addLangs(langCodes);
@@ -32,35 +31,12 @@ export class LanguageService {
     // Set default language
     this.translate.setDefaultLang('en');
     
-    // Load translations from JSON files and then set language
-    this.loadTranslations().then(() => {
-      // Try to use browser language if available
-      const browserLang = this.translate.getBrowserLang();
-      const savedLang = localStorage.getItem('preferredLanguage');
-      
-      const langToUse = savedLang || (browserLang && langCodes.includes(browserLang) ? browserLang : 'en');
-      this.setLanguage(langToUse);
-    });
-  }
-
-  private async loadTranslations(): Promise<void> {
-    // Load translation files from assets/i18n/
-    const languages = ['en', 'de', 'fr', 'es', 'it'];
+    // Try to use browser language if available
+    const browserLang = this.translate.getBrowserLang();
+    const savedLang = localStorage.getItem('preferredLanguage');
     
-    const loadPromises = languages.map(async (lang) => {
-      try {
-        const translations = await this.http.get(`/assets/i18n/${lang}.json`).toPromise();
-        this.translate.setTranslation(lang, translations, true);
-        console.log(`[Language] ✓ Loaded ${lang} translations - auditLog exists:`, !!(translations as any).auditLog);
-        return true;
-      } catch (err) {
-        console.error(`[Language] ✗ Failed to load ${lang} translations:`, err);
-        return false;
-      }
-    });
-    
-    await Promise.all(loadPromises);
-    console.log('[Language] All translations loaded successfully');
+    const langToUse = savedLang || (browserLang && langCodes.includes(browserLang) ? browserLang : 'en');
+    this.setLanguage(langToUse);
   }
 
   setLanguage(langCode: string): void {

@@ -7,10 +7,13 @@
     "dashboard": "Panel de control",
     "accounts": "Plan de cuentas",
     "journalEntries": "Asientos contables",
+    "claims": "Gestión de Reclamaciones",
+    "reserves": "Análisis de Reservas",
     "reports": "Informes",
     "lossTriangle": "Triángulo de Siniestros",
     "import": "Importar datos",
     "customFields": "Campos personalizados",
+    "auditLog": "Registro de auditoría",
     "settings": "Configuración"
   },
   "dashboard": {

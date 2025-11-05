@@ -16,7 +16,7 @@ export class DashboardComponent implements OnInit {
   metrics: DashboardMetrics | null = null;
   loading = true;
   error: string | null = null;
-  selectedCurrency = 'EUR'; // Default to EUR for European insurance company
+  selectedCurrency = 'USD'; // Default currency
 
   availableCurrencies = [
     { code: 'USD', name: 'US Dollar', symbol: '$' },

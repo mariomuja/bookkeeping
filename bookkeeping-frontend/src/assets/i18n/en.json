@@ -7,6 +7,8 @@
     "dashboard": "Dashboard",
     "accounts": "Chart of Accounts",
     "journalEntries": "Journal Entries",
+    "claims": "Claims Management",
+    "reserves": "Reserve Analysis",
     "reports": "Reports",
     "lossTriangle": "Loss Triangle",
     "import": "Import Data",

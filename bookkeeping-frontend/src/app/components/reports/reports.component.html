@@ -33,30 +33,4 @@
       </div>
     </div>
   </div>
-
-  <!-- Insurance Reports Section -->
-  <div class="reports-section">
-    <h2 class="section-title">Insurance Reports</h2>
-    <div class="reports-grid">
-      <div *ngFor="let report of getInsuranceReports()" 
-           class="report-card" 
-           (click)="openReport(report)">
-        <div class="report-icon" [attr.data-icon]="report.icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path *ngIf="report.icon === 'triangle'" d="M12 2L2 22h20L12 2z"/>
-          </svg>
-        </div>
-        <h3>{{ report.title }}</h3>
-        <p>{{ report.description }}</p>
-        <div class="open-indicator">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-            <polyline points="15 3 21 3 21 9"></polyline>
-            <line x1="10" y1="14" x2="21" y2="3"></line>
-          </svg>
-          Open in new tab
-        </div>
-      </div>
-    </div>
-  </div>
 </div>

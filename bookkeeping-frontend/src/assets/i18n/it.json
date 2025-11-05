@@ -7,10 +7,13 @@
     "dashboard": "Dashboard",
     "accounts": "Piano dei conti",
     "journalEntries": "Registrazioni",
+    "claims": "Gestione Sinistri",
+    "reserves": "Analisi delle Riserve",
     "reports": "Report",
     "lossTriangle": "Triangolo dei Sinistri",
     "import": "Importa dati",
     "customFields": "Campi personalizzati",
+    "auditLog": "Registro di audit",
     "settings": "Impostazioni"
   },
   "dashboard": {

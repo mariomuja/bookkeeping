@@ -9,7 +9,7 @@ interface ReportCard {
   description: string;
   icon: string;
   route: string;
-  category: 'financial' | 'insurance';
+  category: 'financial';
 }
 
 @Component({
@@ -44,14 +44,6 @@ export class ReportsComponent {
       icon: 'chart',
       route: '/report/profit-loss',
       category: 'financial'
-    },
-    {
-      id: 'loss-triangle',
-      title: 'Loss Triangle',
-      description: 'Insurance claims development and IBNR reserves',
-      icon: 'triangle',
-      route: '/report/loss-triangle',
-      category: 'insurance'
     }
   ];
 
@@ -78,10 +70,6 @@ export class ReportsComponent {
 
   getFinancialReports(): ReportCard[] {
     return this.reports.filter(r => r.category === 'financial');
-  }
-
-  getInsuranceReports(): ReportCard[] {
-    return this.reports.filter(r => r.category === 'insurance');
   }
 }
 

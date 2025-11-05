@@ -53,25 +53,4 @@ export interface CreateCustomFieldDefinitionRequest {
   formattingTemplate?: string;
 }
 
-export interface PolicySummary {
-  policyNumber: string;
-  masterPolicyNumber?: string;
-  policyType?: string;
-  entryCount: number;
-  totalDebits: number;
-  totalCredits: number;
-  firstEntryDate: Date;
-  lastEntryDate: Date;
-}
-
-export interface ClaimSummary {
-  claimNumber: string;
-  masterClaimNumber?: string;
-  claimStatus?: string;
-  policyNumber?: string;
-  entryCount: number;
-  totalClaimPayments: number;
-  claimDate: Date;
-  lastUpdateDate: Date;
-}
 
