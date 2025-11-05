@@ -6,7 +6,8 @@
       <a *ngFor="let item of menuItems" 
          [routerLink]="item.route"
          [class.active]="isActiveRoute(item.route)"
-         class="nav-item">
+         class="nav-item"
+         (click)="onNavItemClick()">
         
         <span class="nav-icon">
           <ng-container [ngSwitch]="item.icon">

@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { filter } from 'rxjs/operators';
 
 interface MenuItem {
   icon: string;
@@ -19,6 +20,8 @@ interface MenuItem {
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent {
+  @Output() closeSidebar = new EventEmitter<void>();
+  
   menuItems: MenuItem[] = [
     { icon: 'dashboard', label: 'Dashboard', translationKey: 'nav.dashboard', route: '/dashboard' },
     { icon: 'accounts', label: 'Chart of Accounts', translationKey: 'nav.accounts', route: '/accounts' },
@@ -30,10 +33,21 @@ export class SidebarComponent {
     { icon: 'settings', label: 'Settings', translationKey: 'nav.settings', route: '/settings' }
   ];
 
-  constructor(public router: Router) {}
+  constructor(public router: Router) {
+    // Close sidebar on navigation (mobile)
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.closeSidebar.emit();
+    });
+  }
 
   isActiveRoute(route: string): boolean {
     return this.router.url.startsWith(route);
+  }
+  
+  onNavItemClick(): void {
+    this.closeSidebar.emit();
   }
 }
 

@@ -1,6 +1,15 @@
 <div class="app-container" [class.report-view]="!showMainLayout">
-  <app-header *ngIf="showMainLayout" (openDocumentation)="openDocumentation()"></app-header>
-  <app-sidebar *ngIf="showMainLayout"></app-sidebar>
+  <app-header *ngIf="showMainLayout" 
+              (openDocumentation)="openDocumentation()"
+              (toggleMobileMenu)="toggleMobileSidebar()"></app-header>
+  <div class="sidebar-container" 
+       *ngIf="showMainLayout"
+       [class.mobile-open]="isMobileSidebarOpen">
+    <app-sidebar (closeSidebar)="closeMobileSidebar()"></app-sidebar>
+  </div>
+  <div class="mobile-overlay" 
+       *ngIf="showMainLayout && isMobileSidebarOpen"
+       (click)="closeMobileSidebar()"></div>
   <main class="main-content" [class.full-width]="!showMainLayout">
     <router-outlet></router-outlet>
   </main>

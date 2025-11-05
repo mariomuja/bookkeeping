@@ -40,6 +40,42 @@
   font-weight: 700;
 }
 
+.mobile-menu-button {
+  display: none;
+  background: none;
+  border: none;
+  color: #1f2937;
+  cursor: pointer;
+  padding: 0.5rem;
+  margin-right: 0.5rem;
+  border-radius: 0.375rem;
+  transition: background 0.2s;
+}
+
+.mobile-menu-button:hover {
+  background: #f3f4f6;
+}
+
+.mobile-menu-button:active {
+  background: #e5e7eb;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .logo-text {
+    display: none;
+  }
+  
+  .organization-info {
+    display: none;
+  }
+}
+
 .header-center {
   flex: 1;
   display: flex;

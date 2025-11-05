@@ -19,6 +19,7 @@ export class AppComponent implements OnInit {
   title = 'International Bookkeeping';
   showMainLayout = true;
   showDocumentationModal = false;
+  isMobileSidebarOpen = false;
 
   constructor(
     private organizationService: OrganizationService,
@@ -31,6 +32,8 @@ export class AppComponent implements OnInit {
     ).subscribe((event: any) => {
       // Hide layout for report viewer routes and login page
       this.showMainLayout = !event.url.startsWith('/report/') && !event.url.startsWith('/login');
+      // Close mobile sidebar on navigation
+      this.isMobileSidebarOpen = false;
     });
   }
 
@@ -70,5 +73,13 @@ export class AppComponent implements OnInit {
 
   closeDocumentation(): void {
     this.showDocumentationModal = false;
+  }
+  
+  toggleMobileSidebar(): void {
+    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
+  }
+  
+  closeMobileSidebar(): void {
+    this.isMobileSidebarOpen = false;
   }
 }

@@ -23,9 +23,50 @@
   background: #ffffff;
 }
 
+.sidebar-container {
+  position: fixed;
+  left: 0;
+  top: 64px;
+  bottom: 0;
+  width: 260px;
+  z-index: 50;
+}
+
+.mobile-overlay {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .main-content {
     margin-left: 0;
+  }
+  
+  .sidebar-container {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    width: 280px;
+    z-index: 1000;
+  }
+  
+  .sidebar-container.mobile-open {
+    transform: translateX(0);
+  }
+  
+  .mobile-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 }
 

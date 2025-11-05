@@ -16,6 +16,7 @@ import { Organization } from '../../../models/organization.model';
 })
 export class HeaderComponent implements OnInit {
   @Output() openDocumentation = new EventEmitter<void>();
+  @Output() toggleMobileMenu = new EventEmitter<void>();
   
   currentOrganization: Organization | null = null;
   currentUser: User | null = null;
