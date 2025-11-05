@@ -18,7 +18,7 @@ const initializeDemoUser = () => {
     id: uuidv4(),
     username: 'demo',
     email: 'demo@bookkeeper.com',
-    passwordHash: bcrypt.hashSync('demo123', 10),
+    passwordHash: bcrypt.hashSync('DemoUser2025!Secure', 10),
     twoFactorSecret: null,
     twoFactorEnabled: false,
     organizationId: '550e8400-e29b-41d4-a716-446655440000',
@@ -28,7 +28,7 @@ const initializeDemoUser = () => {
   };
   
   users.push(demoUser);
-  console.log('✓ Demo user created: username="demo", password="demo123"');
+  console.log('✓ Demo user created: username="demo", password="DemoUser2025!Secure"');
 };
 
 // Register new user
