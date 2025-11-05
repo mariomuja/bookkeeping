@@ -33,4 +33,95 @@
       </div>
     </div>
   </div>
+
+  <!-- DATEV Export Section -->
+  <div class="reports-section">
+    <h2 class="section-title">🇩🇪 DATEV Integration</h2>
+    <p class="section-description">Export für deutsche Steuerberater im DATEV-Format</p>
+    
+    <div class="datev-export-card">
+      <div class="datev-header">
+        <div class="datev-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <path d="M12 18v-6m-3 3h6"></path>
+          </svg>
+        </div>
+        <div>
+          <h3>DATEV ASCII Export</h3>
+          <p>Export Ihrer Buchungsdaten im DATEV-Format für die Übergabe an den Steuerberater</p>
+        </div>
+      </div>
+
+      <div class="datev-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Kontenrahmen</label>
+            <select [(ngModel)]="datevFramework" class="datev-select">
+              <option value="SKR03">SKR03 - Handelsunternehmen</option>
+              <option value="SKR04">SKR04 - Industrieunternehmen</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Berater-Nummer</label>
+            <input type="number" [(ngModel)]="datevConsultantNumber" class="datev-input" placeholder="1000">
+          </div>
+
+          <div class="form-group">
+            <label>Mandanten-Nummer</label>
+            <input type="number" [(ngModel)]="datevClientNumber" class="datev-input" placeholder="10001">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Von Datum</label>
+            <input type="date" [(ngModel)]="datevDateFrom" class="datev-input">
+          </div>
+
+          <div class="form-group">
+            <label>Bis Datum</label>
+            <input type="date" [(ngModel)]="datevDateTo" class="datev-input">
+          </div>
+        </div>
+
+        <div class="datev-actions">
+          <button class="btn-secondary" (click)="validateDatevData()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Daten validieren
+          </button>
+          <button class="btn-primary" (click)="exportToDatev()" [disabled]="isExporting">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <span *ngIf="!isExporting">DATEV Export</span>
+            <span *ngIf="isExporting">Exportiere...</span>
+          </button>
+        </div>
+
+        <div class="datev-info" *ngIf="datevValidation">
+          <div class="info-box" [ngClass]="datevValidation.valid ? 'success' : 'error'">
+            <div class="info-icon">{{ datevValidation.valid ? '✓' : '⚠' }}</div>
+            <div class="info-content">
+              <strong>{{ datevValidation.valid ? 'Daten sind gültig' : 'Validierungsfehler' }}</strong>
+              <div *ngIf="!datevValidation.valid">
+                <ul>
+                  <li *ngFor="let error of datevValidation.errors">{{ error.error }}</li>
+                </ul>
+              </div>
+              <div *ngIf="datevValidation.valid">
+                Bereit für DATEV-Export
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

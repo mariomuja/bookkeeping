@@ -537,6 +537,111 @@ app.get('/api/organizations/:orgId/reports/profit-loss', async (req, res) => {
 });
 
 // ============================================================================
+// DATEV INTEGRATION
+// ============================================================================
+
+const { DatevExporter } = require('./datev-export');
+
+// Export to DATEV format
+app.get('/api/organizations/:orgId/datev/export', (req, res) => {
+  try {
+    const orgId = req.params.orgId;
+    const {
+      framework = 'SKR03',
+      consultantNumber = 1000,
+      clientNumber = 10001,
+      dateFrom,
+      dateTo,
+      exportType = 'TRANSACTIONS'
+    } = req.query;
+
+    const org = mockData.organizations.find(o => o.id === orgId);
+    if (!org) {
+      return res.status(404).json({ error: 'Organization not found' });
+    }
+
+    // Get journal entries for the organization
+    const entries = mockData.journalEntries.filter(e => e.organizationId === orgId);
+    const lines = mockData.journalEntryLines.filter(l => 
+      entries.some(e => e.id === l.journalEntryId)
+    );
+
+    // Create DATEV exporter
+    const exporter = new DatevExporter(framework);
+
+    // Validate data before export
+    const validation = exporter.validateExportData(entries, lines);
+    if (!validation.valid) {
+      return res.status(400).json({
+        error: 'Data validation failed',
+        errors: validation.errors
+      });
+    }
+
+    // Generate DATEV export
+    const result = exporter.exportToDatev(entries, lines, mockData.accounts, {
+      organizationName: org.name,
+      consultantNumber: parseInt(consultantNumber),
+      clientNumber: parseInt(clientNumber),
+      fiscalYearStart: new Date(org.fiscalYearStart ? `${new Date().getFullYear()}-${org.fiscalYearStart}-01` : `${new Date().getFullYear()}-01-01`),
+      dateFrom,
+      dateTo,
+      exportType
+    });
+
+    // Set headers for file download
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="${result.filename}"`);
+    
+    // Log export
+    auditLog.createAuditLog({
+      userId: req.user?.userId || 'system',
+      username: req.user?.username || 'System',
+      action: auditLog.LOG_TYPES.EXPORT,
+      entityType: auditLog.ENTITY_TYPES.JOURNAL_ENTRY,
+      entityId: orgId,
+      description: `DATEV export: ${result.recordCount} records (${framework})`,
+      metadata: {
+        framework,
+        recordCount: result.recordCount,
+        dateRange: result.dateRange
+      },
+      ipAddress: req.ip,
+      userAgent: req.headers['user-agent']
+    });
+
+    res.send(result.content);
+  } catch (error) {
+    console.error('DATEV export error:', error);
+    res.status(500).json({ error: 'Failed to generate DATEV export', message: error.message });
+  }
+});
+
+// Get DATEV account framework information
+app.get('/api/datev/frameworks', (req, res) => {
+  const exporter = new DatevExporter();
+  const frameworks = ['SKR03', 'SKR04'].map(fw => ({
+    code: fw,
+    ...exporter.getAccountFrameworkInfo(fw)
+  }));
+  res.json(frameworks);
+});
+
+// Validate data for DATEV export
+app.get('/api/organizations/:orgId/datev/validate', (req, res) => {
+  const orgId = req.params.orgId;
+  const entries = mockData.journalEntries.filter(e => e.organizationId === orgId);
+  const lines = mockData.journalEntryLines.filter(l => 
+    entries.some(e => e.id === l.journalEntryId)
+  );
+
+  const exporter = new DatevExporter();
+  const validation = exporter.validateExportData(entries, lines);
+
+  res.json(validation);
+});
+
+// ============================================================================
 // AUDIT LOGS
 // ============================================================================
 
