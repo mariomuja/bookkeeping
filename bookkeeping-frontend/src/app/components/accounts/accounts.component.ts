@@ -5,13 +5,6 @@ import { AccountService } from '../../services/account.service';
 import { OrganizationService } from '../../services/organization.service';
 import { Account, AccountType } from '../../models/account.model';
 
-@Component({
-  selector: 'app-accounts',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './accounts.component.html',
-  styleUrls: ['./accounts.component.css']
-})
 export interface AccountFramework {
   id: string;
   name: string;
@@ -35,6 +28,13 @@ export interface ImportResult {
   framework: string;
 }
 
+@Component({
+  selector: 'app-accounts',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './accounts.component.html',
+  styleUrls: ['./accounts.component.css']
+})
 export class AccountsComponent implements OnInit {
   accounts: Account[] = [];
   accountTypes: AccountType[] = [];
