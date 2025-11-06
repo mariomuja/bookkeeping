@@ -1,6 +1,16 @@
-# International Bookkeeping System
+# 📊 International Bookkeeping System
 
-A comprehensive, modern bookkeeping application built with Angular and designed to work with PostgreSQL + TimescaleDB. This application supports double-entry accounting, multi-currency operations, and can handle millions of bookings efficiently.
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Try_Now!-success?style=for-the-badge)](https://international-bookkeeping.vercel.app)
+[![GitHub](https://img.shields.io/badge/GitHub-mariomuja%2Fbookkeeping-blue?style=flat-square&logo=github)](https://github.com/mariomuja/bookkeeping)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.2-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![Angular](https://img.shields.io/badge/Angular-17-red?style=flat-square&logo=angular)](https://angular.io/)
+[![Node.js](https://img.shields.io/badge/Node.js-22-green?style=flat-square&logo=node.js)](https://nodejs.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?style=flat-square&logo=postgresql)](https://www.postgresql.org/)
+
+> **🎯 [Try the Live Demo →](https://international-bookkeeping.vercel.app)**  
+> **Demo Credentials:** Username: `demo` | Password: `DemoUser2025!Secure`
+
+A comprehensive, production-ready bookkeeping application built with Angular and PostgreSQL + TimescaleDB. Features double-entry accounting, multi-currency operations, and handles millions of transactions efficiently. **Perfect showcase of full-stack TypeScript development skills.**
 
 ## 📸 Application Screenshots
 
