@@ -38,8 +38,7 @@ describe('ReportsComponent - Translation Integration', () => {
       ],
       providers: [
         { provide: ReportService, useValue: mockReportService },
-        { provide: OrganizationService, useValue: mockOrganizationService },
-        TranslateService
+        { provide: OrganizationService, useValue: mockOrganizationService }
       ]
     }).compileComponents();
 

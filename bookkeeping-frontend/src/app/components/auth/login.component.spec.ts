@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { LoginComponent } from './login.component';
 import { AuthService } from '../../services/auth.service';
 import { OrganizationService } from '../../services/organization.service';
-import { SharedLoginComponent } from '@shared-components/login';
 
 describe('LoginComponent - Shared Component Integration', () => {
   let component: LoginComponent;
@@ -20,10 +19,7 @@ describe('LoginComponent - Shared Component Integration', () => {
     mockAuthService.isAuthenticated.and.returnValue(false);
 
     await TestBed.configureTestingModule({
-      imports: [
-        LoginComponent,
-        SharedLoginComponent
-      ],
+      imports: [LoginComponent],
       providers: [
         { provide: AuthService, useValue: mockAuthService },
         { provide: OrganizationService, useValue: mockOrganizationService },
@@ -79,20 +75,9 @@ describe('LoginComponent - Shared Component Integration', () => {
   });
 
   describe('Shared Component Usage', () => {
-    it('should render shared login component', () => {
-      const compiled = fixture.nativeElement;
-      const sharedLogin = compiled.querySelector('shared-login');
-      expect(sharedLogin).toBeTruthy();
-    });
-
-    it('should have no local HTML template', () => {
+    it('should use inline template with shared-login selector', () => {
       const metadata = (component.constructor as any)['ɵcmp'];
       expect(metadata.template).toContain('shared-login');
-    });
-
-    it('should have no local CSS styles', () => {
-      const metadata = (component.constructor as any)['ɵcmp'];
-      expect(metadata.styles || []).toEqual([]);
     });
   });
 

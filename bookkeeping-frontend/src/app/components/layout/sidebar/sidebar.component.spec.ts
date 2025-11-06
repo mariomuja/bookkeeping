@@ -29,8 +29,7 @@ describe('SidebarComponent', () => {
       ],
       providers: [
         { provide: Router, useValue: mockRouter },
-        { provide: AuthService, useValue: mockAuthService },
-        TranslateService
+        { provide: AuthService, useValue: mockAuthService }
       ]
     }).compileComponents();
 

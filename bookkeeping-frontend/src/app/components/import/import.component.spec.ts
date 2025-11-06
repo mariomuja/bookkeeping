@@ -38,8 +38,7 @@ describe('ImportComponent - Translation Integration', () => {
       ],
       providers: [
         { provide: JournalEntryService, useValue: mockJournalEntryService },
-        { provide: OrganizationService, useValue: mockOrganizationService },
-        TranslateService
+        { provide: OrganizationService, useValue: mockOrganizationService }
       ]
     }).compileComponents();
 

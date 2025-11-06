@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { JournalEntriesComponent } from './journal-entries.component';
 import { JournalEntryService } from '../../services/journal-entry.service';
 import { AccountService } from '../../services/account.service';
@@ -12,7 +13,11 @@ describe('JournalEntriesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [JournalEntriesComponent, HttpClientTestingModule]
+      imports: [
+        JournalEntriesComponent, 
+        HttpClientTestingModule,
+        TranslateModule.forRoot()
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(JournalEntriesComponent);
