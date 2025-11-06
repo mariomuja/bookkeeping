@@ -17,6 +17,7 @@
   "author": "Mario Muja <mario.muja@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "axios": "^1.13.2",
     "bcryptjs": "^3.0.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",

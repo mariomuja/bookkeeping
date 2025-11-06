@@ -5,6 +5,7 @@ const config = require('./config');
 const mockData = require('./mock-data');
 const auth = require('./auth');
 const auditLog = require('./audit-log');
+const kpiSender = require('./kpi-sender');
 
 const app = express();
 
@@ -639,6 +640,18 @@ app.get('/api/organizations/:orgId/dashboard', async (req, res) => {
   
   try {
     const metrics = await mockData.getDashboardMetrics(orgId, targetCurrency || 'USD');
+    
+    // Send KPIs to dashboard app (async, don't wait for response)
+    const sessionId = req.user?.sessionId || req.headers['x-session-id'];
+    if (sessionId) {
+      kpiSender.sendBookkeepingKPIs(sessionId, metrics).catch(err => {
+        console.log('[KPI Sender] Failed to send KPIs to dashboard:', err.message);
+      });
+      kpiSender.sendRevenueChart(sessionId).catch(err => {
+        console.log('[KPI Sender] Failed to send revenue chart:', err.message);
+      });
+    }
+    
     res.json(metrics);
   } catch (error) {
     console.error('Dashboard error:', error);
