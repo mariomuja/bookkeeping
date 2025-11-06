@@ -10,7 +10,7 @@
 > **🎯 [Try the Live Demo →](https://international-bookkeeping.vercel.app)**  
 > **Demo Credentials:** Username: `demo` | Password: `DemoUser2025!Secure`
 
-A comprehensive, production-ready bookkeeping application built with Angular and PostgreSQL + TimescaleDB. Features double-entry accounting, multi-currency operations, and handles millions of transactions efficiently. **Perfect showcase of full-stack TypeScript development skills.**
+A comprehensive, production-ready bookkeeping application built with Angular and PostgreSQL + TimescaleDB. Features double-entry accounting, multi-currency operations, and handles millions of transactions efficiently.
 
 ## 📸 Application Screenshots
 
