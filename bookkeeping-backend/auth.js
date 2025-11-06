@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const speakeasy = require('speakeasy');
 const QRCode = require('qrcode');
 const { v4: uuidv4 } = require('uuid');
+const sessionManager = require('./session-manager');
 
 // Secret key for JWT (in production, use environment variable)
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
