@@ -1,8 +1,8 @@
-import { ApplicationConfig, importProvidersFrom } from '@angular/core';
+import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslate } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { BootstrapConfig, BOOTSTRAP_CONFIG, DocumentationConfig, DOCUMENTATION_CONFIG } from '@shared-components/services';
 
@@ -15,6 +15,9 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideAnimations(),
+    provideTranslate({
+      defaultLanguage: 'en'
+    }),
     provideTranslateHttpLoader({
       prefix: './assets/i18n/',
       suffix: '.json'
