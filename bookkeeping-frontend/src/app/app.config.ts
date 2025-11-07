@@ -12,8 +12,8 @@ import { authInterceptor } from './services/auth.interceptor';
 import { environment } from '../environments/environment';
 
 // Factory function for TranslateLoader
-export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
+  return new TranslateHttpLoader(http);
 }
 
 export const appConfig: ApplicationConfig = {
