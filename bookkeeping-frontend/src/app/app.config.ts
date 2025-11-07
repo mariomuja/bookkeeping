@@ -13,7 +13,7 @@ import { environment } from '../environments/environment';
 
 // Factory function for TranslateLoader
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
-  return new TranslateHttpLoader(http);
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
 export const appConfig: ApplicationConfig = {
