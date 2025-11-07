@@ -22,7 +22,7 @@ export class LoginComponent {
     photoUrl: 'mario-muja.jpg',
     githubRepoUrl: 'https://github.com/mariomuja/bookkeeping',
     quickDemoMode: true,
-    showProductionLogin: true,
+    showProductionLogin: false,
     authenticationMethods: ['credentials', 'activeDirectory', 'google', 'microsoft', 'saml'],
     demoCredentials: {
       username: 'demo',
