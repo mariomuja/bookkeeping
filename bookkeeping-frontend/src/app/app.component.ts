@@ -5,7 +5,6 @@ import { HeaderComponent } from './components/layout/header/header.component';
 import { SidebarComponent } from './components/layout/sidebar/sidebar.component';
 import { DocumentationModalComponent } from './components/documentation-modal/documentation-modal.component';
 import { OrganizationService } from './services/organization.service';
-import { LanguageService } from './services/language.service';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -23,7 +22,6 @@ export class AppComponent implements OnInit {
 
   constructor(
     private organizationService: OrganizationService,
-    private languageService: LanguageService,
     private router: Router
   ) {
     // Listen to route changes to determine if we should show the main layout
