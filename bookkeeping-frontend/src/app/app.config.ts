@@ -1,9 +1,7 @@
-import { ApplicationConfig, importProvidersFrom } from '@angular/core';
+import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { TranslateModule } from '@ngx-translate/core';
-import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { BootstrapConfig, BOOTSTRAP_CONFIG, DocumentationConfig, DOCUMENTATION_CONFIG } from '@shared-components/services';
 
 import { routes } from './app.routes';
@@ -15,11 +13,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideAnimations(),
-    importProvidersFrom(TranslateModule.forRoot()),
-    provideTranslateHttpLoader({
-      prefix: './assets/i18n/',
-      suffix: '.json'
-    }),
+    // TODO: Re-enable TranslateModule once NG0203 is fully resolved
     {
       provide: BOOTSTRAP_CONFIG,
       useValue: {
