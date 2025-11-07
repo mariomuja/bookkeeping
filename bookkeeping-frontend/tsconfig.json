@@ -23,7 +23,6 @@
       "dom"
     ],
     "paths": {
-      "@shared-components/*": ["../shared-components/src/*"]
     }
   },
   "angularCompilerOptions": {
