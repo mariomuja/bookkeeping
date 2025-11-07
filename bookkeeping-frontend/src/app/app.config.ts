@@ -4,7 +4,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { TranslateModule } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
-import { BootstrapConfig, BOOTSTRAP_CONFIG } from '@shared-components/services';
+import { BootstrapConfig, BOOTSTRAP_CONFIG, DocumentationConfig, DOCUMENTATION_CONFIG } from '@shared-components/services';
 
 import { routes } from './app.routes';
 import { authInterceptor } from './services/auth.interceptor';
@@ -41,6 +41,24 @@ export const appConfig: ApplicationConfig = {
           authenticated: 'User authenticated'
         }
       } as BootstrapConfig
+    },
+    {
+      provide: DOCUMENTATION_CONFIG,
+      useValue: {
+        docsBasePath: '/docs',
+        files: [
+          { filename: 'QUICK_START.md', title: 'Quick Start Guide', path: '/docs/QUICK_START.md', category: 'Getting Started', order: 1 },
+          { filename: 'SETUP.md', title: 'Setup Instructions', path: '/docs/SETUP.md', category: 'Getting Started', order: 2 },
+          { filename: 'AUTHENTICATION_GUIDE.md', title: 'Authentication & Security', path: '/docs/AUTHENTICATION_GUIDE.md', category: 'Security', order: 3 },
+          { filename: 'COMPLETE_SYSTEM_GUIDE.md', title: 'Complete System Guide', path: '/docs/COMPLETE_SYSTEM_GUIDE.md', category: 'User Guide', order: 4 },
+          { filename: 'CUSTOM_FIELDS_GUIDE.md', title: 'Custom Fields Guide', path: '/docs/CUSTOM_FIELDS_GUIDE.md', category: 'Features', order: 5 },
+          { filename: 'MULTI_CURRENCY_TIMEZONE_GUIDE.md', title: 'Multi-Currency & Timezone', path: '/docs/MULTI_CURRENCY_TIMEZONE_GUIDE.md', category: 'Features', order: 6 },
+          { filename: 'FEATURES_SUMMARY.md', title: 'Features Summary', path: '/docs/FEATURES_SUMMARY.md', category: 'Reference', order: 7 },
+          { filename: 'IMPLEMENTATION_COMPLETE.md', title: 'Implementation Details', path: '/docs/IMPLEMENTATION_COMPLETE.md', category: 'Technical', order: 8 },
+          { filename: 'TEST_RESULTS.md', title: 'Test Results', path: '/docs/TEST_RESULTS.md', category: 'Technical', order: 9 },
+          { filename: 'TROUBLESHOOTING.md', title: 'Troubleshooting', path: '/docs/TROUBLESHOOTING.md', category: 'Support', order: 10 }
+        ]
+      } as DocumentationConfig
     }
   ]
 };
