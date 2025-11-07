@@ -2,17 +2,18 @@ import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { BootstrapConfig, BOOTSTRAP_CONFIG } from '@shared-components/services';
 
 import { routes } from './app.routes';
 import { authInterceptor } from './services/auth.interceptor';
+import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor])),
-    provideAnimations()
-    // TODO: Re-add shared component providers once NG0203 is resolved
-    /*{
+    provideAnimations(),
+    {
       provide: BOOTSTRAP_CONFIG,
       useValue: {
         apiUrl: environment.apiUrl || '/api',
@@ -61,6 +62,6 @@ export const appConfig: ApplicationConfig = {
           externalIntegrationOk: 'Cross-app integrations available'
         }
       } as BootstrapConfig
-    } */
+    }
   ]
 };
