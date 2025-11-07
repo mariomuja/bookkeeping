@@ -28,16 +28,24 @@ describe('LanguageService', () => {
     expect(service.availableLanguages.map(l => l.code)).toEqual(['en', 'de', 'fr', 'es', 'it']);
   });
 
-  it('should set language to English by default', () => {
-    expect(translateService.defaultLang).toBe('en');
+  it('should set language to English by default', (done) => {
+    // Wait for async initialization
+    setTimeout(() => {
+      expect(translateService.defaultLang).toBe('en');
+      done();
+    }, 10);
   });
 
-  it('should change language to German', () => {
-    spyOn(translateService, 'use');
-    service.setLanguage('de');
+  it('should change language to German', (done) => {
+    // Wait for async initialization
+    setTimeout(() => {
+      spyOn(translateService, 'use').and.returnValue(of({}));
+      service.setLanguage('de');
 
-    expect(translateService.use).toHaveBeenCalledWith('de');
-    expect(service.getCurrentLanguage()).toBe('de');
+      expect(translateService.use).toHaveBeenCalledWith('de');
+      expect(service.getCurrentLanguage()).toBe('de');
+      done();
+    }, 10);
   });
 
   it('should save language preference to localStorage', () => {
