@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { SharedLoginComponent, LoginConfig } from '@shared-components/login';
 import { AuthService } from '../../services/auth.service';
 import { OrganizationService } from '../../services/organization.service';
@@ -7,7 +8,11 @@ import { OrganizationService } from '../../services/organization.service';
   selector: 'app-login',
   standalone: true,
   imports: [SharedLoginComponent],
-  template: `<shared-login [config]="loginConfig" [authService]="authService" [organizationService]="organizationService"></shared-login>`
+  template: `<shared-login 
+    [config]="loginConfig" 
+    [authService]="authService" 
+    [organizationService]="organizationService"
+    (loginSuccess)="onLoginSuccess()"></shared-login>`
 })
 export class LoginComponent {
   loginConfig: LoginConfig = {
@@ -27,7 +32,12 @@ export class LoginComponent {
 
   constructor(
     public authService: AuthService,
-    public organizationService: OrganizationService
+    public organizationService: OrganizationService,
+    private router: Router
   ) {}
+
+  onLoginSuccess() {
+    this.router.navigate([this.loginConfig.redirectAfterLogin || '/dashboard']);
+  }
 }
 
