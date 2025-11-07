@@ -7,7 +7,7 @@ import { ReportsComponent } from './components/reports/reports.component';
 import { ImportComponent } from './components/import/import.component';
 import { CustomFieldsComponent } from './components/custom-fields/custom-fields.component';
 import { TrialBalanceViewerComponent } from './components/report-viewers/trial-balance-viewer.component';
-import { LoginComponent } from './components/auth/login.component';
+import { LoginSimpleComponent } from './components/auth/login-simple.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { AuditLogComponent } from './components/audit-log/audit-log.component';
 import { authGuard } from './guards/auth.guard';
@@ -15,7 +15,7 @@ import { authGuard } from './guards/auth.guard';
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'startup', redirectTo: '/login', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
+  { path: 'login', component: LoginSimpleComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: 'accounts', component: AccountsComponent, canActivate: [authGuard] },
   { path: 'journal-entries', component: JournalEntriesComponent, canActivate: [authGuard] },
