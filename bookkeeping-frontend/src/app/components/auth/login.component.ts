@@ -16,6 +16,9 @@ export class LoginComponent {
     showDeveloperCard: true,
     photoUrl: 'mario-muja.jpg',
     githubRepoUrl: 'https://github.com/mariomuja/bookkeeping',
+    quickDemoMode: true,
+    showProductionLogin: true,
+    authenticationMethods: ['credentials', 'activeDirectory', 'google', 'microsoft', 'saml'],
     demoCredentials: {
       username: 'demo',
       password: 'DemoUser2025!Secure'
