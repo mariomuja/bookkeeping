@@ -28,8 +28,10 @@ export class AppComponent implements OnInit {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
-      // Hide layout for report viewer routes and login page
-      this.showMainLayout = !event.url.startsWith('/report/') && !event.url.startsWith('/login');
+      // Hide layout for report viewer routes, login page, and startup
+      const hideLayoutRoutes = ['/report/', '/login', '/startup'];
+      const currentUrl = event.url === '/' ? '/startup' : event.url;
+      this.showMainLayout = !hideLayoutRoutes.some(route => currentUrl.startsWith(route));
       // Close mobile sidebar on navigation
       this.isMobileSidebarOpen = false;
     });
@@ -62,7 +64,9 @@ export class AppComponent implements OnInit {
     }
 
     // Check initial route
-    this.showMainLayout = !this.router.url.startsWith('/report/') && !this.router.url.startsWith('/login');
+    const hideLayoutRoutes = ['/report/', '/login', '/startup'];
+    const currentUrl = this.router.url === '/' ? '/startup' : this.router.url;
+    this.showMainLayout = !hideLayoutRoutes.some(route => currentUrl.startsWith(route));
   }
 
   openDocumentation(): void {
