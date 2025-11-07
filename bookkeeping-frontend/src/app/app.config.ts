@@ -15,13 +15,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideAnimations(),
-    importProvidersFrom(
-      TranslateModule.forRoot()
-    ),
-    provideTranslateHttpLoader({
-      prefix: './assets/i18n/',
-      suffix: '.json'
-    }),
     {
       provide: BOOTSTRAP_CONFIG,
       useValue: {
