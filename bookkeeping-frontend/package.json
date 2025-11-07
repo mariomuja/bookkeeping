@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "build:prod": "ng build --configuration production",
-    "vercel-build": "cd .. && git submodule update --init --recursive && cd shared-components && npm install && cd ../bookkeeping-frontend && ng build --configuration production",
+    "vercel-build": "cd .. && git submodule update --init --recursive --force && cd shared-components && npm install && cd ../bookkeeping-frontend && ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
