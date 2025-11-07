@@ -14,9 +14,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor])),
     provideAnimations(),
     importProvidersFrom(
-      TranslateModule.forRoot({
-        defaultLanguage: 'en'
-      })
+      TranslateModule.forRoot()
     ),
     provideTranslateHttpLoader({
       prefix: './assets/i18n/',

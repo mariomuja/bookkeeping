@@ -23,16 +23,27 @@ export class LanguageService {
     { code: 'it', name: 'Italiano', flag: '🇮🇹' }
   ];
 
+  private translateService?: TranslateService;
+
   constructor(private translate: TranslateService) {
+    // Store reference but defer initialization to avoid circular dependency
+    this.translateService = translate;
+    // Use setTimeout to defer initialization after Angular bootstrap completes
+    setTimeout(() => this.initialize(), 0);
+  }
+
+  private initialize(): void {
+    if (!this.translateService) return;
+    
     // Set available languages
     const langCodes = this.availableLanguages.map(l => l.code);
-    this.translate.addLangs(langCodes);
+    this.translateService.addLangs(langCodes);
     
     // Set default language
-    this.translate.setDefaultLang('en');
+    this.translateService.setDefaultLang('en');
     
     // Try to use browser language if available
-    const browserLang = this.translate.getBrowserLang();
+    const browserLang = this.translateService.getBrowserLang();
     const savedLang = localStorage.getItem('preferredLanguage');
     
     const langToUse = savedLang || (browserLang && langCodes.includes(browserLang) ? browserLang : 'en');
@@ -41,10 +52,14 @@ export class LanguageService {
 
   setLanguage(langCode: string): void {
     if (this.availableLanguages.some(l => l.code === langCode)) {
-      this.translate.use(langCode);
+      if (this.translateService) {
+        this.translateService.use(langCode).subscribe();
+      }
       this.currentLangSubject.next(langCode);
       localStorage.setItem('preferredLanguage', langCode);
-      document.documentElement.lang = langCode;
+      if (typeof document !== 'undefined') {
+        document.documentElement.lang = langCode;
+      }
     }
   }
 

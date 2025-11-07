@@ -166,7 +166,7 @@ export class BootstrapService {
           .pipe(timeout(this.TIMEOUT_MS))
       );
       
-      if (health.status !== 'ok') {
+      if (health.status && health.status.toLowerCase() !== 'ok') {
         return {
           name: 'Backend Health',
           status: 'warning',
@@ -179,7 +179,7 @@ export class BootstrapService {
       return {
         name: 'Backend Health',
         status: 'success',
-        message: `Backend healthy (v${health.version}, ${health.dataStatus?.journalEntries || 0} journal entries)`,
+        message: health.message || `Backend healthy - ${health.version ? 'v' + health.version : 'API running'}`,
         timestamp: new Date(),
         details: health
       };
