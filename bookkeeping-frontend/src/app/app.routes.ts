@@ -10,22 +10,22 @@ import { TrialBalanceViewerComponent } from './components/report-viewers/trial-b
 import { LoginSimpleComponent } from './components/auth/login-simple.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { AuditLogComponent } from './components/audit-log/audit-log.component';
-import { authGuardSimple } from './guards/auth-simple.guard';
+import { AuthGuardSimple } from './guards/auth-simple.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'startup', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginSimpleComponent },
-  { path: 'dashboard', component: DashboardComponent, canActivate: [authGuardSimple] },
-  { path: 'accounts', component: AccountsComponent, canActivate: [authGuardSimple] },
-  { path: 'journal-entries', component: JournalEntriesComponent, canActivate: [authGuardSimple] },
-  { path: 'reports', component: ReportsComponent, canActivate: [authGuardSimple] },
-  { path: 'report/trial-balance', component: TrialBalanceViewerComponent, canActivate: [authGuardSimple] },
-  { path: 'report/balance-sheet', component: TrialBalanceViewerComponent, canActivate: [authGuardSimple] },
-  { path: 'report/profit-loss', component: TrialBalanceViewerComponent, canActivate: [authGuardSimple] },
-  { path: 'import', component: ImportComponent, canActivate: [authGuardSimple] },
-  { path: 'custom-fields', component: CustomFieldsComponent, canActivate: [authGuardSimple] },
-  { path: 'audit-log', component: AuditLogComponent, canActivate: [authGuardSimple] },
-  { path: 'settings', component: SettingsComponent, canActivate: [authGuardSimple] },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuardSimple] },
+  { path: 'accounts', component: AccountsComponent, canActivate: [AuthGuardSimple] },
+  { path: 'journal-entries', component: JournalEntriesComponent, canActivate: [AuthGuardSimple] },
+  { path: 'reports', component: ReportsComponent, canActivate: [AuthGuardSimple] },
+  { path: 'report/trial-balance', component: TrialBalanceViewerComponent, canActivate: [AuthGuardSimple] },
+  { path: 'report/balance-sheet', component: TrialBalanceViewerComponent, canActivate: [AuthGuardSimple] },
+  { path: 'report/profit-loss', component: TrialBalanceViewerComponent, canActivate: [AuthGuardSimple] },
+  { path: 'import', component: ImportComponent, canActivate: [AuthGuardSimple] },
+  { path: 'custom-fields', component: CustomFieldsComponent, canActivate: [AuthGuardSimple] },
+  { path: 'audit-log', component: AuditLogComponent, canActivate: [AuthGuardSimple] },
+  { path: 'settings', component: SettingsComponent, canActivate: [AuthGuardSimple] },
   { path: '**', redirectTo: '/startup' }
 ];
