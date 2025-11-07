@@ -13,8 +13,9 @@ import { AuditLogComponent } from './components/audit-log/audit-log.component';
 import { AuthGuardSimple } from './guards/auth-simple.guard';
 
 export const routes: Routes = [
-  { path: '', component: StartupSimpleComponent },
-  { path: 'startup', component: StartupSimpleComponent },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  // Startup component temporarily disabled due to NG0203 in production
+  // { path: 'startup', component: StartupSimpleComponent },
   { path: 'login', component: LoginComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuardSimple] },
   { path: 'accounts', component: AccountsComponent, canActivate: [AuthGuardSimple] },
