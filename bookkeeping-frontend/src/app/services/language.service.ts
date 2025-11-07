@@ -25,11 +25,13 @@ export class LanguageService {
 
   private translateService?: TranslateService;
 
-  constructor(private translate: TranslateService) {
+  constructor(@Optional() private translate?: TranslateService) {
     // Store reference but defer initialization to avoid circular dependency
-    this.translateService = translate;
-    // Use setTimeout to defer initialization after Angular bootstrap completes
-    setTimeout(() => this.initialize(), 0);
+    if (translate) {
+      this.translateService = translate;
+      // Use setTimeout to defer initialization after Angular bootstrap completes
+      setTimeout(() => this.initialize(), 0);
+    }
   }
 
   private initialize(): void {
