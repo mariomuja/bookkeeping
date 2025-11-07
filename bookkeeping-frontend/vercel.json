@@ -1,22 +1,43 @@
 {
   "version": 2,
   "name": "international-bookkeeping",
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist/bookkeeping-frontend/browser"
-      }
+  "buildCommand": "npm run build -- --configuration=production",
+  "outputDirectory": "dist/bookkeeping-frontend/browser",
+  "installCommand": "git submodule update --init --recursive && cd ../shared-components && npm install && cd ../bookkeeping-frontend && npm install",
+  "framework": "angular",
+  "build": {
+    "env": {
+      "NODE_VERSION": "22"
     }
-  ],
+  },
   "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
     }
   ],
   "headers": [
+    {
+      "source": "/api/:path*",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization, x-session-id"
+        }
+      ]
+    },
     {
       "source": "/assets/(.*)",
       "headers": [
@@ -26,8 +47,5 @@
         }
       ]
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  ]
 }
