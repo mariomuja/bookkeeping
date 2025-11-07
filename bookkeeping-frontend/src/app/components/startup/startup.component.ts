@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { BootstrapService, BootstrapState, BootstrapCheck } from '../../services/bootstrap.service';
+import { BootstrapService, BootstrapState, BootstrapCheck } from '@shared-components/services';
 
 @Component({
   selector: 'app-startup',
