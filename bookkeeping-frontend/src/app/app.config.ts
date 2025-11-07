@@ -22,6 +22,12 @@ export const appConfig: ApplicationConfig = {
         timeoutMs: 5000,
         apiEndpoint: '/organizations',
         authTokenKey: 'authToken',
+        emailNotification: {
+          enabled: true,
+          recipientEmail: 'mario.muja@gmail.com',
+          appName: 'International Bookkeeping',
+          emailEndpoint: '/notify/bootstrap-error'
+        },
         checkDatabase: true,
         validateSession: true,
         checkPerformance: true,
