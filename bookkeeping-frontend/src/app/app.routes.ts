@@ -28,5 +28,5 @@ export const routes: Routes = [
   { path: 'custom-fields', component: CustomFieldsComponent, canActivate: [AuthGuardSimple] },
   { path: 'audit-log', component: AuditLogComponent, canActivate: [AuthGuardSimple] },
   { path: 'settings', component: SettingsComponent, canActivate: [AuthGuardSimple] },
-  { path: '**', redirectTo: '/startup' }
+  { path: '**', redirectTo: '/login' }
 ];
