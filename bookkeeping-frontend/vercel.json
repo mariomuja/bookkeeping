@@ -3,13 +3,14 @@
   "name": "international-bookkeeping",
   "buildCommand": "npm run build -- --configuration=production",
   "outputDirectory": "dist/bookkeeping-frontend/browser",
-  "installCommand": "git submodule update --init --recursive && cd ../shared-components && npm install && cd ../bookkeeping-frontend && npm install",
+  "installCommand": "npm install",
   "framework": "angular",
   "build": {
     "env": {
-      "NODE_VERSION": "22"
+      "NODE_VERSION": "20"
     }
   },
+  "cleanUrls": true,
   "rewrites": [
     {
       "source": "/api/:path*",
