@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { StartupComponent } from './components/startup/startup.component';
+import { StartupSimpleComponent } from './components/startup/startup-simple.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AccountsComponent } from './components/accounts/accounts.component';
 import { JournalEntriesComponent } from './components/journal-entries/journal-entries.component';
@@ -13,8 +13,8 @@ import { AuditLogComponent } from './components/audit-log/audit-log.component';
 import { AuthGuardSimple } from './guards/auth-simple.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: 'startup', redirectTo: '/login', pathMatch: 'full' },
+  { path: '', component: StartupSimpleComponent },
+  { path: 'startup', component: StartupSimpleComponent },
   { path: 'login', component: LoginSimpleComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuardSimple] },
   { path: 'accounts', component: AccountsComponent, canActivate: [AuthGuardSimple] },
