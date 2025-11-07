@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Optional } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -230,11 +230,21 @@ export class StartupSimpleComponent implements OnInit, OnDestroy {
   private subscription?: Subscription;
 
   constructor(
-    private bootstrapService: BootstrapService,
+    @Optional() private bootstrapService: BootstrapService,
     private router: Router
-  ) {}
+  ) {
+    // If BootstrapService is not available, redirect immediately
+    if (!this.bootstrapService) {
+      console.warn('BootstrapService not available, redirecting to login');
+      setTimeout(() => this.router.navigate(['/login']), 0);
+    }
+  }
 
   ngOnInit(): void {
+    if (!this.bootstrapService) {
+      return; // Already redirecting in constructor
+    }
+    
     this.subscription = this.bootstrapService.bootstrapState$.subscribe(state => {
       this.bootstrapState = state;
       this.emailNotified = (this.bootstrapService as any).emailNotificationSent || false;
@@ -254,10 +264,14 @@ export class StartupSimpleComponent implements OnInit, OnDestroy {
   }
 
   async runChecks(): Promise<void> {
-    await this.bootstrapService.runBootstrapChecks();
+    if (this.bootstrapService) {
+      await this.bootstrapService.runBootstrapChecks();
+    }
   }
 
   async retry(): Promise<void> {
+    if (!this.bootstrapService) return;
+    
     this.isRetrying = true;
     this.bootstrapService.reset();
     await this.runChecks();
