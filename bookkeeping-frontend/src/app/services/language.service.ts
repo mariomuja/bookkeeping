@@ -11,6 +11,8 @@ export interface Language {
 @Injectable({
   providedIn: 'root'
 })
+// TEMPORARILY DISABLED - causing NG0203 error
+/*
 export class LanguageService {
   private currentLangSubject = new BehaviorSubject<string>('en');
   public currentLang$ = this.currentLangSubject.asObservable();
