@@ -3,16 +3,14 @@ import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './components/layout/header/header.component';
 import { SidebarComponent } from './components/layout/sidebar/sidebar.component';
-// DocumentationModalComponent temporarily disabled
-// import { DocumentationModalComponent } from './components/documentation-modal/documentation-modal.component';
+import { DocumentationModalComponent } from './components/documentation-modal/documentation-modal.component';
 import { OrganizationService } from './services/organization.service';
-import { TranslateService } from '@ngx-translate/core';
 import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent, SidebarComponent],
+  imports: [CommonModule, RouterOutlet, HeaderComponent, SidebarComponent, DocumentationModalComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -24,12 +22,8 @@ export class AppComponent implements OnInit {
 
   constructor(
     private organizationService: OrganizationService,
-    private router: Router,
-    private translate: TranslateService
+    private router: Router
   ) {
-    // Initialize translations
-    this.translate.setDefaultLang('en');
-    this.translate.use('en');
     // Listen to route changes to determine if we should show the main layout
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
