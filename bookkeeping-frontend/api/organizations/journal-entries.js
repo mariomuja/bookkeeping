@@ -47,6 +47,7 @@ module.exports = async (req, res) => {
     const entries = result.rows.map(row => ({
       id: row.id,
       entryNumber: row.entry_number,
+      entryDate: row.entry_date,
       date: row.entry_date,
       description: row.description,
       referenceNumber: row.reference_number,
@@ -56,8 +57,12 @@ module.exports = async (req, res) => {
       lines: row.lines.map(line => ({
         id: line.id,
         accountId: line.accountId,
-        accountNumber: line.accountNumber,
-        accountName: line.accountName,
+        account: {
+          accountNumber: line.accountNumber,
+          accountName: line.accountName
+        },
+        debitAmount: parseFloat(line.debitAmount) || 0,
+        creditAmount: parseFloat(line.creditAmount) || 0,
         debit: parseFloat(line.debitAmount) || 0,
         credit: parseFloat(line.creditAmount) || 0,
         currency: line.currency
