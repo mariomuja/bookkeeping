@@ -1,9 +1,46 @@
-node_modules
-.angular
-*.log
-*.spec.ts
-test
-e2e
-src/**/*.spec.ts
-karma.conf.js
+# Version control
+.git
+.gitignore
+.gitmodules
 
+# Documentation
+*.md
+docs/
+README.md
+CHANGELOG.md
+
+# Tests
+*.spec.ts
+*.spec.js
+karma.conf.js
+.karma/
+coverage/
+test/
+e2e/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Config files
+.editorconfig
+.prettierrc
+.eslintrc*
+tsconfig.spec.json
+
+# Node modules cache (Vercel manages this)
+node_modules/.cache/
+
+# Source maps in production
+*.map
+
+# Old builds
+dist/
+.angular/
+
+# Submodule source (we use compiled tarball)
+shared-components/src/
+shared-components/node_modules/
