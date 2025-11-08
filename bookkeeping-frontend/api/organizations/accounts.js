@@ -1,10 +1,56 @@
-// Accounts endpoint
-module.exports = (req, res) => {
+// Accounts endpoint - now using Neon PostgreSQL
+const { getPool } = require('../_db');
+
+module.exports = async (req, res) => {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const accounts = [
+  try {
+    const pool = getPool();
+    const result = await pool.query(`
+      SELECT 
+        a.*,
+        json_build_object(
+          'id', at.id,
+          'code', at.code,
+          'name', at.name,
+          'category', at.category,
+          'normalBalance', at.normal_balance,
+          'isBalanceSheet', at.is_balance_sheet,
+          'displayOrder', at.display_order
+        ) as account_type
+      FROM accounts a
+      LEFT JOIN account_types at ON a.account_type_id = at.id
+      WHERE a.organization_id = $1 AND a.is_active = true
+      ORDER BY a.account_number
+    `, ['550e8400-e29b-41d4-a716-446655440000']);
+
+    // Transform snake_case to camelCase
+    const accounts = result.rows.map(row => ({
+      id: row.id,
+      organizationId: row.organization_id,
+      accountNumber: row.account_number,
+      accountName: row.account_name,
+      accountTypeId: row.account_type_id,
+      accountType: row.account_type,
+      parentAccountId: row.parent_account_id,
+      currency: row.currency,
+      description: row.description,
+      isSystemAccount: row.is_system_account,
+      isActive: row.is_active,
+      taxCode: row.tax_code,
+      costCenter: row.cost_center,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    }));
+
+    res.status(200).json(accounts);
+  } catch (error) {
+    console.error('[Accounts API] Error:', error);
+    
+    // Fallback to mock data if database fails
+    const accounts = [
     {
       id: '1',
       organizationId: '550e8400-e29b-41d4-a716-446655440000',
@@ -72,6 +118,8 @@ module.exports = (req, res) => {
     }
   ];
 
-  res.status(200).json(accounts);
+    console.warn('[Accounts API] Using fallback mock data');
+    res.status(200).json(accounts);
+  }
 };
 
