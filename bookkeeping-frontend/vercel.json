@@ -17,6 +17,18 @@
   "cleanUrls": true,
   "rewrites": [
     {
+      "source": "/api/organizations/:orgId/dashboard",
+      "destination": "/api/organizations/dashboard"
+    },
+    {
+      "source": "/api/organizations/:orgId/accounts",
+      "destination": "/api/organizations/accounts"
+    },
+    {
+      "source": "/api/organizations/:orgId/journal-entries",
+      "destination": "/api/organizations/journal-entries"
+    },
+    {
       "source": "/api/:path*",
       "destination": "/api/:path*"
     },
