@@ -40,10 +40,16 @@ export class AppComponent implements OnInit {
       this.showMainLayout = !hideLayoutRoutes.some(route => currentUrl.startsWith(route));
       // Close mobile sidebar on navigation
       this.isMobileSidebarOpen = false;
+      
+      // Always scroll to top on navigation
+      window.scrollTo(0, 0);
     });
   }
 
   ngOnInit(): void {
+    // Ensure page starts at top
+    window.scrollTo(0, 0);
+    
     // Initialize with the backend organization only if user is authenticated
     const currentOrg = this.organizationService.getCurrentOrganization();
     console.log('[AppComponent] Current organization on init:', currentOrg);
