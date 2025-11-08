@@ -1,9 +1,9 @@
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, HttpClient } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { BootstrapConfig, BOOTSTRAP_CONFIG, DocumentationConfig, DOCUMENTATION_CONFIG } from '@mario-muja/angular-shared-components';
-import { provideTranslateService, TranslateLoader } from "@ngx-translate/core";
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { routes } from './app.routes';
@@ -15,13 +15,15 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideAnimations(),
-    provideTranslateService({
-      defaultLanguage: 'en',
-      loader: {
-        provide: TranslateLoader,
-        useClass: TranslateHttpLoader
-      }
-    }),
+    importProvidersFrom(
+      TranslateModule.forRoot({
+        defaultLanguage: 'en',
+        loader: {
+          provide: TranslateLoader,
+          useClass: TranslateHttpLoader
+        }
+      })
+    ),
     {
       provide: BOOTSTRAP_CONFIG,
       useValue: {
