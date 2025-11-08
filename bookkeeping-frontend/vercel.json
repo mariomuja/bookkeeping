@@ -4,11 +4,6 @@
   "outputDirectory": "dist/bookkeeping-frontend/browser",
   "installCommand": "npm install",
   "framework": "angular",
-  "functions": {
-    "api/**/*.js": {
-      "runtime": "nodejs20.x"
-    }
-  },
   "build": {
     "env": {
       "NODE_VERSION": "20"
