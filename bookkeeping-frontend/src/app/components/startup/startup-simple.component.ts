@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Optional } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { BootstrapService, BootstrapState } from '../../shared/services';
+import { BootstrapService, BootstrapState } from '@mario-muja/angular-shared-components';
 
 @Component({
   selector: 'app-startup',

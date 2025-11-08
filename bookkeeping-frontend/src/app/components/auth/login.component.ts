@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { SharedLoginComponent, LoginConfig } from '../../shared/login';
+import { SharedLoginComponent, LoginConfig } from '@mario-muja/angular-shared-components';
 import { AuthService } from '../../services/auth.service';
 import { OrganizationService } from '../../services/organization.service';
 
