@@ -9,6 +9,10 @@
     "src/main.ts"
   ],
   "include": [
-    "src/**/*.d.ts"
+    "src/**/*.d.ts",
+    "../shared-components/src/**/*.ts"
+  ],
+  "exclude": [
+    "../shared-components/**/*.spec.ts"
   ]
 }
