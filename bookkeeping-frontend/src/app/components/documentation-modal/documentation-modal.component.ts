@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { SharedDocumentationModalComponent } from '@mario-muja/angular-shared-components';
+import { SharedDocumentationModalComponent } from '@mariomuja/angular-shared-components';
 
 @Component({
   selector: 'app-documentation-modal',

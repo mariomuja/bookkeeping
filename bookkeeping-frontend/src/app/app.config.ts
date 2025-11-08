@@ -2,7 +2,7 @@ import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors, HttpClient } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { BootstrapConfig, BOOTSTRAP_CONFIG, DocumentationConfig, DOCUMENTATION_CONFIG } from '@mario-muja/angular-shared-components';
+import { BootstrapConfig, BOOTSTRAP_CONFIG, DocumentationConfig, DOCUMENTATION_CONFIG } from '@mariomuja/angular-shared-components';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader, TRANSLATE_HTTP_LOADER_CONFIG } from '@ngx-translate/http-loader';
 
