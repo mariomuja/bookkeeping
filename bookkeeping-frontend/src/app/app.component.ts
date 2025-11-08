@@ -5,6 +5,7 @@ import { HeaderComponent } from './components/layout/header/header.component';
 import { SidebarComponent } from './components/layout/sidebar/sidebar.component';
 import { DocumentationModalComponent } from './components/documentation-modal/documentation-modal.component';
 import { OrganizationService } from './services/organization.service';
+import { TranslateService } from '@ngx-translate/core';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -22,8 +23,13 @@ export class AppComponent implements OnInit {
 
   constructor(
     private organizationService: OrganizationService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {
+    // Initialize translations
+    this.translate.setDefaultLang('en');
+    this.translate.use('en');
+    
     // Listen to route changes to determine if we should show the main layout
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
