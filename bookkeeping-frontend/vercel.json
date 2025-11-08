@@ -28,6 +28,10 @@
       "destination": "/api/organizations/custom-fields"
     },
     {
+      "source": "/api/account-frameworks/:frameworkId",
+      "destination": "/api/account-frameworks/[frameworkId]"
+    },
+    {
       "source": "/api/:path*",
       "destination": "/api/:path*"
     },
