@@ -24,6 +24,10 @@
       "destination": "/api/organizations/journal-entries"
     },
     {
+      "source": "/api/organizations/:orgId/custom-fields",
+      "destination": "/api/organizations/custom-fields"
+    },
+    {
       "source": "/api/:path*",
       "destination": "/api/:path*"
     },
