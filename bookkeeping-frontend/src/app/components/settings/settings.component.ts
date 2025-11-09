@@ -43,7 +43,8 @@ export class SettingsComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        this.error = err.error?.error || 'Failed to setup 2FA';
+        console.error('2FA Setup Error:', err);
+        this.error = this.extractErrorMessage(err) || 'Failed to setup 2FA';
         this.loading = false;
       }
     });
@@ -70,7 +71,8 @@ export class SettingsComponent implements OnInit {
         this.authService.loadCurrentUser().subscribe();
       },
       error: (err) => {
-        this.error = err.error?.error || 'Invalid verification code';
+        console.error('Enable 2FA Error:', err);
+        this.error = this.extractErrorMessage(err) || 'Invalid verification code';
         this.loading = false;
       }
     });
@@ -102,7 +104,8 @@ export class SettingsComponent implements OnInit {
         this.authService.loadCurrentUser().subscribe();
       },
       error: (err) => {
-        this.error = err.error?.error || 'Failed to disable 2FA';
+        console.error('Disable 2FA Error:', err);
+        this.error = this.extractErrorMessage(err) || 'Failed to disable 2FA';
         this.loading = false;
       }
     });
@@ -119,6 +122,34 @@ export class SettingsComponent implements OnInit {
     this.showDisable2FA = false;
     this.disableCode = '';
     this.error = '';
+  }
+
+  private extractErrorMessage(err: any): string {
+    // Try multiple ways to extract error message
+    if (typeof err === 'string') {
+      return err;
+    }
+    if (err?.error?.error && typeof err.error.error === 'string') {
+      return err.error.error;
+    }
+    if (err?.error?.message && typeof err.error.message === 'string') {
+      return err.error.message;
+    }
+    if (err?.message && typeof err.message === 'string') {
+      return err.message;
+    }
+    if (err?.statusText && typeof err.statusText === 'string') {
+      return err.statusText;
+    }
+    // If we still have an object, convert to JSON string
+    if (typeof err === 'object') {
+      try {
+        return JSON.stringify(err, null, 2);
+      } catch {
+        return 'An error occurred';
+      }
+    }
+    return 'An unknown error occurred';
   }
 }
 
