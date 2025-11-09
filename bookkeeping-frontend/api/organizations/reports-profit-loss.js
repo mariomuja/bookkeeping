@@ -1,4 +1,6 @@
-// Profit & Loss Report endpoint for Vercel Serverless
+// Profit & Loss Report endpoint - calculated from PostgreSQL database
+const { getPool } = require('../_db');
+
 module.exports = async (req, res) => {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -16,90 +18,49 @@ module.exports = async (req, res) => {
   }
 
   try {
-    console.log('[Profit & Loss] Request received');
-    
-    // Demo Profit & Loss data
-    const profitLossData = [
-      {
-        category: 'Revenue',
-        accountTypeName: 'Sales',
-        accountNumber: '4000',
-        accountName: 'Product Sales',
-        amount: 30000.00
-      },
-      {
-        category: 'Revenue',
-        accountTypeName: 'Sales',
-        accountNumber: '4100',
-        accountName: 'Service Revenue',
-        amount: 15000.00
-      },
-      {
-        category: 'Revenue',
-        accountTypeName: 'Other Income',
-        accountNumber: '4900',
-        accountName: 'Interest Income',
-        amount: 500.00
-      },
-      {
-        category: 'Cost of Goods Sold',
-        accountTypeName: 'Direct Costs',
-        accountNumber: '5000',
-        accountName: 'Product Costs',
-        amount: 12000.00
-      },
-      {
-        category: 'Cost of Goods Sold',
-        accountTypeName: 'Direct Costs',
-        accountNumber: '5100',
-        accountName: 'Service Costs',
-        amount: 5000.00
-      },
-      {
-        category: 'Operating Expenses',
-        accountTypeName: 'General & Administrative',
-        accountNumber: '6000',
-        accountName: 'Salaries',
-        amount: 15000.00
-      },
-      {
-        category: 'Operating Expenses',
-        accountTypeName: 'General & Administrative',
-        accountNumber: '6100',
-        accountName: 'Rent',
-        amount: 3000.00
-      },
-      {
-        category: 'Operating Expenses',
-        accountTypeName: 'Marketing',
-        accountNumber: '6200',
-        accountName: 'Advertising',
-        amount: 2000.00
-      },
-      {
-        category: 'Operating Expenses',
-        accountTypeName: 'General & Administrative',
-        accountNumber: '6300',
-        accountName: 'Utilities',
-        amount: 800.00
-      },
-      {
-        category: 'Operating Expenses',
-        accountTypeName: 'General & Administrative',
-        accountNumber: '6400',
-        accountName: 'Office Supplies',
-        amount: 500.00
-      }
-    ];
+    const pool = getPool();
+    const orgId = req.query.orgId || '550e8400-e29b-41d4-a716-446655440000';
 
-    console.log('[Profit & Loss] Returning', profitLossData.length, 'items');
+    // Calculate P&L from journal entries (only posted entries)
+    const result = await pool.query(
+      `SELECT 
+        at.category,
+        at.name as "accountTypeName",
+        a.account_number as "accountNumber",
+        a.account_name as "accountName",
+        CASE 
+          WHEN at.category = 'REVENUE' THEN COALESCE(SUM(jel.credit_amount) - SUM(jel.debit_amount), 0)
+          ELSE COALESCE(SUM(jel.debit_amount) - SUM(jel.credit_amount), 0)
+        END as "amount"
+      FROM accounts a
+      LEFT JOIN account_types at ON a.account_type_id = at.id
+      LEFT JOIN journal_entry_lines jel ON a.id = jel.account_id
+      LEFT JOIN journal_entries je ON jel.journal_entry_id = je.id
+      WHERE a.organization_id = $1 
+        AND a.is_active = true
+        AND at.is_balance_sheet = false
+        AND (je.id IS NULL OR je.status = 'posted')
+      GROUP BY a.id, a.account_number, a.account_name, at.category, at.name
+      HAVING 
+        (at.category = 'REVENUE' AND COALESCE(SUM(jel.credit_amount) - SUM(jel.debit_amount), 0) != 0)
+        OR (at.category = 'EXPENSE' AND COALESCE(SUM(jel.debit_amount) - SUM(jel.credit_amount), 0) != 0)
+      ORDER BY at.category DESC, a.account_number ASC`,
+      [orgId]
+    );
+
+    // Convert decimal strings to numbers
+    const profitLossData = result.rows.map(row => ({
+      ...row,
+      amount: parseFloat(row.amount)
+    }));
+
+    console.log(`[Profit & Loss] Calculated ${profitLossData.length} accounts for org ${orgId}`);
     res.status(200).json(profitLossData);
   } catch (error) {
-    console.error('[Profit & Loss] Error:', error);
+    console.error('[Profit & Loss] Database error:', error);
     res.status(500).json({
       error: 'Failed to generate profit & loss statement',
       message: error.message
     });
   }
 };
-

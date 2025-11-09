@@ -1,4 +1,6 @@
-// Single Organization endpoint for Vercel Serverless
+// Single Organization endpoint - using PostgreSQL database
+const { getPool } = require('../_db');
+
 module.exports = async (req, res) => {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -15,51 +17,125 @@ module.exports = async (req, res) => {
 
   if (req.method === 'GET') {
     try {
-      // Return demo organization
-      const organization = {
-        id: orgId || '550e8400-e29b-41d4-a716-446655440000',
-        name: 'Demo Company',
-        countryCode: 'US',
-        defaultCurrency: 'USD',
-        defaultTimezone: 'America/New_York',
-        fiscalYearStart: 1,
-        fiscalYearEnd: 12,
-        createdAt: new Date('2024-01-01').toISOString(),
-        updatedAt: new Date().toISOString(),
-        isActive: true
-      };
+      const pool = getPool();
+      const result = await pool.query(
+        `SELECT 
+          id, name, country_code as "countryCode",
+          default_currency as "defaultCurrency",
+          default_timezone as "defaultTimezone",
+          fiscal_year_start as "fiscalYearStart",
+          fiscal_year_end as "fiscalYearEnd",
+          is_active as "isActive",
+          created_at as "createdAt",
+          updated_at as "updatedAt"
+        FROM organizations 
+        WHERE id = $1`,
+        [orgId]
+      );
 
-      res.status(200).json(organization);
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: 'Organization not found' });
+      }
+
+      return res.status(200).json(result.rows[0]);
     } catch (error) {
-      console.error('[Organization GET] Error:', error);
-      res.status(500).json({
+      console.error('[Organization GET] Database error:', error);
+      
+      // Fallback to demo org if it's the demo ID
+      if (orgId === '550e8400-e29b-41d4-a716-446655440000') {
+        return res.status(200).json({
+          id: orgId,
+          name: 'Demo Company',
+          countryCode: 'US',
+          defaultCurrency: 'USD',
+          defaultTimezone: 'America/New_York',
+          fiscalYearStart: 1,
+          fiscalYearEnd: 12,
+          isActive: true
+        });
+      }
+      
+      return res.status(500).json({
         error: 'Failed to get organization',
         message: error.message
       });
     }
-  } else if (req.method === 'PUT') {
-    // Update organization - return updated data
-    try {
-      const updateData = req.body;
-      const organization = {
-        id: orgId,
-        ...updateData,
-        updatedAt: new Date().toISOString()
-      };
+  }
 
-      res.status(200).json(organization);
+  if (req.method === 'PUT') {
+    try {
+      const pool = getPool();
+      const {
+        name,
+        countryCode,
+        defaultCurrency,
+        defaultTimezone,
+        fiscalYearStart,
+        fiscalYearEnd
+      } = req.body;
+
+      const result = await pool.query(
+        `UPDATE organizations 
+        SET 
+          name = COALESCE($2, name),
+          country_code = COALESCE($3, country_code),
+          default_currency = COALESCE($4, default_currency),
+          default_timezone = COALESCE($5, default_timezone),
+          fiscal_year_start = COALESCE($6, fiscal_year_start),
+          fiscal_year_end = COALESCE($7, fiscal_year_end),
+          updated_at = NOW()
+        WHERE id = $1
+        RETURNING 
+          id, name, country_code as "countryCode",
+          default_currency as "defaultCurrency",
+          default_timezone as "defaultTimezone",
+          fiscal_year_start as "fiscalYearStart",
+          fiscal_year_end as "fiscalYearEnd",
+          is_active as "isActive",
+          created_at as "createdAt",
+          updated_at as "updatedAt"`,
+        [orgId, name, countryCode, defaultCurrency, defaultTimezone, fiscalYearStart, fiscalYearEnd]
+      );
+
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: 'Organization not found' });
+      }
+
+      console.log(`[Organization PUT] Updated organization ${orgId}`);
+      return res.status(200).json(result.rows[0]);
     } catch (error) {
-      console.error('[Organization PUT] Error:', error);
-      res.status(500).json({
+      console.error('[Organization PUT] Database error:', error);
+      return res.status(500).json({
         error: 'Failed to update organization',
         message: error.message
       });
     }
-  } else if (req.method === 'DELETE') {
-    // Delete organization - return success
-    res.status(200).json({ success: true, message: 'Organization deleted' });
-  } else {
-    res.status(405).json({ error: 'Method not allowed' });
   }
-};
 
+  if (req.method === 'DELETE') {
+    try {
+      const pool = getPool();
+      
+      // Soft delete
+      const result = await pool.query(
+        'UPDATE organizations SET is_active = false, updated_at = NOW() WHERE id = $1 RETURNING id',
+        [orgId]
+      );
+
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: 'Organization not found' });
+      }
+
+      console.log(`[Organization DELETE] Deleted organization ${orgId}`);
+      return res.status(200).json({ success: true, message: 'Organization deleted' });
+    } catch (error) {
+      console.error('[Organization DELETE] Database error:', error);
+      return res.status(500).json({
+        error: 'Failed to delete organization',
+        message: error.message
+      });
+    }
+  }
+
+  res.status(405).json({ error: 'Method not allowed' });
+};

@@ -1,11 +1,11 @@
-// Audit logs endpoint for Vercel Serverless
-// Returns demo audit logs data
+// Audit logs endpoint - using PostgreSQL database
+const { getPool } = require('./_db');
 
 module.exports = async (req, res) => {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
 
   // Handle preflight
@@ -13,173 +13,169 @@ module.exports = async (req, res) => {
     return res.status(200).end();
   }
 
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+  if (req.method === 'GET') {
+    try {
+      const pool = getPool();
+      const {
+        userId,
+        username,
+        action,
+        entityType,
+        startDate,
+        endDate,
+        limit = '100',
+        offset = '0',
+        sortBy = 'timestamp',
+        sortOrder = 'desc'
+      } = req.query;
 
-  try {
-    // Demo audit logs
-    const demoLogs = [
-      {
-        id: '1',
-        userId: 'demo-user',
-        username: 'demo',
-        action: 'LOGIN',
-        entityType: 'USER',
-        entityId: 'demo-user',
-        description: 'User logged in successfully',
-        changes: null,
-        metadata: null,
-        ipAddress: '192.168.1.1',
-        userAgent: 'Mozilla/5.0',
-        timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(), // 5 minutes ago
-        createdAt: new Date(Date.now() - 1000 * 60 * 5).toISOString()
-      },
-      {
-        id: '2',
-        userId: 'demo-user',
-        username: 'demo',
-        action: 'CREATE',
-        entityType: 'JOURNAL_ENTRY',
-        entityId: 'je-001',
-        description: 'Created journal entry JE-2024-001',
-        changes: null,
-        metadata: { entryNumber: 'JE-2024-001' },
-        ipAddress: '192.168.1.1',
-        userAgent: 'Mozilla/5.0',
-        timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(), // 30 minutes ago
-        createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString()
-      },
-      {
-        id: '3',
-        userId: 'demo-user',
-        username: 'demo',
-        action: 'UPDATE',
-        entityType: 'ACCOUNT',
-        entityId: 'acc-001',
-        description: 'Updated account 1000 - Cash',
-        changes: {
-          before: { accountName: 'Cash' },
-          after: { accountName: 'Cash - USD' }
-        },
-        metadata: null,
-        ipAddress: '192.168.1.1',
-        userAgent: 'Mozilla/5.0',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString(), // 1 hour ago
-        createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString()
-      },
-      {
-        id: '4',
-        userId: 'demo-user',
-        username: 'demo',
-        action: 'GENERATE',
-        entityType: 'REPORT',
-        entityId: 'report-001',
-        description: 'Generated Trial Balance report',
-        changes: null,
-        metadata: { reportType: 'TRIAL_BALANCE' },
-        ipAddress: '192.168.1.1',
-        userAgent: 'Mozilla/5.0',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString()
-      },
-      {
-        id: '5',
-        userId: 'demo-user',
-        username: 'demo',
-        action: 'POST',
-        entityType: 'JOURNAL_ENTRY',
-        entityId: 'je-002',
-        description: 'Posted journal entry JE-2024-002',
-        changes: null,
-        metadata: { entryNumber: 'JE-2024-002' },
-        ipAddress: '192.168.1.1',
-        userAgent: 'Mozilla/5.0',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(), // 3 hours ago
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString()
+      let query = `
+        SELECT 
+          id, user_id as "userId", username, action,
+          entity_type as "entityType", entity_id as "entityId",
+          description, changes, metadata,
+          ip_address as "ipAddress", user_agent as "userAgent",
+          timestamp, created_at as "createdAt"
+        FROM audit_logs 
+        WHERE 1=1
+      `;
+      const params = [];
+      let paramCount = 1;
+
+      // Add filters
+      if (userId) {
+        query += ` AND user_id = $${paramCount}`;
+        params.push(userId);
+        paramCount++;
       }
-    ];
 
-    // Get query parameters
-    const {
-      userId,
-      username,
-      action,
-      entityType,
-      startDate,
-      endDate,
-      limit = '100',
-      offset = '0',
-      sortBy = 'timestamp',
-      sortOrder = 'desc'
-    } = req.query;
+      if (username) {
+        query += ` AND username ILIKE $${paramCount}`;
+        params.push(`%${username}%`);
+        paramCount++;
+      }
 
-    // Filter logs
-    let filtered = [...demoLogs];
+      if (action) {
+        query += ` AND action = $${paramCount}`;
+        params.push(action);
+        paramCount++;
+      }
 
-    if (userId) {
-      filtered = filtered.filter(log => log.userId === userId);
-    }
+      if (entityType) {
+        query += ` AND entity_type = $${paramCount}`;
+        params.push(entityType);
+        paramCount++;
+      }
 
-    if (username) {
-      filtered = filtered.filter(log => 
-        log.username && log.username.toLowerCase().includes(username.toLowerCase())
-      );
-    }
+      if (startDate) {
+        query += ` AND timestamp >= $${paramCount}`;
+        params.push(startDate);
+        paramCount++;
+      }
 
-    if (action) {
-      filtered = filtered.filter(log => log.action === action);
-    }
+      if (endDate) {
+        query += ` AND timestamp <= $${paramCount}`;
+        params.push(endDate);
+        paramCount++;
+      }
 
-    if (entityType) {
-      filtered = filtered.filter(log => log.entityType === entityType);
-    }
+      // Add sorting
+      const validSortColumns = ['timestamp', 'username', 'action'];
+      const sortColumn = validSortColumns.includes(sortBy) ? sortBy : 'timestamp';
+      const sortDirection = sortOrder === 'asc' ? 'ASC' : 'DESC';
+      query += ` ORDER BY ${sortColumn} ${sortDirection}`;
 
-    if (startDate) {
-      const start = new Date(startDate);
-      filtered = filtered.filter(log => new Date(log.timestamp) >= start);
-    }
+      // Add pagination
+      query += ` LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
+      params.push(parseInt(limit), parseInt(offset));
 
-    if (endDate) {
-      const end = new Date(endDate);
-      filtered = filtered.filter(log => new Date(log.timestamp) <= end);
-    }
+      const result = await pool.query(query, params);
 
-    // Sort
-    filtered.sort((a, b) => {
-      let compareValue = 0;
+      // Get total count
+      let countQuery = 'SELECT COUNT(*) as total FROM audit_logs WHERE 1=1';
+      const countParams = params.slice(0, -2); // Remove limit and offset
       
-      if (sortBy === 'timestamp') {
-        compareValue = new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
-      } else if (sortBy === 'username') {
-        compareValue = (a.username || '').localeCompare(b.username || '');
-      } else if (sortBy === 'action') {
-        compareValue = (a.action || '').localeCompare(b.action || '');
-      }
+      if (userId) countQuery += ' AND user_id = $1';
+      if (username) countQuery += ` AND username ILIKE $${countParams.length}`;
+      if (action) countQuery += ` AND action = $${countParams.length}`;
+      if (entityType) countQuery += ` AND entity_type = $${countParams.length}`;
+      if (startDate) countQuery += ` AND timestamp >= $${countParams.length}`;
+      if (endDate) countQuery += ` AND timestamp <= $${countParams.length}`;
 
-      return sortOrder === 'desc' ? -compareValue : compareValue;
-    });
+      const countResult = await pool.query(countQuery, countParams);
+      const totalCount = parseInt(countResult.rows[0].total);
 
-    // Get total count before pagination
-    const totalCount = filtered.length;
+      console.log(`[Audit Logs] Fetched ${result.rows.length} of ${totalCount} audit logs from database`);
 
-    // Apply pagination
-    const limitNum = parseInt(limit);
-    const offsetNum = parseInt(offset);
-    const paginatedLogs = filtered.slice(offsetNum, offsetNum + limitNum);
-
-    res.status(200).json({
-      logs: paginatedLogs,
-      totalCount,
-      limit: limitNum,
-      offset: offsetNum,
-      hasMore: offsetNum + limitNum < totalCount
-    });
-  } catch (error) {
-    console.error('[Audit Logs] Error:', error);
-    res.status(500).json({
-      error: 'Failed to fetch audit logs',
-      message: error.message
-    });
+      res.status(200).json({
+        logs: result.rows,
+        totalCount,
+        limit: parseInt(limit),
+        offset: parseInt(offset),
+        hasMore: parseInt(offset) + result.rows.length < totalCount
+      });
+    } catch (error) {
+      console.error('[Audit Logs] Database error:', error);
+      res.status(500).json({
+        error: 'Failed to fetch audit logs',
+        message: error.message
+      });
+    }
   }
+
+  if (req.method === 'POST') {
+    try {
+      const pool = getPool();
+      const {
+        organizationId,
+        userId,
+        username,
+        action,
+        entityType,
+        entityId,
+        description,
+        changes,
+        metadata,
+        ipAddress,
+        userAgent
+      } = req.body;
+
+      const result = await pool.query(
+        `INSERT INTO audit_logs (
+          organization_id, user_id, username, action, entity_type, entity_id,
+          description, changes, metadata, ip_address, user_agent, timestamp
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NOW())
+        RETURNING 
+          id, user_id as "userId", username, action,
+          entity_type as "entityType", entity_id as "entityId",
+          description, changes, metadata,
+          ip_address as "ipAddress", user_agent as "userAgent",
+          timestamp, created_at as "createdAt"`,
+        [
+          organizationId || '550e8400-e29b-41d4-a716-446655440000',
+          userId,
+          username,
+          action,
+          entityType,
+          entityId,
+          description,
+          changes ? JSON.stringify(changes) : null,
+          metadata ? JSON.stringify(metadata) : null,
+          ipAddress,
+          userAgent
+        ]
+      );
+
+      console.log(`[Audit Logs] Created audit log ${result.rows[0].id}`);
+      res.status(201).json(result.rows[0]);
+    } catch (error) {
+      console.error('[Audit Logs POST] Database error:', error);
+      res.status(500).json({
+        error: 'Failed to create audit log',
+        message: error.message
+      });
+    }
+  }
+
+  res.status(405).json({ error: 'Method not allowed' });
 };

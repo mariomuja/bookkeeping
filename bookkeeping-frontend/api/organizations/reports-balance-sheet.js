@@ -1,4 +1,6 @@
-// Balance Sheet Report endpoint for Vercel Serverless
+// Balance Sheet Report endpoint - calculated from PostgreSQL database
+const { getPool } = require('../_db');
+
 module.exports = async (req, res) => {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -16,69 +18,51 @@ module.exports = async (req, res) => {
   }
 
   try {
-    console.log('[Balance Sheet] Request received');
-    
-    // Demo Balance Sheet data
-    const balanceSheetData = [
-      {
-        category: 'Asset',
-        accountTypeName: 'Current Assets',
-        accountNumber: '1000',
-        accountName: 'Cash',
-        balance: 25000.00
-      },
-      {
-        category: 'Asset',
-        accountTypeName: 'Current Assets',
-        accountNumber: '1200',
-        accountName: 'Accounts Receivable',
-        balance: 15000.00
-      },
-      {
-        category: 'Asset',
-        accountTypeName: 'Fixed Assets',
-        accountNumber: '1500',
-        accountName: 'Equipment',
-        balance: 50000.00
-      },
-      {
-        category: 'Liability',
-        accountTypeName: 'Current Liabilities',
-        accountNumber: '2000',
-        accountName: 'Accounts Payable',
-        balance: 10000.00
-      },
-      {
-        category: 'Liability',
-        accountTypeName: 'Current Liabilities',
-        accountNumber: '2100',
-        accountName: 'Accrued Expenses',
-        balance: 5000.00
-      },
-      {
-        category: 'Equity',
-        accountTypeName: 'Owner\'s Equity',
-        accountNumber: '3000',
-        accountName: 'Capital',
-        balance: 60000.00
-      },
-      {
-        category: 'Equity',
-        accountTypeName: 'Retained Earnings',
-        accountNumber: '3100',
-        accountName: 'Retained Earnings',
-        balance: 15000.00
-      }
-    ];
+    const pool = getPool();
+    const orgId = req.query.orgId || '550e8400-e29b-41d4-a716-446655440000';
 
-    console.log('[Balance Sheet] Returning', balanceSheetData.length, 'items');
+    // Calculate balance sheet from journal entries (only posted entries)
+    const result = await pool.query(
+      `SELECT 
+        at.category,
+        at.name as "accountTypeName",
+        a.account_number as "accountNumber",
+        a.account_name as "accountName",
+        COALESCE(SUM(jel.debit_amount) - SUM(jel.credit_amount), 0) as "balance"
+      FROM accounts a
+      LEFT JOIN account_types at ON a.account_type_id = at.id
+      LEFT JOIN journal_entry_lines jel ON a.id = jel.account_id
+      LEFT JOIN journal_entries je ON jel.journal_entry_id = je.id
+      WHERE a.organization_id = $1 
+        AND a.is_active = true
+        AND at.is_balance_sheet = true
+        AND (je.id IS NULL OR je.status = 'posted')
+      GROUP BY a.id, a.account_number, a.account_name, at.category, at.name
+      HAVING COALESCE(SUM(jel.debit_amount) - SUM(jel.credit_amount), 0) != 0
+      ORDER BY at.category, a.account_number ASC`,
+      [orgId]
+    );
+
+    // Convert decimal strings to numbers and adjust sign for credit categories
+    const balanceSheetData = result.rows.map(row => {
+      let balance = parseFloat(row.balance);
+      // For liabilities and equity, invert the sign for positive display
+      if (row.category === 'LIABILITY' || row.category === 'EQUITY') {
+        balance = -balance;
+      }
+      return {
+        ...row,
+        balance
+      };
+    });
+
+    console.log(`[Balance Sheet] Calculated ${balanceSheetData.length} accounts for org ${orgId}`);
     res.status(200).json(balanceSheetData);
   } catch (error) {
-    console.error('[Balance Sheet] Error:', error);
+    console.error('[Balance Sheet] Database error:', error);
     res.status(500).json({
       error: 'Failed to generate balance sheet',
       message: error.message
     });
   }
 };
-

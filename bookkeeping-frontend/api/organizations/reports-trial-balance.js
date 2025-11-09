@@ -1,4 +1,6 @@
-// Trial Balance Report endpoint for Vercel Serverless
+// Trial Balance Report endpoint - calculated from PostgreSQL database
+const { getPool } = require('../_db');
+
 module.exports = async (req, res) => {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -16,100 +18,60 @@ module.exports = async (req, res) => {
   }
 
   try {
-    console.log('[Trial Balance] Request received');
-    
-    // Demo Trial Balance data
-    const trialBalanceData = [
-      {
-        accountId: 'acc-1000',
-        accountNumber: '1000',
-        accountName: 'Cash',
-        accountCategory: 'Asset',
-        normalBalance: 'DEBIT',
-        totalDebits: 25000.00,
-        totalCredits: 0,
-        balance: 25000.00
-      },
-      {
-        accountId: 'acc-1200',
-        accountNumber: '1200',
-        accountName: 'Accounts Receivable',
-        accountCategory: 'Asset',
-        normalBalance: 'DEBIT',
-        totalDebits: 15000.00,
-        totalCredits: 0,
-        balance: 15000.00
-      },
-      {
-        accountId: 'acc-1500',
-        accountNumber: '1500',
-        accountName: 'Equipment',
-        accountCategory: 'Asset',
-        normalBalance: 'DEBIT',
-        totalDebits: 50000.00,
-        totalCredits: 0,
-        balance: 50000.00
-      },
-      {
-        accountId: 'acc-2000',
-        accountNumber: '2000',
-        accountName: 'Accounts Payable',
-        accountCategory: 'Liability',
-        normalBalance: 'CREDIT',
-        totalDebits: 0,
-        totalCredits: 10000.00,
-        balance: -10000.00
-      },
-      {
-        accountId: 'acc-3000',
-        accountNumber: '3000',
-        accountName: 'Owner\'s Equity',
-        accountCategory: 'Equity',
-        normalBalance: 'CREDIT',
-        totalDebits: 0,
-        totalCredits: 60000.00,
-        balance: -60000.00
-      },
-      {
-        accountId: 'acc-4000',
-        accountNumber: '4000',
-        accountName: 'Revenue',
-        accountCategory: 'Revenue',
-        normalBalance: 'CREDIT',
-        totalDebits: 0,
-        totalCredits: 35000.00,
-        balance: -35000.00
-      },
-      {
-        accountId: 'acc-5000',
-        accountNumber: '5000',
-        accountName: 'Cost of Goods Sold',
-        accountCategory: 'Expense',
-        normalBalance: 'DEBIT',
-        totalDebits: 12000.00,
-        totalCredits: 0,
-        balance: 12000.00
-      },
-      {
-        accountId: 'acc-6000',
-        accountNumber: '6000',
-        accountName: 'Operating Expenses',
-        accountCategory: 'Expense',
-        normalBalance: 'DEBIT',
-        totalDebits: 8000.00,
-        totalCredits: 0,
-        balance: 8000.00
-      }
-    ];
+    const pool = getPool();
+    const orgId = req.query.orgId || '550e8400-e29b-41d4-a716-446655440000';
+    const fiscalPeriodId = req.query.fiscalPeriodId;
 
-    console.log('[Trial Balance] Returning', trialBalanceData.length, 'items');
+    // Build query to calculate trial balance from journal entries
+    let query = `
+      SELECT 
+        a.id as "accountId",
+        a.account_number as "accountNumber",
+        a.account_name as "accountName",
+        at.category as "accountCategory",
+        at.normal_balance as "normalBalance",
+        COALESCE(SUM(jel.debit_amount), 0) as "totalDebits",
+        COALESCE(SUM(jel.credit_amount), 0) as "totalCredits",
+        COALESCE(SUM(jel.debit_amount) - SUM(jel.credit_amount), 0) as "balance"
+      FROM accounts a
+      LEFT JOIN account_types at ON a.account_type_id = at.id
+      LEFT JOIN journal_entry_lines jel ON a.id = jel.account_id
+      LEFT JOIN journal_entries je ON jel.journal_entry_id = je.id
+      WHERE a.organization_id = $1 
+        AND a.is_active = true
+        AND (je.id IS NULL OR je.status = 'posted')
+    `;
+
+    const params = [orgId];
+
+    if (fiscalPeriodId) {
+      query += ` AND je.fiscal_period_id = $2`;
+      params.push(fiscalPeriodId);
+    }
+
+    query += `
+      GROUP BY a.id, a.account_number, a.account_name, at.category, at.normal_balance
+      HAVING COALESCE(SUM(jel.debit_amount), 0) != 0 OR COALESCE(SUM(jel.credit_amount), 0) != 0
+      ORDER BY a.account_number ASC
+    `;
+
+    const result = await pool.query(query, params);
+
+    // Convert decimal strings to numbers
+    const trialBalanceData = result.rows.map(row => ({
+      ...row,
+      totalDebits: parseFloat(row.totalDebits),
+      totalCredits: parseFloat(row.totalCredits),
+      balance: parseFloat(row.balance)
+    }));
+
+    console.log(`[Trial Balance] Calculated ${trialBalanceData.length} accounts for org ${orgId}`);
     res.status(200).json(trialBalanceData);
   } catch (error) {
-    console.error('[Trial Balance] Error:', error);
+    console.error('[Trial Balance] Database error:', error);
     res.status(500).json({
       error: 'Failed to generate trial balance',
       message: error.message
     });
   }
 };
-
