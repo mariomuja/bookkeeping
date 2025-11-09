@@ -3,82 +3,30 @@
   "name": "international-bookkeeping",
   "outputDirectory": "dist/bookkeeping-frontend/browser",
   "installCommand": "npm install",
-  "framework": "angular",
+  "framework": null,
+  "buildCommand": "npm run build -- --configuration=production",
   "build": {
     "env": {
       "NODE_VERSION": "20"
     }
   },
-  "cleanUrls": true,
-  "rewrites": [
-    {
-      "source": "/api/organizations/:orgId/dashboard",
-      "destination": "/api/organizations/dashboard"
-    },
-    {
-      "source": "/api/organizations/:orgId/accounts",
-      "destination": "/api/organizations/accounts"
-    },
-    {
-      "source": "/api/organizations/:orgId/journal-entries",
-      "destination": "/api/organizations/journal-entries"
-    },
-    {
-      "source": "/api/organizations/:orgId/custom-fields",
-      "destination": "/api/organizations/custom-fields"
-    },
-    {
-      "source": "/api/organizations/:orgId/reports/trial-balance",
-      "destination": "/api/organizations/reports-trial-balance"
-    },
-    {
-      "source": "/api/organizations/:orgId/reports/balance-sheet",
-      "destination": "/api/organizations/reports-balance-sheet"
-    },
-    {
-      "source": "/api/organizations/:orgId/reports/profit-loss",
-      "destination": "/api/organizations/reports-profit-loss"
-    },
-    {
-      "source": "/api/organizations/:orgId/datev/validate",
-      "destination": "/api/organizations/datev-validate"
-    },
-    {
-      "source": "/api/organizations/:orgId/datev/export",
-      "destination": "/api/organizations/datev-export"
-    },
-    {
-      "source": "/api/account-frameworks/:frameworkId",
-      "destination": "/api/account-frameworks/[frameworkId]"
-    },
-    {
-      "source": "/api/organizations/:orgId",
-      "destination": "/api/organizations/[orgId]"
-    },
-    {
-      "source": "/api/organizations/:orgId/fiscal-periods",
-      "destination": "/api/organizations/[orgId]/fiscal-periods"
-    },
-    {
-      "source": "/api/accounts/:id",
-      "destination": "/api/accounts/[id]"
-    },
-    {
-      "source": "/api/custom-fields/:id",
-      "destination": "/api/custom-fields/[id]"
-    },
-    {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
-    },
-    {
-      "source": "/report/(.*)",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+  "routes": [
+    { "src": "/api/organizations/([^/]+)/dashboard", "dest": "/api/organizations/dashboard" },
+    { "src": "/api/organizations/([^/]+)/accounts", "dest": "/api/organizations/accounts" },
+    { "src": "/api/organizations/([^/]+)/journal-entries", "dest": "/api/organizations/journal-entries" },
+    { "src": "/api/organizations/([^/]+)/custom-fields", "dest": "/api/organizations/custom-fields" },
+    { "src": "/api/organizations/([^/]+)/reports/trial-balance", "dest": "/api/organizations/reports-trial-balance" },
+    { "src": "/api/organizations/([^/]+)/reports/balance-sheet", "dest": "/api/organizations/reports-balance-sheet" },
+    { "src": "/api/organizations/([^/]+)/reports/profit-loss", "dest": "/api/organizations/reports-profit-loss" },
+    { "src": "/api/organizations/([^/]+)/datev/validate", "dest": "/api/organizations/datev-validate" },
+    { "src": "/api/organizations/([^/]+)/datev/export", "dest": "/api/organizations/datev-export" },
+    { "src": "/api/account-frameworks/([^/]+)", "dest": "/api/account-frameworks/[frameworkId]" },
+    { "src": "/api/organizations/([^/]+)$", "dest": "/api/organizations/[orgId]" },
+    { "src": "/api/organizations/([^/]+)/fiscal-periods", "dest": "/api/organizations/[orgId]/fiscal-periods" },
+    { "src": "/api/accounts/([^/]+)", "dest": "/api/accounts/[id]" },
+    { "src": "/api/custom-fields/([^/]+)", "dest": "/api/custom-fields/[id]" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ],
   "headers": [
     {
