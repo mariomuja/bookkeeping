@@ -52,6 +52,22 @@
       "destination": "/api/account-frameworks/[frameworkId]"
     },
     {
+      "source": "/api/organizations/:orgId",
+      "destination": "/api/organizations/[orgId]"
+    },
+    {
+      "source": "/api/organizations/:orgId/fiscal-periods",
+      "destination": "/api/organizations/[orgId]/fiscal-periods"
+    },
+    {
+      "source": "/api/accounts/:id",
+      "destination": "/api/accounts/[id]"
+    },
+    {
+      "source": "/api/custom-fields/:id",
+      "destination": "/api/custom-fields/[id]"
+    },
+    {
       "source": "/api/:path*",
       "destination": "/api/:path*"
     },
