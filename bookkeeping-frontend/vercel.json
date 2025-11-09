@@ -9,8 +9,7 @@
       "NODE_VERSION": "20"
     }
   },
-  "cleanUrls": false,
-  "trailingSlash": false,
+  "cleanUrls": true,
   "rewrites": [
     {
       "source": "/api/organizations/:orgId/dashboard",
