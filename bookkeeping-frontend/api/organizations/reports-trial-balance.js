@@ -1,5 +1,4 @@
 // Trial Balance Report endpoint for Vercel Serverless
-// Simplified path without [orgId] nesting
 module.exports = async (req, res) => {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -17,6 +16,8 @@ module.exports = async (req, res) => {
   }
 
   try {
+    console.log('[Trial Balance] Request received');
+    
     // Demo Trial Balance data
     const trialBalanceData = [
       {
@@ -101,6 +102,7 @@ module.exports = async (req, res) => {
       }
     ];
 
+    console.log('[Trial Balance] Returning', trialBalanceData.length, 'items');
     res.status(200).json(trialBalanceData);
   } catch (error) {
     console.error('[Trial Balance] Error:', error);

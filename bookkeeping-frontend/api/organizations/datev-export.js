@@ -1,5 +1,4 @@
 // DATEV Export endpoint for Vercel Serverless
-// Simplified path without [orgId] nesting
 module.exports = async (req, res) => {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -17,6 +16,8 @@ module.exports = async (req, res) => {
   }
 
   try {
+    console.log('[DATEV Export] Request received with params:', req.query);
+    
     const { framework, consultantNumber, clientNumber, dateFrom, dateTo } = req.query;
 
     // Generate demo DATEV CSV export
@@ -85,6 +86,7 @@ module.exports = async (req, res) => {
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
     res.setHeader('Content-Disposition', `attachment; filename="DATEV_Export_${new Date().toISOString().split('T')[0]}.csv"`);
     
+    console.log('[DATEV Export] CSV generated, sending file');
     res.status(200).send('\ufeff' + csvContent); // Add BOM for UTF-8
   } catch (error) {
     console.error('[DATEV Export] Error:', error);

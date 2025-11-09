@@ -1,5 +1,4 @@
 // Balance Sheet Report endpoint for Vercel Serverless
-// Simplified path without [orgId] nesting
 module.exports = async (req, res) => {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -17,9 +16,10 @@ module.exports = async (req, res) => {
   }
 
   try {
+    console.log('[Balance Sheet] Request received');
+    
     // Demo Balance Sheet data
     const balanceSheetData = [
-      // Assets
       {
         category: 'Asset',
         accountTypeName: 'Current Assets',
@@ -41,7 +41,6 @@ module.exports = async (req, res) => {
         accountName: 'Equipment',
         balance: 50000.00
       },
-      // Liabilities
       {
         category: 'Liability',
         accountTypeName: 'Current Liabilities',
@@ -56,7 +55,6 @@ module.exports = async (req, res) => {
         accountName: 'Accrued Expenses',
         balance: 5000.00
       },
-      // Equity
       {
         category: 'Equity',
         accountTypeName: 'Owner\'s Equity',
@@ -73,6 +71,7 @@ module.exports = async (req, res) => {
       }
     ];
 
+    console.log('[Balance Sheet] Returning', balanceSheetData.length, 'items');
     res.status(200).json(balanceSheetData);
   } catch (error) {
     console.error('[Balance Sheet] Error:', error);

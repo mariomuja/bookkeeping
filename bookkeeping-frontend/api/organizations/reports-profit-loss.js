@@ -1,5 +1,4 @@
 // Profit & Loss Report endpoint for Vercel Serverless
-// Simplified path without [orgId] nesting
 module.exports = async (req, res) => {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -17,9 +16,10 @@ module.exports = async (req, res) => {
   }
 
   try {
+    console.log('[Profit & Loss] Request received');
+    
     // Demo Profit & Loss data
     const profitLossData = [
-      // Revenue
       {
         category: 'Revenue',
         accountTypeName: 'Sales',
@@ -41,7 +41,6 @@ module.exports = async (req, res) => {
         accountName: 'Interest Income',
         amount: 500.00
       },
-      // Cost of Goods Sold
       {
         category: 'Cost of Goods Sold',
         accountTypeName: 'Direct Costs',
@@ -56,7 +55,6 @@ module.exports = async (req, res) => {
         accountName: 'Service Costs',
         amount: 5000.00
       },
-      // Operating Expenses
       {
         category: 'Operating Expenses',
         accountTypeName: 'General & Administrative',
@@ -94,6 +92,7 @@ module.exports = async (req, res) => {
       }
     ];
 
+    console.log('[Profit & Loss] Returning', profitLossData.length, 'items');
     res.status(200).json(profitLossData);
   } catch (error) {
     console.error('[Profit & Loss] Error:', error);

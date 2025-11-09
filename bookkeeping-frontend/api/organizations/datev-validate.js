@@ -1,5 +1,4 @@
 // DATEV Validation endpoint for Vercel Serverless
-// Simplified path without [orgId] nesting
 module.exports = async (req, res) => {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -17,6 +16,8 @@ module.exports = async (req, res) => {
   }
 
   try {
+    console.log('[DATEV Validation] Request received');
+    
     // Demo validation response - all valid
     const validationResult = {
       valid: true,
@@ -39,6 +40,7 @@ module.exports = async (req, res) => {
       }
     };
 
+    console.log('[DATEV Validation] Validation passed');
     res.status(200).json(validationResult);
   } catch (error) {
     console.error('[DATEV Validation] Error:', error);
