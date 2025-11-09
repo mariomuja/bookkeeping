@@ -1,22 +1,107 @@
 {
   "version": 2,
-  "buildCommand": "npm install && npm run build -- --configuration=production",
+  "name": "international-bookkeeping",
   "outputDirectory": "dist/bookkeeping-frontend/browser",
+  "installCommand": "npm install",
+  "framework": "angular",
+  "build": {
+    "env": {
+      "NODE_VERSION": "20"
+    }
+  },
+  "cleanUrls": true,
   "rewrites": [
-    { "source": "/api/organizations/:orgId/dashboard", "destination": "/api/organizations/dashboard" },
-    { "source": "/api/organizations/:orgId/accounts", "destination": "/api/organizations/accounts" },
-    { "source": "/api/organizations/:orgId/journal-entries", "destination": "/api/organizations/journal-entries" },
-    { "source": "/api/organizations/:orgId/custom-fields", "destination": "/api/organizations/custom-fields" },
-    { "source": "/api/organizations/:orgId/reports/trial-balance", "destination": "/api/organizations/reports-trial-balance" },
-    { "source": "/api/organizations/:orgId/reports/balance-sheet", "destination": "/api/organizations/reports-balance-sheet" },
-    { "source": "/api/organizations/:orgId/reports/profit-loss", "destination": "/api/organizations/reports-profit-loss" },
-    { "source": "/api/organizations/:orgId/datev/validate", "destination": "/api/organizations/datev-validate" },
-    { "source": "/api/organizations/:orgId/datev/export", "destination": "/api/organizations/datev-export" },
-    { "source": "/api/organizations/:orgId/fiscal-periods", "destination": "/api/organizations/[orgId]/fiscal-periods" },
-    { "source": "/api/organizations/:orgId", "destination": "/api/organizations/[orgId]" },
-    { "source": "/api/account-frameworks/:frameworkId", "destination": "/api/account-frameworks/[frameworkId]" },
-    { "source": "/api/accounts/:id", "destination": "/api/accounts/[id]" },
-    { "source": "/api/custom-fields/:id", "destination": "/api/custom-fields/[id]" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/api/organizations/:orgId/dashboard",
+      "destination": "/api/organizations/dashboard"
+    },
+    {
+      "source": "/api/organizations/:orgId/accounts",
+      "destination": "/api/organizations/accounts"
+    },
+    {
+      "source": "/api/organizations/:orgId/journal-entries",
+      "destination": "/api/organizations/journal-entries"
+    },
+    {
+      "source": "/api/organizations/:orgId/custom-fields",
+      "destination": "/api/organizations/custom-fields"
+    },
+    {
+      "source": "/api/organizations/:orgId/reports/trial-balance",
+      "destination": "/api/organizations/reports-trial-balance"
+    },
+    {
+      "source": "/api/organizations/:orgId/reports/balance-sheet",
+      "destination": "/api/organizations/reports-balance-sheet"
+    },
+    {
+      "source": "/api/organizations/:orgId/reports/profit-loss",
+      "destination": "/api/organizations/reports-profit-loss"
+    },
+    {
+      "source": "/api/organizations/:orgId/datev/validate",
+      "destination": "/api/organizations/datev-validate"
+    },
+    {
+      "source": "/api/organizations/:orgId/datev/export",
+      "destination": "/api/organizations/datev-export"
+    },
+    {
+      "source": "/api/organizations/:orgId/fiscal-periods",
+      "destination": "/api/organizations/[orgId]/fiscal-periods"
+    },
+    {
+      "source": "/api/organizations/:orgId",
+      "destination": "/api/organizations/[orgId]"
+    },
+    {
+      "source": "/api/account-frameworks/:frameworkId",
+      "destination": "/api/account-frameworks/[frameworkId]"
+    },
+    {
+      "source": "/api/accounts/:id",
+      "destination": "/api/accounts/[id]"
+    },
+    {
+      "source": "/api/custom-fields/:id",
+      "destination": "/api/custom-fields/[id]"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/:path*",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization, x-session-id"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
   ]
 }
