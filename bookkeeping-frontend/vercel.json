@@ -28,6 +28,26 @@
       "destination": "/api/organizations/custom-fields"
     },
     {
+      "source": "/api/organizations/:orgId/reports/trial-balance",
+      "destination": "/api/organizations/[orgId]/reports/trial-balance"
+    },
+    {
+      "source": "/api/organizations/:orgId/reports/balance-sheet",
+      "destination": "/api/organizations/[orgId]/reports/balance-sheet"
+    },
+    {
+      "source": "/api/organizations/:orgId/reports/profit-loss",
+      "destination": "/api/organizations/[orgId]/reports/profit-loss"
+    },
+    {
+      "source": "/api/organizations/:orgId/datev/validate",
+      "destination": "/api/organizations/[orgId]/datev/validate"
+    },
+    {
+      "source": "/api/organizations/:orgId/datev/export",
+      "destination": "/api/organizations/[orgId]/datev/export"
+    },
+    {
       "source": "/api/account-frameworks/:frameworkId",
       "destination": "/api/account-frameworks/[frameworkId]"
     },
