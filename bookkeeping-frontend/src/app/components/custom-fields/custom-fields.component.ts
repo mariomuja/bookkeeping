@@ -51,10 +51,28 @@ export class CustomFieldsComponent implements OnInit {
     }
 
     this.loading = true;
+    
+    // First try to load from localStorage
+    const localKey = `custom_fields_${org.id}`;
+    const localData = localStorage.getItem(localKey);
+    if (localData) {
+      try {
+        this.customFields = JSON.parse(localData).sort((a: any, b: any) => a.displayOrder - b.displayOrder);
+        this.loading = false;
+        console.log(`[Custom Fields] Loaded ${this.customFields.length} fields from localStorage`);
+        return;
+      } catch (e) {
+        console.error('Failed to parse localStorage data', e);
+      }
+    }
+    
+    // Fallback to API
     this.customFieldService.getCustomFieldDefinitions(org.id).subscribe({
       next: (fields) => {
         this.customFields = fields.sort((a, b) => a.displayOrder - b.displayOrder);
         this.loading = false;
+        // Save to localStorage
+        localStorage.setItem(localKey, JSON.stringify(this.customFields));
       },
       error: (err) => {
         this.error = 'Failed to load custom fields';
@@ -131,9 +149,19 @@ export class CustomFieldsComponent implements OnInit {
       }
     }
 
+    const localKey = `custom_fields_${org.id}`;
+    
     if (this.isEditMode && this.currentField.id) {
+      // Update existing field
       this.customFieldService.updateCustomFieldDefinition(this.currentField.id, this.currentField).subscribe({
-        next: () => {
+        next: (updatedField) => {
+          // Update in local array
+          const index = this.customFields.findIndex(f => f.id === updatedField.id);
+          if (index >= 0) {
+            this.customFields[index] = updatedField;
+          }
+          // Save to localStorage
+          localStorage.setItem(localKey, JSON.stringify(this.customFields));
           this.loadCustomFields();
           this.closeModal();
         },
@@ -143,9 +171,18 @@ export class CustomFieldsComponent implements OnInit {
         }
       });
     } else {
-      const fieldData: any = this.currentField;
+      // Create new field
+      const fieldData: any = {
+        ...this.currentField,
+        organizationId: org.id
+      };
       this.customFieldService.createCustomFieldDefinition(org.id, fieldData).subscribe({
-        next: () => {
+        next: (newField) => {
+          console.log('[Custom Fields] Field created:', newField);
+          // Add to local array
+          this.customFields.push(newField);
+          // Save to localStorage
+          localStorage.setItem(localKey, JSON.stringify(this.customFields));
           this.loadCustomFields();
           this.closeModal();
         },
@@ -162,8 +199,17 @@ export class CustomFieldsComponent implements OnInit {
       return;
     }
 
+    const org = this.organizationService.getCurrentOrganization();
+    if (!org) return;
+    
+    const localKey = `custom_fields_${org.id}`;
+
     this.customFieldService.deleteCustomFieldDefinition(field.id).subscribe({
       next: () => {
+        // Remove from local array
+        this.customFields = this.customFields.filter(f => f.id !== field.id);
+        // Save to localStorage
+        localStorage.setItem(localKey, JSON.stringify(this.customFields));
         this.loadCustomFields();
       },
       error: (err) => {
@@ -193,8 +239,21 @@ export class CustomFieldsComponent implements OnInit {
     const org = this.organizationService.getCurrentOrganization();
     if (!org) return;
 
+    const localKey = `custom_fields_${org.id}`;
+    
+    // Update display order
+    this.customFields.forEach((field, index) => {
+      field.displayOrder = index;
+    });
+    
+    // Save to localStorage immediately
+    localStorage.setItem(localKey, JSON.stringify(this.customFields));
+    
     const fieldIds = this.customFields.map(f => f.id);
     this.customFieldService.reorderCustomFields(org.id, fieldIds).subscribe({
+      next: () => {
+        console.log('[Custom Fields] Order updated successfully');
+      },
       error: (err) => {
         alert('Failed to update field order');
         console.error(err);

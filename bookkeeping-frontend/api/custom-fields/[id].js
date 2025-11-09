@@ -1,4 +1,5 @@
 // Single Custom Field endpoint for Vercel Serverless
+// Note: This is a simplified implementation for demo purposes
 module.exports = async (req, res) => {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', 'true');
