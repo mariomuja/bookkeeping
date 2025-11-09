@@ -21,54 +21,54 @@ module.exports = async (req, res) => {
       // Assets
       {
         category: 'Asset',
-        subcategory: 'Current Assets',
+        accountTypeName: 'Current Assets',
         accountNumber: '1000',
         accountName: 'Cash',
-        amount: 25000.00
+        balance: 25000.00
       },
       {
         category: 'Asset',
-        subcategory: 'Current Assets',
+        accountTypeName: 'Current Assets',
         accountNumber: '1200',
         accountName: 'Accounts Receivable',
-        amount: 15000.00
+        balance: 15000.00
       },
       {
         category: 'Asset',
-        subcategory: 'Fixed Assets',
+        accountTypeName: 'Fixed Assets',
         accountNumber: '1500',
         accountName: 'Equipment',
-        amount: 50000.00
+        balance: 50000.00
       },
       // Liabilities
       {
         category: 'Liability',
-        subcategory: 'Current Liabilities',
+        accountTypeName: 'Current Liabilities',
         accountNumber: '2000',
         accountName: 'Accounts Payable',
-        amount: 10000.00
+        balance: 10000.00
       },
       {
         category: 'Liability',
-        subcategory: 'Current Liabilities',
+        accountTypeName: 'Current Liabilities',
         accountNumber: '2100',
         accountName: 'Accrued Expenses',
-        amount: 5000.00
+        balance: 5000.00
       },
       // Equity
       {
         category: 'Equity',
-        subcategory: 'Owner\'s Equity',
+        accountTypeName: 'Owner\'s Equity',
         accountNumber: '3000',
         accountName: 'Capital',
-        amount: 60000.00
+        balance: 60000.00
       },
       {
         category: 'Equity',
-        subcategory: 'Retained Earnings',
+        accountTypeName: 'Retained Earnings',
         accountNumber: '3100',
         accountName: 'Retained Earnings',
-        amount: 15000.00
+        balance: 15000.00
       }
     ];
 

@@ -21,21 +21,21 @@ module.exports = async (req, res) => {
       // Revenue
       {
         category: 'Revenue',
-        subcategory: 'Sales',
+        accountTypeName: 'Sales',
         accountNumber: '4000',
         accountName: 'Product Sales',
         amount: 30000.00
       },
       {
         category: 'Revenue',
-        subcategory: 'Sales',
+        accountTypeName: 'Sales',
         accountNumber: '4100',
         accountName: 'Service Revenue',
         amount: 15000.00
       },
       {
         category: 'Revenue',
-        subcategory: 'Other Income',
+        accountTypeName: 'Other Income',
         accountNumber: '4900',
         accountName: 'Interest Income',
         amount: 500.00
@@ -43,14 +43,14 @@ module.exports = async (req, res) => {
       // Cost of Goods Sold
       {
         category: 'Cost of Goods Sold',
-        subcategory: 'Direct Costs',
+        accountTypeName: 'Direct Costs',
         accountNumber: '5000',
         accountName: 'Product Costs',
         amount: 12000.00
       },
       {
         category: 'Cost of Goods Sold',
-        subcategory: 'Direct Costs',
+        accountTypeName: 'Direct Costs',
         accountNumber: '5100',
         accountName: 'Service Costs',
         amount: 5000.00
@@ -58,35 +58,35 @@ module.exports = async (req, res) => {
       // Operating Expenses
       {
         category: 'Operating Expenses',
-        subcategory: 'General & Administrative',
+        accountTypeName: 'General & Administrative',
         accountNumber: '6000',
         accountName: 'Salaries',
         amount: 15000.00
       },
       {
         category: 'Operating Expenses',
-        subcategory: 'General & Administrative',
+        accountTypeName: 'General & Administrative',
         accountNumber: '6100',
         accountName: 'Rent',
         amount: 3000.00
       },
       {
         category: 'Operating Expenses',
-        subcategory: 'Marketing',
+        accountTypeName: 'Marketing',
         accountNumber: '6200',
         accountName: 'Advertising',
         amount: 2000.00
       },
       {
         category: 'Operating Expenses',
-        subcategory: 'General & Administrative',
+        accountTypeName: 'General & Administrative',
         accountNumber: '6300',
         accountName: 'Utilities',
         amount: 800.00
       },
       {
         category: 'Operating Expenses',
-        subcategory: 'General & Administrative',
+        accountTypeName: 'General & Administrative',
         accountNumber: '6400',
         accountName: 'Office Supplies',
         amount: 500.00

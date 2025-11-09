@@ -19,67 +19,83 @@ module.exports = async (req, res) => {
     // Demo Trial Balance data
     const trialBalanceData = [
       {
+        accountId: 'acc-1000',
         accountNumber: '1000',
         accountName: 'Cash',
-        accountType: 'Asset',
-        debit: 25000.00,
-        credit: 0,
+        accountCategory: 'Asset',
+        normalBalance: 'DEBIT',
+        totalDebits: 25000.00,
+        totalCredits: 0,
         balance: 25000.00
       },
       {
+        accountId: 'acc-1200',
         accountNumber: '1200',
         accountName: 'Accounts Receivable',
-        accountType: 'Asset',
-        debit: 15000.00,
-        credit: 0,
+        accountCategory: 'Asset',
+        normalBalance: 'DEBIT',
+        totalDebits: 15000.00,
+        totalCredits: 0,
         balance: 15000.00
       },
       {
+        accountId: 'acc-1500',
         accountNumber: '1500',
         accountName: 'Equipment',
-        accountType: 'Asset',
-        debit: 50000.00,
-        credit: 0,
+        accountCategory: 'Asset',
+        normalBalance: 'DEBIT',
+        totalDebits: 50000.00,
+        totalCredits: 0,
         balance: 50000.00
       },
       {
+        accountId: 'acc-2000',
         accountNumber: '2000',
         accountName: 'Accounts Payable',
-        accountType: 'Liability',
-        debit: 0,
-        credit: 10000.00,
+        accountCategory: 'Liability',
+        normalBalance: 'CREDIT',
+        totalDebits: 0,
+        totalCredits: 10000.00,
         balance: -10000.00
       },
       {
+        accountId: 'acc-3000',
         accountNumber: '3000',
         accountName: 'Owner\'s Equity',
-        accountType: 'Equity',
-        debit: 0,
-        credit: 60000.00,
+        accountCategory: 'Equity',
+        normalBalance: 'CREDIT',
+        totalDebits: 0,
+        totalCredits: 60000.00,
         balance: -60000.00
       },
       {
+        accountId: 'acc-4000',
         accountNumber: '4000',
         accountName: 'Revenue',
-        accountType: 'Revenue',
-        debit: 0,
-        credit: 35000.00,
+        accountCategory: 'Revenue',
+        normalBalance: 'CREDIT',
+        totalDebits: 0,
+        totalCredits: 35000.00,
         balance: -35000.00
       },
       {
+        accountId: 'acc-5000',
         accountNumber: '5000',
         accountName: 'Cost of Goods Sold',
-        accountType: 'Expense',
-        debit: 12000.00,
-        credit: 0,
+        accountCategory: 'Expense',
+        normalBalance: 'DEBIT',
+        totalDebits: 12000.00,
+        totalCredits: 0,
         balance: 12000.00
       },
       {
+        accountId: 'acc-6000',
         accountNumber: '6000',
         accountName: 'Operating Expenses',
-        accountType: 'Expense',
-        debit: 8000.00,
-        credit: 0,
+        accountCategory: 'Expense',
+        normalBalance: 'DEBIT',
+        totalDebits: 8000.00,
+        totalCredits: 0,
         balance: 8000.00
       }
     ];
