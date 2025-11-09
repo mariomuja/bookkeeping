@@ -7,6 +7,8 @@ import { ReportsComponent } from './components/reports/reports.component';
 import { ImportComponent } from './components/import/import.component';
 import { CustomFieldsComponent } from './components/custom-fields/custom-fields.component';
 import { TrialBalanceViewerComponent } from './components/report-viewers/trial-balance-viewer.component';
+import { BalanceSheetViewerComponent } from './components/report-viewers/balance-sheet-viewer.component';
+import { ProfitLossViewerComponent } from './components/report-viewers/profit-loss-viewer.component';
 import { LoginComponent } from './components/auth/login.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { AuditLogComponent } from './components/audit-log/audit-log.component';
@@ -22,8 +24,8 @@ export const routes: Routes = [
   { path: 'journal-entries', component: JournalEntriesComponent, canActivate: [AuthGuardSimple] },
   { path: 'reports', component: ReportsComponent, canActivate: [AuthGuardSimple] },
   { path: 'report/trial-balance', component: TrialBalanceViewerComponent, canActivate: [AuthGuardSimple] },
-  { path: 'report/balance-sheet', component: TrialBalanceViewerComponent, canActivate: [AuthGuardSimple] },
-  { path: 'report/profit-loss', component: TrialBalanceViewerComponent, canActivate: [AuthGuardSimple] },
+  { path: 'report/balance-sheet', component: BalanceSheetViewerComponent, canActivate: [AuthGuardSimple] },
+  { path: 'report/profit-loss', component: ProfitLossViewerComponent, canActivate: [AuthGuardSimple] },
   { path: 'import', component: ImportComponent, canActivate: [AuthGuardSimple] },
   { path: 'custom-fields', component: CustomFieldsComponent, canActivate: [AuthGuardSimple] },
   { path: 'audit-log', component: AuditLogComponent, canActivate: [AuthGuardSimple] },
