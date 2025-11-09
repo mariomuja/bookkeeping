@@ -28,6 +28,10 @@
       "destination": "/api/organizations/custom-fields"
     },
     {
+      "source": "/api/organizations/:orgId/custom-fields/reorder",
+      "destination": "/api/organizations/custom-fields-reorder"
+    },
+    {
       "source": "/api/organizations/:orgId/reports/trial-balance",
       "destination": "/api/organizations/reports-trial-balance"
     },
