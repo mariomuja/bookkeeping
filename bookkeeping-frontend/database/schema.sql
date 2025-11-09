@@ -125,3 +125,4 @@ CREATE INDEX IF NOT EXISTS idx_journal_entry_lines_account_id ON journal_entry_l
 CREATE INDEX IF NOT EXISTS idx_audit_logs_org_id ON audit_logs(organization_id);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_timestamp ON audit_logs(timestamp);
 
+

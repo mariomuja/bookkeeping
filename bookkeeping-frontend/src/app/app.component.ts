@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './components/layout/header/header.component';
 import { SidebarComponent } from './components/layout/sidebar/sidebar.component';
 import { DocumentationModalComponent } from './components/documentation-modal/documentation-modal.component';
+import { ImpressumComponent } from './components/impressum/impressum.component';
 import { OrganizationService } from './services/organization.service';
 import { TranslateService } from '@ngx-translate/core';
 import { filter } from 'rxjs/operators';
@@ -11,7 +12,7 @@ import { filter } from 'rxjs/operators';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent, SidebarComponent, DocumentationModalComponent],
+  imports: [CommonModule, RouterOutlet, HeaderComponent, SidebarComponent, DocumentationModalComponent, ImpressumComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
