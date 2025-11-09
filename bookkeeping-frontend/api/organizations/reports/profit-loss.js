@@ -1,4 +1,5 @@
 // Profit & Loss Report endpoint for Vercel Serverless
+// Simplified path without [orgId] nesting
 module.exports = async (req, res) => {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', 'true');
