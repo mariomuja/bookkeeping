@@ -87,13 +87,10 @@ export class ReportsComponent {
       return;
     }
 
-    // Open report in new browser tab
-    const url = this.router.serializeUrl(
-      this.router.createUrlTree([report.route], {
-        queryParams: { orgId: org.id }
-      })
-    );
-    window.open(url, '_blank');
+    // Navigate within the same app (not in new tab)
+    this.router.navigate([report.route], {
+      queryParams: { orgId: org.id }
+    });
   }
 
   getFinancialReports(): ReportCard[] {
