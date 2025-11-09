@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuditLogService, AuditLog, AuditStats } from '../../services/audit-log.service';
-import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -38,18 +37,10 @@ export class AuditLogComponent implements OnInit {
 
   constructor(
     private auditLogService: AuditLogService,
-    private authService: AuthService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    // Check if user is admin
-    const currentUser = this.authService.getCurrentUser();
-    if (currentUser?.role !== 'admin') {
-      this.error = 'Access denied. Admin privileges required.';
-      return;
-    }
-
     this.loadStats();
     this.loadLogs();
   }
