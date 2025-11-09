@@ -87,7 +87,6 @@ export class JournalEntriesComponent implements OnInit, OnDestroy {
     }
     
     this.loadAccounts();
-    this.loadEntries();
   }
 
   loadAccounts(): void {
@@ -99,6 +98,10 @@ export class JournalEntriesComponent implements OnInit, OnDestroy {
         this.accounts = accounts.filter(a => a.isActive);
         // Create a map for quick lookups
         this.accountsMap = new Map(accounts.map(a => [a.id, a]));
+        console.log('[JournalEntries] Accounts loaded:', this.accounts.length);
+        console.log('[JournalEntries] AccountsMap size:', this.accountsMap.size);
+        // Load entries AFTER accounts are loaded to ensure account lookups work
+        this.loadEntries();
       },
       error: (err) => console.error('Failed to load accounts:', err)
     });
@@ -116,8 +119,12 @@ export class JournalEntriesComponent implements OnInit, OnDestroy {
     this.journalEntryService.getJournalEntries(org.id).subscribe({
       next: (entries) => {
         console.log('[JournalEntries] Received entries:', entries.length);
+        console.log('[JournalEntries] AccountsMap has', this.accountsMap.size, 'accounts');
         
         // Populate account information in lines
+        let populatedCount = 0;
+        let missingCount = 0;
+        
         entries.forEach(entry => {
           if (entry.lines) {
             entry.lines.forEach(line => {
@@ -128,11 +135,20 @@ export class JournalEntriesComponent implements OnInit, OnDestroy {
                     accountNumber: account.accountNumber,
                     accountName: account.accountName
                   };
+                  populatedCount++;
+                } else {
+                  console.warn('[JournalEntries] Account not found for ID:', line.accountId);
+                  missingCount++;
                 }
               }
             });
           }
         });
+        
+        console.log('[JournalEntries] Populated', populatedCount, 'account lookups');
+        if (missingCount > 0) {
+          console.warn('[JournalEntries] Missing', missingCount, 'account lookups');
+        }
         
         this.allEntries = entries;
         this.applyFilters();
