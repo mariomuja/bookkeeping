@@ -72,6 +72,10 @@
       "destination": "/api/:path*"
     },
     {
+      "source": "/report/(.*)",
+      "destination": "/index.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
