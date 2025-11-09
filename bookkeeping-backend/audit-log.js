@@ -77,6 +77,7 @@ const createAuditLog = (params) => {
 const getAuditLogs = (filters = {}) => {
   const {
     userId,
+    username,
     action,
     entityType,
     startDate,
@@ -92,6 +93,12 @@ const getAuditLogs = (filters = {}) => {
   // Apply filters
   if (userId) {
     filtered = filtered.filter(log => log.userId === userId);
+  }
+
+  if (username) {
+    filtered = filtered.filter(log => 
+      log.username && log.username.toLowerCase().includes(username.toLowerCase())
+    );
   }
 
   if (action) {

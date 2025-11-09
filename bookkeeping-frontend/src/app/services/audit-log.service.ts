@@ -45,6 +45,7 @@ export class AuditLogService {
     const params = new URLSearchParams();
     
     if (filters.userId) params.append('userId', filters.userId);
+    if (filters.username) params.append('username', filters.username);
     if (filters.action) params.append('action', filters.action);
     if (filters.entityType) params.append('entityType', filters.entityType);
     if (filters.startDate) params.append('startDate', filters.startDate);

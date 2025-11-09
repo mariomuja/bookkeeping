@@ -1177,6 +1177,7 @@ app.get('/api/journal-entries/:id/verify-hash', (req, res) => {
 app.get('/api/audit-logs', (req, res) => {
   const filters = {
     userId: req.query.userId,
+    username: req.query.username,
     action: req.query.action,
     entityType: req.query.entityType,
     startDate: req.query.startDate,
