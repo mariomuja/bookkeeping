@@ -10,7 +10,7 @@ import { TranslateModule } from '@ngx-translate/core';
     <footer class="app-footer">
       <div class="footer-content">
         <p class="footer-text">
-          © 2025 Mario Muja | BookKeeper Pro v1.0.0
+          © 2025 Mario Muja | International Bookkeeping
         </p>
         <div class="footer-links">
           <a href="https://github.com/mariomuja/bookkeeping" target="_blank" rel="noopener noreferrer" class="footer-link">
