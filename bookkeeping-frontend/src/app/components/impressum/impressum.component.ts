@@ -37,7 +37,7 @@ import { TranslateModule } from '@ngx-translate/core';
         <div class="impressum-body">
           <h3>Angaben gemäß § 5 TMG</h3>
           <p>
-            Mario Muja<br>
+            <strong>Mario Muja</strong><br>
             Hohe Liedt 45 F<br>
             22417 Hamburg<br>
             Deutschland
@@ -45,7 +45,9 @@ import { TranslateModule } from '@ngx-translate/core';
 
           <h3>Kontakt</h3>
           <p>
-            E-Mail: <a href="mailto:mario.muja&#64;gmail.com">mario.muja&#64;gmail.com</a>
+            <strong>Telefon Deutschland:</strong> <a href="tel:+4915204641473">+49 1520 464 1473</a><br>
+            <strong>Telefon Italien:</strong> <a href="tel:+393453450098">+39 345 345 0098</a><br>
+            <strong>E-Mail:</strong> <a href="mailto:mario.muja@gmail.com">mario.muja@gmail.com</a>
           </p>
 
           <h3>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h3>
