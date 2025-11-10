@@ -24,7 +24,7 @@
     "@angular/platform-browser": "^17.3.0",
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
-    "@mariomuja/angular-shared-components": "^1.0.6",
+    "@mariomuja/angular-shared-components": "file:./mariomuja-angular-shared-components-1.0.6.tgz",
     "@ngx-translate/core": "^17.0.0",
     "@ngx-translate/http-loader": "^17.0.0",
     "chart.js": "^4.5.1",
