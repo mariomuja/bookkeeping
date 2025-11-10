@@ -7,11 +7,26 @@ import { TranslateModule } from '@ngx-translate/core';
   standalone: true,
   imports: [CommonModule, TranslateModule],
   template: `
-    <div class="impressum-link">
-      <button (click)="showImpressum = !showImpressum" class="impressum-button">
-        Impressum
-      </button>
-    </div>
+    <footer class="app-footer">
+      <div class="footer-content">
+        <p class="footer-text">
+          © 2025 Mario Muja | BookKeeper Pro v1.0.0
+        </p>
+        <div class="footer-links">
+          <a href="https://github.com/mariomuja/bookkeeping" target="_blank" rel="noopener noreferrer" class="footer-link">
+            GitHub
+          </a>
+          <span class="footer-separator">|</span>
+          <a href="javascript:void(0)" (click)="showImpressum = !showImpressum" class="footer-link impressum-link">
+            Impressum
+          </a>
+          <span class="footer-separator">|</span>
+          <span class="footer-info">
+            🛡️ Keine Cookies • Keine Datenerfassung
+          </span>
+        </div>
+      </div>
+    </footer>
 
     <div *ngIf="showImpressum" class="impressum-modal" (click)="showImpressum = false">
       <div class="impressum-content" (click)="$event.stopPropagation()">
@@ -65,29 +80,57 @@ import { TranslateModule } from '@ngx-translate/core';
     </div>
   `,
   styles: [`
-    .impressum-link {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 999;
+    .app-footer {
+      margin-top: 60px;
+      padding: 24px 0;
+      border-top: 2px solid #e5e7eb;
+      background: linear-gradient(to bottom, #fafafa 0%, #f5f5f5 100%);
+      width: 100%;
     }
 
-    .impressum-button {
-      padding: 0.5rem 1rem;
-      background: #f3f4f6;
-      border: 1px solid #e5e7eb;
-      border-radius: 0.375rem;
-      font-size: 0.875rem;
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-text {
+      margin: 0;
       color: #6b7280;
+      font-size: 14px;
+    }
+
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+    }
+
+    .footer-link {
+      color: #667eea;
+      text-decoration: none;
       cursor: pointer;
       transition: all 0.2s;
-      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
     }
 
-    .impressum-button:hover {
-      background: #e5e7eb;
-      color: #1f2937;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    .footer-link:hover {
+      color: #764ba2;
+      text-decoration: underline;
+    }
+
+    .footer-separator {
+      color: #d1d5db;
+    }
+
+    .footer-info {
+      color: #6b7280;
+      font-size: 13px;
     }
 
     .impressum-modal {
@@ -190,15 +233,19 @@ import { TranslateModule } from '@ngx-translate/core';
       text-decoration: underline;
     }
 
-    @media (max-width: 640px) {
-      .impressum-link {
-        bottom: 10px;
-        right: 10px;
+    @media (max-width: 768px) {
+      .footer-content {
+        flex-direction: column;
+        text-align: center;
       }
 
-      .impressum-button {
-        padding: 0.375rem 0.75rem;
-        font-size: 0.75rem;
+      .footer-links {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .footer-separator {
+        display: none;
       }
 
       .impressum-content {

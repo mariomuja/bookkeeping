@@ -59,3 +59,4 @@ FROM generate_series(30, 0, -1) AS i
 ON CONFLICT DO NOTHING;
 
 
+
