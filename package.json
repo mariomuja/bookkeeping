@@ -1,0 +1,20 @@
+{
+  "name": "aistartup",
+  "version": "1.0.0",
+  "description": "AI-Powered Enterprise Solutions - Landing Page",
+  "scripts": {
+    "build": "echo 'Static site - no build needed'",
+    "start": "npx http-server . -p 8080"
+  },
+  "keywords": [
+    "ai",
+    "enterprise",
+    "software",
+    "development",
+    "integration"
+  ],
+  "author": "AI Startup",
+  "license": "MIT"
+}
+
+
